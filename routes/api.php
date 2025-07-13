@@ -20,7 +20,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/categories', 'index');
         Route::group(['prefix' => '/category', 'as' => 'category.'], function () {
             Route::post('/create', 'store')->name('create');
-            Route::post('/update', 'update')->name('update');
+            Route::post('/update/{id}', 'update')->name('update');
+            Route::get('/delete/{id}', 'delete')->name('delete');
         });
     });
 });

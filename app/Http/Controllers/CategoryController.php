@@ -20,4 +20,12 @@ class CategoryController extends Controller
     {
         return CategoryService::store($request->validated());
     }
+    public function update($id, Request $request): JsonResponse
+    {
+        return CategoryService::update($id, $request);
+    }
+    public function delete($id): JsonResponse
+    {
+        return CategoryService::delete($id);
+    }
 }

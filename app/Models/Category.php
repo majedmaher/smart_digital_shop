@@ -8,8 +8,17 @@ use Spatie\Translatable\HasTranslations;
 
 class Category extends Model
 {
-    protected $guarded = [];
-
     use HasTranslations, SoftDeletes;
+
+    protected $guarded = [];
     public array $translatable = ['name'];
+
+    public function scopeGetNecessaryData($query)
+    {
+        return $query->select('id', 'name', 'icon');
+        // locale = app()->getLocale();  // الحصول على اللغة الحالية
+        // return $query->select('id', 'created_at', 'updated_at')  // استرجاع الأعمدة الأساسية
+        //              ->addSelect(['name' => 'categories.name->' . $locale]);  // إضافة الترجمة للـ name بناءً على اللغة الحالية
+
+    }
 }

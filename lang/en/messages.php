@@ -11,7 +11,12 @@ return [
 
     'sent_data' => 'All data has been sent successfully.',
     'store_successfully' => ':item Stored Successfully',
+    'update_successfully' => ':item updated Successfully',
+    'delete_successfully' => ':item deleted Successfully',
     'store_failed' => ':item failed in store',
+    'update_failed' => ':item failed in update',
+    'delete_failed' => ':item failed in delete',
+    'item_not_found' => ':item nof found in database',
 
     'category' => 'Category'
 

@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 
 class CategoryService extends Controller
 {
+    private static string $image_folder = 'categories';
     static function index(): JsonResponse
     {
         $categories = Category::getNecessaryData()
@@ -24,7 +25,7 @@ class CategoryService extends Controller
     {
         DB::beginTransaction();
         try {
-            $icon = saveImage($data['icon'], 'categories');
+            $icon = saveImage($data['icon'], self::$image_folder);
             $category = Category::create([
                 "user_id" => auth()->id(),
                 "icon" => $icon,
@@ -35,7 +36,7 @@ class CategoryService extends Controller
             return BaseController::sendResponse(CategoryResource::make($category), __('messages.store_successfully', ['item' => __('messages.category')]));
         } catch (\Throwable $th) {
             DB::rollBack();
-            return BaseController::sendError(__('messages.store_failed', ['item' => __('messages.category')]), [$th->getMessage()], 500);
+            return BaseController::sendError(__('messages.store_failed', ['item' => __('messages.category')]), [], 500);
         }
     }
 
@@ -47,8 +48,8 @@ class CategoryService extends Controller
             if (!$category || $category == null) {
                 return BaseController::sendError(__('messages.item_not_found', ['item' => __('messages.category')]), [], 404);
             }
-            if ($data['icon']) {
-                $icon = saveImage($data['icon'], 'categories');
+            if ($data['icon'] || $data->hasFile('image')) {
+                $icon = saveImage($data['icon'], self::$image_folder);
                 $category->icon = $icon;
             }
             $category->name = $data['name'];
@@ -57,7 +58,7 @@ class CategoryService extends Controller
             return BaseController::sendResponse(CategoryResource::make($category), __('messages.update_successfully', ['item' => __('messages.category')]));
         } catch (\Throwable $th) {
             DB::rollBack();
-            return BaseController::sendError(__('messages.update_failed', ['item' => __('messages.category')]), [$th->getMessage()], 500);
+            return BaseController::sendError(__('messages.update_failed', ['item' => __('messages.category')]), [], 500);
         }
     }
 
@@ -74,7 +75,7 @@ class CategoryService extends Controller
             DB::commit();
             return BaseController::sendResponse(CategoryResource::make($category), __('messages.delete_successfully', ['item' => __('messages.category')]));
         } catch (\Throwable $th) {
-            return BaseController::sendError(__('messages.delete_failed', ['item' => __('messages.category')]), [$th->getMessage()], 500);
+            return BaseController::sendError(__('messages.delete_failed', ['item' => __('messages.category')]), [], 500);
         }
     }
 }

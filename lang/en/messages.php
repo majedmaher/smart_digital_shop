@@ -18,6 +18,10 @@ return [
     'delete_failed' => ':item failed in delete',
     'item_not_found' => ':item nof found in database',
 
-    'category' => 'Category'
+    // 
+    'error_subcategory_parent_id' => 'You cannot select a subcategory that contains another subcategory.',
+
+    'category' => 'Category',
+    'sub_category' => 'Sub Category'
 
 ];

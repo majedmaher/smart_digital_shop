@@ -17,6 +17,11 @@ return [
     'delete_failed' => 'فشلت عملية حذف :item',
     'item_not_found' => 'هذا :item غير موجود في قاعدة البيانات',
 
-    'category' => 'التصنيف'
+    // 
+
+    'error_subcategory_parent_id' => 'لا يمكنك تحديد فئة فرعية تحتوي على فئة فرعية أخرى.',
+
+    'category' => 'التصنيف',
+    'sub_category' => 'التصنيف الفرعي'
 
 ];

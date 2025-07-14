@@ -21,4 +21,9 @@ class Category extends Model
         //              ->addSelect(['name' => 'categories.name->' . $locale]);  // إضافة الترجمة للـ name بناءً على اللغة الحالية
 
     }
+
+    public function subCategories()
+    {
+        return $this->hasMany(SubCategory::class);
+    }
 }

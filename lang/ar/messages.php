@@ -22,6 +22,7 @@ return [
     'error_subcategory_parent_id' => 'لا يمكنك تحديد فئة فرعية تحتوي على فئة فرعية أخرى.',
 
     'category' => 'التصنيف',
-    'sub_category' => 'التصنيف الفرعي'
+    'sub_category' => 'التصنيف الفرعي',
+    'product' => 'المنتج',
 
 ];

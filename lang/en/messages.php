@@ -22,6 +22,7 @@ return [
     'error_subcategory_parent_id' => 'You cannot select a subcategory that contains another subcategory.',
 
     'category' => 'Category',
-    'sub_category' => 'Sub Category'
+    'sub_category' => 'Sub Category',
+    'product' => 'Product',
 
 ];

@@ -55,7 +55,7 @@ class SubCategoryService extends Controller
                 return BaseController::sendError(__('messages.error_subcategory_parent_id'), [], 403);
             }
             $sub_category = SubCategory::find($id);
-            if (!isEmpty($sub_category) || $sub_category == null) {
+            if ($sub_category == null) {
                 return BaseController::sendError(__('messages.item_not_found', ['item' => __('messages.sub_category')]), [], 404);
             }
             if ($data['image'] || $data->hasFile('image')) {

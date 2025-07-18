@@ -54,6 +54,7 @@ class SubCategoryService extends Controller
             if (SubCategory::find($data['parent_id'])->parent_id != null) {
                 return BaseController::sendError(__('messages.error_subcategory_parent_id'), [], 403);
             }
+            $data['user_id'] = auth()->id();
             $sub_category = SubCategory::find($id);
             if ($sub_category == null) {
                 return BaseController::sendError(__('messages.item_not_found', ['item' => __('messages.sub_category')]), [], 404);

@@ -44,6 +44,7 @@ class CategoryService extends Controller
     {
         DB::beginTransaction();
         try {
+            $data['user_id'] = auth()->id();
             $category = Category::find($id);
             if (!$category || $category == null) {
                 return BaseController::sendError(__('messages.item_not_found', ['item' => __('messages.category')]), [], 404);

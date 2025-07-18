@@ -23,7 +23,7 @@ return new class extends Migration
             $table->decimal('price_before', 8, 2)->nullable()->unsigned();
             $table->decimal('price', 8, 2)->unsigned();
             $table->tinyInteger('discount')->nullable()->unsigned();
-            $table->enum('shipping_payment', ['code', 'account', 'manual']);
+            $table->enum('shipping_payment', ['code', 'account_id', 'multi_id', 'access']);
             $table->boolean('is_active')->default(true);
             $table->softDeletes();
             $table->timestamps();

@@ -23,6 +23,15 @@ class AuthController extends BaseController
         return AuthService::login($request);
     }
 
+    public function confirmOtp(Request $request)
+    {
+        $data = $request->validate([
+            'email' => 'required|email|exists:users,email',
+            'otp'   => 'required|string|size:6',
+        ]);
+        return AuthService::confirmOtp($data);
+    }
+
     // Logout (Revoke Token)
     public function logout(Request $request)
     {

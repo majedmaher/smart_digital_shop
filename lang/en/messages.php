@@ -1,12 +1,15 @@
 <?php
 
 return [
-    'register_successfully' => 'A new user has been successfully registered.',
-    'login_successfully' => 'Login was successful.',
+    'register_successfully' => 'The account has been created, and the verification code has been sent to your email.',
+    'login_successfully' => 'Login was successful, and the verification code has been sent to your email.',
     'login_failed' => 'Login failed. Please check your credentials.',
+    'verification_code_sent' => 'A verification code has been sent to your email.',
     'Logged_out_successfully' => 'Logged out successfully!',
     'unauthenticated' => 'Authentication is required. Please log in first.',
-
+    'otp_error' => 'The verification code is invalid or expired.',
+    'do_not_have_permission' => 'Sorry, you do not have permission to access this page.',
+    'require_login' => 'Sorry, accessing this page requires you to log in first.',
     // 
 
     'sent_data' => 'All data has been sent successfully.',

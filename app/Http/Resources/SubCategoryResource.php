@@ -19,7 +19,7 @@ class SubCategoryResource extends JsonResource
             'category_id' => $this->category_id,
             'parent_id' => $this->parent_id,
             'name' => $this->name,
-            'image' => $this->category_id
+            'image' => env('APP_URL') . $this->category_id
         ];
         if (isset($this->children_count)) {
             $data['children_count'] = $this->children_count;

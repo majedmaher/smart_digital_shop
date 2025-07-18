@@ -37,6 +37,7 @@ class ProductService extends Controller
 
     static function update($id, $data): JsonResponse
     {
+        $data['user_id'] = auth()->id();
         $product = Product::find($id);
         // return BaseController::sendResponse($product, __('messages.update_successfully', ['item' => __('messages.product')]));
         if (!$product) {

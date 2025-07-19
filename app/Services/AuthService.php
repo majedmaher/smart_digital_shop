@@ -4,10 +4,12 @@ namespace App\Services;
 
 use App\Http\Controllers\API\BaseController;
 use App\Http\Controllers\Controller;
+use App\Mail\OtpCodeMail;
 use App\Models\User;
 use App\RoleEnum;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Throwable;
 
 class AuthService extends Controller
@@ -18,7 +20,15 @@ class AuthService extends Controller
         DB::beginTransaction();
         try {
             $user = User::create($data);
-            $user->assignRole(RoleEnum::ADMIN); // الافتراضي
+            $user->assignRole(RoleEnum::USER); // الافتراضي
+            $otp = OtpService::generate();
+            $user->otp_code = $otp;
+            $user->otp_expires_at = OtpService::expiresAt();
+            $user->save();
+
+            Mail::to($user->email)->send(new OtpCodeMail($otp));
+
+
             DB::commit();
             return BaseController::sendResponse($user, __('messages.register_successfully'));
         } catch (Throwable $e) {
@@ -38,14 +48,46 @@ class AuthService extends Controller
             if (!$user || !Hash::check($data->password, $user->password)) {
                 return BaseController::sendError((__('messages.login_failed')), [], 403);
             }
-            DB::commit();
-            $token = $user->createToken('api-token')->plainTextToken;
-            $response = ['token' => $token];
 
-            return BaseController::sendResponse($response, __('messages.login_successfully'));
+            // Generate and send OTP
+            $otp = OtpService::generate();
+            $user->otp_code = $otp;
+            $user->otp_expires_at = OtpService::expiresAt();
+            $user->save();
+
+            Mail::to('majedmaher2492000@gmail.com')->send(new OtpCodeMail($otp));
+            // Mail::to($user->email)->send(new OtpCodeMail($otp));
+            DB::commit();
+            // $token = $user->createToken('api-token')->plainTextToken;
+            // $response = ['token' => $token];
+
+            return BaseController::sendResponse([], __('messages.verification_code_sent'));
         } catch (\Throwable $th) {
             Db::rollBack();
             return BaseController::sendError((__('messages.login_failed')), [$th->getMessage()], 500);
         }
+    }
+    static function confirmOtp($data)
+    {
+        $user = User::where('email', $data['email'])->first();
+
+        if (
+            !$user ||
+            $user->otp_code !== $data['otp'] ||
+            !$user->otp_expires_at ||
+            now()->greaterThan($user->otp_expires_at)
+        ) {
+            return BaseController::sendError(__('messages.otp_error'), [], 422);
+        }
+
+        // OTP valid — clear OTP and return token
+        $user->otp_code = null;
+        $user->otp_expires_at = null;
+        $user->save();
+
+        $token = $user->createToken('auth_token')->plainTextToken;
+        $response = ['token' => $token, 'user' => $user];
+
+        return BaseController::sendResponse($response, __('messages.login_successfully'));
     }
 }

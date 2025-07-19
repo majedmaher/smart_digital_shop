@@ -13,6 +13,7 @@ return [
 
     // Category Messages
     'sent_data' => 'تم ارسال كل البيانات بنجاح.',
+    'can_not_sent_data' => 'حدث خطأ. لم يتم إرسال البيانات.',
     'store_successfully' => 'تم تخزين :item بنجاح',
     'update_successfully' => 'تم تعديل :item بنجاح',
     'delete_successfully' => 'تم حذف :item بنجاح',
@@ -28,5 +29,6 @@ return [
     'category' => 'التصنيف',
     'sub_category' => 'التصنيف الفرعي',
     'product' => 'المنتج',
+    'rating' => 'التقييم',
 
 ];

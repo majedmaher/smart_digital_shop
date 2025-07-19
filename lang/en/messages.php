@@ -13,6 +13,7 @@ return [
     // 
 
     'sent_data' => 'All data has been sent successfully.',
+    'can_not_sent_data' => 'An error occurred. The data could not be sent.',
     'store_successfully' => ':item Stored Successfully',
     'update_successfully' => ':item updated Successfully',
     'delete_successfully' => ':item deleted Successfully',
@@ -27,5 +28,6 @@ return [
     'category' => 'Category',
     'sub_category' => 'Sub Category',
     'product' => 'Product',
+    'rating' => 'Rating',
 
 ];

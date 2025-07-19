@@ -1,8 +1,9 @@
 <?php
 
 if (!function_exists('saveImage')) {
-    function saveImage($photo, $folder): string
+    function saveImage($photo, $folder_name): string
     {
+        $folder = 'uploads/' . $folder_name;
         $image = $photo->getClientOriginalName(); //Name with extension 'filename.jpg'
         $name = explode('.', $image)[0]; // Filename 'filename'
 
@@ -13,8 +14,9 @@ if (!function_exists('saveImage')) {
 }
 
 if (!function_exists('saveImageInStorage')) {
-    function saveImageInStorage($photo, $folder): string
+    function saveImageInStorage($photo, $folder_name): string
     {
+        $folder = 'uploads/' . $folder_name;
         $image = $photo->getClientOriginalName(); //Name with extension 'filename.jpg'
         $name = explode('.', $image)[0]; // Filename 'filename'
 

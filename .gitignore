@@ -13,6 +13,7 @@ public/hot
 public/categories
 public/subCategories
 public/products
+public/uploads
 
 # Laravel 5 & Lumen specific with changed public path
 public_html/storage

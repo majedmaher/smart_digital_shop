@@ -25,7 +25,7 @@ class RatingRequest extends FormRequest
             'product_id' => 'required|exists:products,id',
             'stars' => 'required|integer|min:1|max:5',
             'images' => 'nullable|array',
-            'images.*' => 'nullable|image|mimes:png,jpg, jpeg|max:2048',
+            'images.*' => 'nullable|image|mimes:png,jpg,jpeg,webp|max:2048',
             'show_name' => 'nullable|boolean'
         ];
     }

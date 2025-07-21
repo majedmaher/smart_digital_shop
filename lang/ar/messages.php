@@ -44,5 +44,6 @@ return [
     'product' => 'المنتج',
     'rating' => 'التقييم',
     'coupon' => 'كوبون',
+    'Slider' => 'سلايدر',
 
 ];

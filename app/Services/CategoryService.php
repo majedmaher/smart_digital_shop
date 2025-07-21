@@ -26,9 +26,11 @@ class CategoryService extends Controller
         DB::beginTransaction();
         try {
             $icon = saveImage($data['icon'], self::$image_folder);
+            $image = saveImage($data['image'], self::$image_folder);
             $category = Category::create([
                 "user_id" => auth()->id(),
                 "icon" => $icon,
+                "image" => $image,
                 "name" => $data['name']
             ]);
 

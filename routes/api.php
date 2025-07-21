@@ -8,11 +8,13 @@ use App\Http\Controllers\MainController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RatingController;
+use App\Http\Controllers\SliderController;
 use App\Http\Controllers\SocialAuthController;
 use App\Http\Controllers\SubCategoryController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/categories-subcategories', [MainController::class, 'getCategoriesWithSubCategories']);
+Route::get('/main-content', [MainController::class, 'getMainContent']);
 
 
 Route::controller(AuthController::class)->as('auth.')->group(function () {
@@ -68,7 +70,11 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
     });
     Route::post('/coupon/create', [CouponController::class, 'create']);
 
-    // Route::controller(OrderController::class)->group(function() {
+    Route::controller(SliderController::class)->group(function () {
+        Route::get('/sliders', 'index');
+        Route::post('/slider/create', 'store');
+    });
+
     Route::group(['prefix' => '/order', 'as' => 'order.', 'controller' => OrderController::class], function () {
         Route::post('/create', 'store')->name('create');
     });

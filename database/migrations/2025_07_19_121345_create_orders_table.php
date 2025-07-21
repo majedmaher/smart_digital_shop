@@ -17,6 +17,7 @@ return new class extends Migration
             $table->enum('status', ['pending', 'paid', 'failed', 'processing', 'completed', 'cancelled'])->default('pending');
             $table->decimal('total_price', 10, 2)->default(0);
             $table->foreignId('coupon_id')->nullable()->constrained()->nullOnDelete();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

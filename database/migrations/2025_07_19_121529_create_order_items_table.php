@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('proof_file')->nullable();
             $table->string('shipping_method')->nullable();
             $table->json('shipping_data');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

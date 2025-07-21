@@ -39,9 +39,8 @@ class OrderService extends Controller
                 if ($quantity < 1) {
                     return BaseController::sendError(__('messages.quantity_is_low', ['quantity' => 1]), [], 400);
                 }
-
-                if ($product->codes->count() < $quantity && $product->shipping_payment === ShippingMethodPayment::CODE) {
-                    return BaseController::sendError(__('messages.quantity_is_high', ['quantity' => 1]), [], 400);
+                if ($codes_count = $product->codes->count() < $quantity && $product->shipping_payment === ShippingMethodPayment::CODE->value) {
+                    return BaseController::sendError(__('messages.quantity_is_high', ['quantity' => $codes_count]), [], 400);
                 }
 
                 $method = $product->shipping_payment;
@@ -88,16 +87,6 @@ class OrderService extends Controller
                     'shipping_method' => $method,
                     'shipping_data' => json_encode($shipping),
                 ]);
-                // orderItem::create([
-                //     'order_id' => $order->id,
-                //     'product_id' => $product->id,
-                //     'quantity' => $quantity,
-                //     'unit_price' => $product->price,
-                //     'total_price' => $quantity * $product->price,
-                //     'shipping_method' => $product->shipping_method,
-                //     'shipping_data' => $item['shipping_data'],
-                // ]);
-
 
                 $totalPrice += $quantity * $product->price;
             }

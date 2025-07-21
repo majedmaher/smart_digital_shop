@@ -20,6 +20,7 @@ return new class extends Migration
             $table->timestamp('used_at')->nullable();
             $table->foreignId('order_id')->nullable()->constrained('orders', 'id');
             $table->text('notes')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class SubCategoryRequest extends FormRequest
+class SliderRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,12 +22,8 @@ class SubCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'category_id' => 'required|exists:categories,id',
-            'name' => 'required|array',
-            'name.ar' => 'required|string',
-            'name.en' => 'required|string',
-            'image' => 'required|file|mimes:png,jpg,jpeg,webp|max:2048',
-            'parent_id' => 'nullable|exists:sub_categories,id'
+            'image_ar' => 'required|file|mimes:png,jpg,jpeg,webp|max:2048',
+            'image_en' => 'required|file|mimes:png,jpg,jpeg,webp|max:2048',
         ];
     }
 }

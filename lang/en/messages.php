@@ -43,5 +43,6 @@ return [
     'product' => 'Product',
     'rating' => 'Rating',
     'coupon' => 'Coupon',
+    'Slider' => 'slider',
 
 ];

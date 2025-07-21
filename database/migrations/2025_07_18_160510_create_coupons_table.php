@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('coupons', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string('code')->unique();
             $table->enum('type', ['fixed', 'percent']);
             $table->decimal('value', 8, 2);
@@ -21,6 +22,7 @@ return new class extends Migration
             $table->boolean('active')->default(true);
             $table->timestamp('expires_from')->nullable();
             $table->timestamp('expires_at')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

@@ -36,7 +36,7 @@ class ProductRequest extends FormRequest
             'price' => 'required',
             'discount' => 'nullable|max:100',
             'shipping_payment' => 'required|in:code, account, manual',
-            'image' => 'required|file|mimes:png,jpg,jpeg|max:2048',
+            'image' => 'required|file|mimes:png,jpg,jpeg,webp|max:2048',
         ];
     }
 }

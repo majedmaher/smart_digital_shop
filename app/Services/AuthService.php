@@ -19,11 +19,12 @@ class AuthService extends Controller
     {
         DB::beginTransaction();
         try {
+            $users_count = User::all()->count();
             $user = User::create($data);
-            if ($user->id === 1) {
-                $user->assignRole(RoleEnum::ADMIN);
-            } else {
+            if ($users_count >= 1) {
                 $user->assignRole(RoleEnum::USER);
+            } else {
+                $user->assignRole(RoleEnum::ADMIN);
             }
             $otp = OtpService::generate();
             $user->otp_code = $otp;

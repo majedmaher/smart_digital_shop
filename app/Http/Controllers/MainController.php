@@ -10,4 +10,8 @@ class MainController extends Controller
     {
         return MainService::getCategoriesWithSubCategories();
     }
+    public function getMainContent()
+    {
+        return MainService::getMainContent();
+    }
 }

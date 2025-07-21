@@ -13,6 +13,7 @@ use App\Http\Controllers\SocialAuthController;
 use App\Http\Controllers\SubCategoryController;
 use Illuminate\Support\Facades\Route;
 
+Route::get('/mobile-main-content', [MainController::class, 'getMobileMainScreen']);
 Route::get('/categories-subcategories', [MainController::class, 'getCategoriesWithSubCategories']);
 Route::get('/main-content', [MainController::class, 'getMainContent']);
 

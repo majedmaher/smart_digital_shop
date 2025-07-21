@@ -21,6 +21,19 @@ return [
     'update_failed' => 'فشلت عملية تعديل :item',
     'delete_failed' => 'فشلت عملية حذف :item',
     'item_not_found' => 'هذا :item غير موجود في قاعدة البيانات',
+    'cart_empty' => 'العربة فارغة',
+    'quantity_is_low' => 'يجب أن تكون الكمية :quantity أو أكثر',
+    'quantity_is_high' => 'الكمية المطلوبة غير متوفرة لهذا المنتج',
+    'something_went_wrong' => 'حدث خطأ ما',
+    'invalid_coupon' => 'قسيمة غير صالحة أو غير نشطة',
+    'used_maximum_coupon' => 'تم استخدام هذه القسيمة كحد أقصى',
+    'coupon_expired' => 'لقد انتهت صلاحية هذه القسيمة',
+    'order_created_successfully' => 'تم إنشاء الطلب بنجاح، انتقل إلى صفحة الدفع',
+    'enter_valid_data_to_product' => 'يجب إدخال عنوان بريد إلكتروني صالح لهذا المنتج',
+    'enter_account_id' => 'يجب إدخال معرف الحساب داخل اللعبة',
+    'enter_both_account_id' => 'يجب إدخال معلومات كلا الحسابين',
+    'field_required' => 'حقل :field مطلوب لهذا المنتج',
+    'shipping_method_unknown' => 'طريقة الشحن غير معروفة',
 
     // 
 
@@ -30,5 +43,6 @@ return [
     'sub_category' => 'التصنيف الفرعي',
     'product' => 'المنتج',
     'rating' => 'التقييم',
+    'coupon' => 'كوبون',
 
 ];

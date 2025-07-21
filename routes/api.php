@@ -3,16 +3,16 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CodeController;
+use App\Http\Controllers\CouponController;
 use App\Http\Controllers\MainController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RatingController;
 use App\Http\Controllers\SocialAuthController;
 use App\Http\Controllers\SubCategoryController;
 use Illuminate\Support\Facades\Route;
 
-// Route::get('a', function () {
-//     return response()->json(['message' => 'Hello, API!']);
-// });
+Route::get('/categories-subcategories', [MainController::class, 'getCategoriesWithSubCategories']);
 
 
 Route::controller(AuthController::class)->as('auth.')->group(function () {
@@ -28,13 +28,11 @@ Route::prefix('auth')->group(function () {
 });
 
 Route::get('/rating', [RatingController::class, 'all']);
-Route::middleware(['auth:sanctum', 'role:user'])->group(function () {
+Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
     Route::post('/rating/create', [RatingController::class, 'store']);
 });
 
 Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
-
-    Route::get('/categories-subcategories', [MainController::class, 'getCategoriesWithSubCategories']);
 
     Route::controller(CategoryController::class)->group(function () {
         Route::get('/categories', 'index');
@@ -67,5 +65,11 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
             Route::post('/update/{id}', 'update')->name('update');
             Route::get('/delete/{id}', 'delete')->name('delete');
         });
+    });
+    Route::post('/coupon/create', [CouponController::class, 'create']);
+
+    // Route::controller(OrderController::class)->group(function() {
+    Route::group(['prefix' => '/order', 'as' => 'order.', 'controller' => OrderController::class], function () {
+        Route::post('/create', 'store')->name('create');
     });
 });

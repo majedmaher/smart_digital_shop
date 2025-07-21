@@ -21,6 +21,19 @@ return [
     'update_failed' => ':item failed in update',
     'delete_failed' => ':item failed in delete',
     'item_not_found' => ':item nof found in database',
+    'cart_empty' => 'The cart is empty',
+    'quantity_is_low' => 'Quantity must be :quantity or more',
+    'quantity_is_high' => 'The required quantity is not available for this product',
+    'something_went_wrong' => 'Something went wrong',
+    'invalid_coupon' => 'Invalid or inactive coupon',
+    'used_maximum_coupon' => 'This coupon has been used maximum',
+    'coupon_expired' => 'This coupon has expired',
+    'order_created_successfully' => 'The order has been created successfully, go to the payment page',
+    'enter_valid_data_to_product' => 'A valid email address must be entered for this product',
+    'enter_account_id' => 'Account ID must be entered in-game',
+    'enter_both_account_id' => 'Both account information must be entered',
+    'field_required' => 'The :field field is required for this product',
+    'shipping_method_unknown' => 'Shipping method unknown',
 
     // 
     'error_subcategory_parent_id' => 'You cannot select a subcategory that contains another subcategory.',
@@ -29,5 +42,6 @@ return [
     'sub_category' => 'Sub Category',
     'product' => 'Product',
     'rating' => 'Rating',
+    'coupon' => 'Coupon',
 
 ];

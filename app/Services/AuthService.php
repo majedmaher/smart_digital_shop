@@ -20,7 +20,11 @@ class AuthService extends Controller
         DB::beginTransaction();
         try {
             $user = User::create($data);
-            $user->assignRole(RoleEnum::USER); // الافتراضي
+            if ($user->id === 1) {
+                $user->assignRole(RoleEnum::ADMIN);
+            } else {
+                $user->assignRole(RoleEnum::USER);
+            }
             $otp = OtpService::generate();
             $user->otp_code = $otp;
             $user->otp_expires_at = OtpService::expiresAt();
@@ -55,7 +59,7 @@ class AuthService extends Controller
             $user->otp_expires_at = OtpService::expiresAt();
             $user->save();
 
-            Mail::to('majedmaher2492000@gmail.com')->send(new OtpCodeMail($otp));
+            Mail::to($data->email)->send(new OtpCodeMail($otp));
             // Mail::to($user->email)->send(new OtpCodeMail($otp));
             DB::commit();
             // $token = $user->createToken('api-token')->plainTextToken;

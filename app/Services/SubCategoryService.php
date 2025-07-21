@@ -33,9 +33,10 @@ class SubCategoryService extends Controller
     {
         DB::beginTransaction();
         try {
-            if (SubCategory::find($data['parent_id'])->parent_id != null) {
+            if (isset($data['parent_id']) && SubCategory::find($data['parent_id'])->parent_id != null) {
                 return BaseController::sendError(__('messages.error_subcategory_parent_id'), [], 403);
             }
+
             $data['user_id'] = auth()->id();
             $data['image'] = saveImage($data['image'], self::$image_folder);
             $sub_category = SubCategory::create($data);
@@ -43,7 +44,7 @@ class SubCategoryService extends Controller
             return BaseController::sendResponse(SubCategoryResource::make($sub_category), __('messages.store_successfully', ['item' => __('messages.sub_category')]));
         } catch (\Throwable $th) {
             DB::rollBack();
-            return BaseController::sendError(__('messages.store_failed', ['item' => __('messages.sub_category')]), [], 500);
+            return BaseController::sendError(__('messages.store_failed', ['item' => __('messages.sub_category')]), [$th->getMessage()], 500);
         }
     }
 

@@ -2,6 +2,16 @@
 
 return [
 
+    'paymob' => [
+        'api_key' => env('PAYMOB_API_KEY'),
+        // 'secret_key' => env('PAYMOB_SECRET_KEY'),
+        'hmac' => env('PAYMOB_HMAC'),
+        'integration_id' => env('PAYMOB_INTEGRATION_ID'),
+        'iframe_url' => env('PAYMOB_IFRAME_URL'),
+        'notification_url' => env('PAYMOB_NOTIFICATION_URL'),
+        'redirect_url' => env('PAYMOB_REDIRECT_URL'),
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Third Party Services

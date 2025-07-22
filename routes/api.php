@@ -6,6 +6,7 @@ use App\Http\Controllers\CodeController;
 use App\Http\Controllers\CouponController;
 use App\Http\Controllers\MainController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RatingController;
 use App\Http\Controllers\SliderController;
@@ -17,6 +18,10 @@ Route::get('/mobile-main-content', [MainController::class, 'getMobileMainScreen'
 Route::get('/categories-subcategories', [MainController::class, 'getCategoriesWithSubCategories']);
 Route::get('/main-content', [MainController::class, 'getMainContent']);
 
+Route::controller(PaymentController::class)->group(function () {
+    Route::post('/payment/paymob/callback/processed', 'handlePaymobWebhook')->name('handlePaymobWebhook');
+    Route::get('/payment/paymob/result', 'result')->name('result');
+});
 
 Route::controller(AuthController::class)->as('auth.')->group(function () {
     Route::post('/register', 'register')->name('register');
@@ -78,5 +83,8 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
 
     Route::group(['prefix' => '/order', 'as' => 'order.', 'controller' => OrderController::class], function () {
         Route::post('/create', 'store')->name('create');
+        Route::get('/pay/{order_id}', 'pay')->name('pay');
+        Route::post('/refund/transaction', 'refundTransaction');
+        Route::post('/refund', 'refundOrder');
     });
 });

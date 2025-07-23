@@ -7,10 +7,12 @@ use App\Enum\ShippingMethodPayment;
 use App\Http\Controllers\API\BaseController;
 use App\Http\Controllers\Controller;
 use App\Models\Coupon;
+use App\Models\CouponUserUsage;
 use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class OrderService extends Controller
 {
@@ -91,7 +93,7 @@ class OrderService extends Controller
                 $totalPrice += $quantity * $product->price;
             }
 
-            if (!empty($data['coupon_id'])) {
+            if (!empty($data['coupon_id']) && isset($data['coupon_id'])) {
                 $coupon = Coupon::findOrFail($data['coupon_id']);
 
                 if (!$coupon || !$coupon->active) {
@@ -122,7 +124,7 @@ class OrderService extends Controller
                 $coupon->used = $coupon->used + 1;
                 $coupon->update();
             }
-            $order->update(['total_price' => $totalPrice, 'coupon_id' => $coupon->id]);
+            $order->update(['total_price' => $totalPrice, 'coupon_id' => $coupon->id ?? null]);
 
             $responseData = [
                 'order_id' => $order->id,

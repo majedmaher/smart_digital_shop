@@ -6,7 +6,6 @@ use App\Http\Controllers\API\BaseController;
 use App\Http\Requests\CouponRequest;
 use App\Models\coupon;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class CouponController extends Controller
 {

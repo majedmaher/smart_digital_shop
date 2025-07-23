@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('codes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('product_id')->constrained('products', 'id');
-            $table->foreignId('user_id')->constrained('users', 'id');
+            $table->foreignId('product_id')->constrained('products', 'id')->cascadeOnDelete();
+            $table->foreignId('user_id')->constrained('users', 'id')->cascadeOnDelete();
             $table->string('code');
             $table->boolean('is_used')->boolean(false);
             $table->timestamp('used_at')->nullable();

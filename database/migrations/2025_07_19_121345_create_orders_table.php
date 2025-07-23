@@ -13,10 +13,12 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users', 'id');
-            $table->enum('status', ['pending', 'paid', 'failed', 'processing', 'completed', 'cancelled'])->default('pending');
-            $table->decimal('total_price', 10, 2)->default(0);
-            $table->foreignId('coupon_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('user_id')->nullable()->constrained('users', 'id')->nullOnDelete();
+            $table->enum('status', ['pending', 'paid', 'failed', 'refunded', 'processing', 'completed', 'cancelled'])->default('pending');
+            $table->unsignedDecimal('total_price', 10, 2)->default(0);
+            $table->unsignedDecimal('discount')->default(0); // الخصم الإجمالي
+
+            $table->foreignId('coupon_id')->nullable()->constrained()->nullOnDelete()->cascadeOnUpdate();
             $table->softDeletes();
             $table->timestamps();
         });

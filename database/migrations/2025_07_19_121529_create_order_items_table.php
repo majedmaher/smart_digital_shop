@@ -16,9 +16,9 @@ return new class extends Migration
             $table->foreignId('order_id')->constrained()->cascadeOnDelete();
             $table->foreignId('product_id')->nullable()->constrained()->nullOnDelete();
             $table->unsignedInteger('quantity');
-            $table->unsignedDecimal('unit_price', 10, 2);
-            $table->unsignedDecimal('total_price', 10, 2);
-            $table->unsignedDecimal('discount')->default(0); // خصم هذا العنصر
+            $table->decimal('unit_price', 10, 2)->unsigned();
+            $table->decimal('total_price', 10, 2)->unsigned();
+            $table->decimal('discount')->unsigned()->default(0); // خصم هذا العنصر
             $table->string('proof_file')->nullable();
             $table->string('shipping_method')->nullable();
             $table->json('shipping_data');

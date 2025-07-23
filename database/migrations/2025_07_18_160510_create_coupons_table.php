@@ -18,6 +18,7 @@ return new class extends Migration
             $table->enum('type', ['fixed', 'percent']);
             $table->decimal('value', 8, 2);
             $table->integer('usage_limit')->nullable();
+            $table->decimal('min_order_total', 8, 2)->nullable();
             $table->integer('used')->default(0);
             $table->boolean('active')->default(true);
             $table->timestamp('expires_from')->nullable();

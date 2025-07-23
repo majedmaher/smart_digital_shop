@@ -26,7 +26,7 @@ class OrderRequest extends FormRequest
             'cart.*.product_id' => 'required|exists:products,id',
             'cart.*.quantity' => 'required|integer|min:1',
             'cart.*.shipping_data' => 'required|array',
-            'coupon_id' => 'nullable|exists:coupons,id',
+            'coupon_code' => 'nullable|exists:coupons,code',
         ];
     }
 }

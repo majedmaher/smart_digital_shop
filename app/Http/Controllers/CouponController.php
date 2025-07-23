@@ -4,20 +4,23 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\API\BaseController;
 use App\Http\Requests\CouponRequest;
+use App\Http\Requests\OrderRequest;
+use App\Http\Resources\CouponResponseResource;
 use App\Models\coupon;
+use App\Services\CouponService;
 use Illuminate\Http\JsonResponse;
 
 class CouponController extends Controller
 {
     public function create(CouponRequest $request): JsonResponse
     {
-        try {
-            $data = $request->validated();
-            $data['user_id'] = auth()->id();
-            $coupon = Coupon::create($data);
-            return BaseController::sendResponse($coupon, __('messages.store_successfully', ['item' => __('messages.coupon')]));
-        } catch (\Throwable $th) {
-            return BaseController::sendError(__('messages.store_failed', ['item' => __('messages.coupon')]), [], 500);
-        }
+        return CouponService::store($request->validated());
+    }
+    public function applyCoupon(OrderRequest $request): JsonResponse
+    {
+        $data = $request->validated();
+        $coupon = CouponService::applyCoupon($data['coupon_code'], auth()->user(), $data['cart']);
+        if (is_array($coupon)) return BaseController::sendError($coupon[0], [], $coupon[1]);
+        return BaseController::sendResponse(CouponResponseResource::make($coupon), __('messages.sent_data'));
     }
 }

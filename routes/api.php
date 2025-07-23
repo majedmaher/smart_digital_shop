@@ -75,6 +75,7 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
         });
     });
     Route::post('/coupon/create', [CouponController::class, 'create']);
+    Route::post('/coupon/apply-coupon', [CouponController::class, 'applyCoupon']);
 
     Route::controller(SliderController::class)->group(function () {
         Route::get('/sliders', 'index');

@@ -26,8 +26,22 @@ class CouponRequest extends FormRequest
             'value' => 'required|numeric|min:0.01',
             'type' => 'required|in:fixed,percent',
             'usage_limit' => 'nullable|numeric|min:1',
+            'min_order_total' => 'nullable|numeric|min:0',
             'expires_from' => 'nullable|date|after_or_equal:today',
             'expires_at' => 'nullable|date|after_or_equal:today',
+
+            'allowed_user_ids' => 'nullable|array',
+            'allowed_user_ids.*' => 'exists:users,id',
+
+            'excluded_product_ids' => 'nullable|array',
+            'excluded_product_ids.*' => 'exists:products,id',
+
+            'excluded_category_ids' => 'nullable|array',
+            'excluded_category_ids.*' => 'exists:categories,id',
+
+            'excluded_subcategory_ids' => 'nullable|array',
+            'excluded_subcategory_ids.*' => 'exists:sub_categories,id',
+
         ];
     }
 }

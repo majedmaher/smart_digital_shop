@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Enum\CouponTypeEnum;
+use App\Enum\OrderStatusEnum;
 use App\Enum\ShippingMethodPayment;
 use App\Http\Controllers\API\BaseController;
 use App\Http\Controllers\Controller;
@@ -16,9 +17,10 @@ use Illuminate\Validation\ValidationException;
 
 class OrderService extends Controller
 {
-    static function store($data): JsonResponse
+    public static function store($data): JsonResponse
     {
         $cart = $data['cart'];
+        $couponCode = $data['coupon_code'] ?? null;
 
         if (!is_array($cart) || empty($cart)) {
             return BaseController::sendError(__('messages.cart_empty'), [], 400);
@@ -26,13 +28,16 @@ class OrderService extends Controller
 
         DB::beginTransaction();
         try {
+            $user = auth()->user();
             $order = Order::create([
-                'user_id' => auth()->id(),
-                'status' => 'pending',
+                'user_id' => $user->id,
+                'status' => OrderStatusEnum::PENDING->value,
                 'total_price' => 0,
             ]);
 
             $totalPrice = 0;
+            $discount = 0;
+            $discountedItems = [];
 
             foreach ($cart as $item) {
                 $product = Product::findOrFail($item['product_id']);
@@ -46,9 +51,8 @@ class OrderService extends Controller
                 }
 
                 $method = $product->shipping_payment;
-                // $method = $product->shipping_payment instanceof \BackedEnum ? $product->shipping_payment->value : $product->shipping_payment;
                 $shipping = $item['shipping_data'] ?? [];
-                // return response()->json([$method, ShippingMethodPayment::CODE]);
+
                 switch ($method) {
                     case ShippingMethodPayment::CODE->value:
                         if (empty($shipping['email']) || !filter_var($shipping['email'], FILTER_VALIDATE_EMAIL)) {
@@ -80,57 +84,92 @@ class OrderService extends Controller
                     default:
                         return BaseController::sendError(__('messages.shipping_method_unknown'), [], 400);
                 }
-                $order->items()->create([
-                    'order_id' => $order->id,
-                    'product_id' => $product->id,
-                    'quantity' => $quantity,
-                    'unit_price' => $product->price,
-                    'total_price' => $quantity * $product->price,
-                    'shipping_method' => $method,
-                    'shipping_data' => json_encode($shipping),
-                ]);
+
+                // ✅ إضافة مؤقتة لحساب السعر قبل الخصم
+                $item['price'] = $product->price;
+                $item['product_id'] = $product->id;
+                $item['shipping_data'] = $shipping;
+                $discountedItems[] = $item;
 
                 $totalPrice += $quantity * $product->price;
             }
 
-            if (!empty($data['coupon_id']) && isset($data['coupon_id'])) {
-                $coupon = Coupon::findOrFail($data['coupon_id']);
+            // ✅ التحقق من الكوبون إن وُجد
+            $appliedCoupon = null;
+            if ($couponCode) {
+                $couponResult = CouponService::validateCoupon($couponCode, $user, $discountedItems);
 
-                if (!$coupon || !$coupon->active) {
-                    return BaseController::sendError(__('messages.invalid_coupon'), [], 422);
+                if (isset($couponResult[0]) && is_string($couponResult[0])) {
+                    return BaseController::sendError($couponResult[0], [], $couponResult[1]);
                 }
 
-                if ($coupon->usage_limit !== null && $coupon->used >= $coupon->usage_limit) {
-                    return BaseController::sendError(__('messages.used_maximum_coupon'), [], 422);
-                }
+                $appliedCoupon = $couponResult['coupon'];
+                $discountedItems = CouponService::distributeDiscount($couponResult);
 
-                if (
-                    ($coupon->expires_from && now()->lt($coupon->expires_from)) ||
-                    ($coupon->expires_at && now()->gt($coupon->expires_at))
-                ) {
-                    return BaseController::sendError(__('messages.coupon_expired'), [], 422);
-                }
+                $item['discount'] = $appliedCoupon->type === CouponTypeEnum::FIXED->value
+                    ? $appliedCoupon->value
+                    : round(($appliedCoupon->value / 100) * $couponResult['eligible_total'], 2);
 
-                // حساب الخصم حسب النوع
-                if ($coupon->type === CouponTypeEnum::FIXED->value) {
-                    $discount = $coupon->value;
-                } elseif ($coupon->type === CouponTypeEnum::PERCENT->value) {
-                    $discount = $totalPrice * ($coupon->value / 100);
-                } else {
-                    $discount = 0;
-                }
+                $totalPrice = array_reduce($discountedItems, function ($carry, $item) {
+                    return $carry + $item['final_price'];
+                }, 0.0);
 
-                $totalPrice = max(0, $totalPrice - $discount); // التأكد ألا يكون أقل من صفر
-                $coupon->used = $coupon->used + 1;
-                $coupon->update();
+                $appliedCoupon->increment('used');
             }
-            $order->update(['total_price' => $totalPrice, 'coupon_id' => $coupon->id ?? null]);
+
+
+            // ✅ إنشاء عناصر الطلب
+            foreach ($discountedItems as $item) {
+                $order->items()->create([
+                    'product_id' => $item['product_id'],
+                    'quantity' => $item['quantity'],
+                    'price' => $item['price'],
+                    'discount' => $item['discount'] ?? 0,
+                    'total' => $item['final_price'] ?? ($item['price'] * $item['quantity']),
+                    'shipping_method' => $product->shipping_payment,
+                    'shipping_data' => json_encode($item['shipping_data']),
+                ]);
+            }
+
+            // ✅ تحديث الطلب بالسعر النهائي
+            $order->update([
+                'total_price' => $totalPrice,
+                'coupon_id' => $appliedCoupon?->id,
+            ]);
+
+            //     $order->items()->create([
+            //         'order_id' => $order->id,
+            //         'product_id' => $product->id,
+            //         'quantity' => $quantity,
+            //         'price' => $product->price,
+            //         'total' => $quantity * $product->price,
+            //         'shipping_method' => $method,
+            //         'shipping_data' => json_encode($shipping),
+            //     ]);
+
+            //     $totalPrice += $quantity * $product->price;
+            // }
+
+            // 
+            // if (!empty($data['coupon_code']) && isset($data['coupon_code'])) {
+            //     $coupon = CouponService::applyCoupon($data['coupon_code'], auth()->user(), $data['cart']);
+            //     if (isset($coupon[0]) && is_string($coupon[0])) {
+            //         return response()->json(['message' => $coupon[0]], $coupon[1]);
+            //     }
+            //     $discountedItems = CouponService::distributeDiscount($coupon);
+
+            //     $totalPrice = max(0, $totalPrice - $discount); // التأكد ألا يكون أقل من صفر
+            //     $coupon->used = $coupon->used + 1;
+            //     $coupon->update();
+            // }
+            // $order->update(['total_price' => $totalPrice, 'coupon_id' => $coupon->id ?? null]);
+
+            DB::commit();
 
             $responseData = [
                 'order_id' => $order->id,
                 'total_price' => $totalPrice,
             ];
-            DB::commit();
             return BaseController::sendResponse($responseData, __('messages.order_created_successfully'));
         } catch (\Throwable $th) {
             DB::rollBack();

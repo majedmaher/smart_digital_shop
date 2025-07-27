@@ -25,20 +25,20 @@ class CategoryService extends Controller
     {
         DB::beginTransaction();
         try {
-            $icon = saveImage($data['icon'], self::$image_folder);
-            $image = saveImage($data['image'], self::$image_folder);
+            // $icon = saveImage($data['icon'], self::$image_folder . '/icons');
+            // $image = saveImage($data['image'], self::$image_folder . '/images');
             $category = Category::create([
                 "user_id" => auth()->id(),
-                "icon" => $icon,
-                "image" => $image,
-                "name" => $data['name']
+                "icon" => saveImage($data['icon'], self::$image_folder . '/icons'),
+                "image" => saveImage($data['image'], self::$image_folder . '/images'),
+                "name" => $data['name'],
             ]);
 
             DB::commit();
             return BaseController::sendResponse(CategoryResource::make($category), __('messages.store_successfully', ['item' => __('messages.category')]));
         } catch (\Throwable $th) {
             DB::rollBack();
-            return BaseController::sendError(__('messages.store_failed', ['item' => __('messages.category')]), [], 500);
+            return BaseController::sendError(__('messages.store_failed', ['item' => __('messages.category')]), [$th->getMessage()], 500);
         }
     }
 

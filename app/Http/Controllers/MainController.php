@@ -18,4 +18,14 @@ class MainController extends Controller
     {
         return MainService::getMainContent();
     }
+
+
+    public function getSubCategory($slug)
+    {
+        return MainService::getSubCategory($slug);
+    }
+    public function getProduct($slug)
+    {
+        return MainService::getProduct($slug);
+    }
 }

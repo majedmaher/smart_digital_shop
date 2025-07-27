@@ -17,7 +17,7 @@ class OrderController extends Controller
 
     public function pay($order_id): JsonResponse
     {
-        return PaymobService::createOrderAndRedirect($order_id);
+        return PaymobService::createRedirectUrl($order_id);
     }
 
     public function refundTransaction(Request $request)

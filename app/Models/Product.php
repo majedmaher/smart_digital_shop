@@ -3,18 +3,23 @@
 namespace App\Models;
 
 use App\Traits\HidesTimestamps;
+use App\Traits\Slugable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Translatable\HasTranslations;
 
 class Product extends Model
 {
-    use HasTranslations, SoftDeletes, HidesTimestamps;
+    use HasTranslations, SoftDeletes, HidesTimestamps, Slugable;
+
+    protected $casts = [
+        'title' => 'array',
+        'slug' => 'array',
+    ];
 
     protected $guarded = [];
 
-    public array $translatable = ['title', 'content', 'description'];
-
+    public array $translatable = ['title', 'content', 'description', 'slug'];
 
     public function user()
     {

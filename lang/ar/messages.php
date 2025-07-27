@@ -4,6 +4,8 @@ return [
     'register_successfully' => 'تم إنشاء الحساب، وتم إرسال رمز التحقق إلى بريدك.',
     'login_successfully' => 'تم تسجيل الدخول بنجاح، وتم إرسال رمز التحقق إلى بريدك',
     'login_failed' => 'فشل تسجيل الدخول. يرجى التحقق من بياناتك.',
+    'provider_not_supported' => 'المزود غير مدعوم',
+    'email_not_provided' => 'البريد الإلكتروني غير متوفر',
     'verification_code_sent' => 'تم إرسال رمز التحقق إلى بريدك.',
     'Logged_out_successfully' => 'تم تسجيل الخروج بنجاح!',
     'unauthenticated' => 'التوثيق غير صحيح. يرجى تسجيل الدخول أولاً.',
@@ -12,6 +14,7 @@ return [
     'require_login' => 'نعتذر، يتطلب الوصول إلى هذه الصفحة تسجيل الدخول أولاً.',
 
     // Category Messages
+    'search_item_not_found' => 'عذراً، لم يتم العثور على نتائج لبحثك',
     'sent_data' => 'تم ارسال كل البيانات بنجاح.',
     'can_not_sent_data' => 'حدث خطأ. لم يتم إرسال البيانات.',
     'store_successfully' => 'تم تخزين :item بنجاح',
@@ -38,6 +41,33 @@ return [
     'enter_both_account_id' => 'يجب إدخال معلومات كلا الحسابين',
     'field_required' => 'حقل :field مطلوب لهذا المنتج',
     'shipping_method_unknown' => 'طريقة الشحن غير معروفة',
+    'failed_to_create_payment' => 'فشل في إنشاء الدفع',
+    'payment_request_created_successfully' => 'تم إنشاء طلب الدفع بنجاح',
+    'transaction_not_exist' => 'المعاملة غير موجودة',
+    'unpaid_transaction_can_not_refunded' => 'لا يمكن استرداد المعاملة غير المدفوعة',
+    'amount_refunded_greater_than_amount' => 'المبلغ المطلوب استرجاعه أكبر من المبلغ الأصلي',
+    'recovery_process_failed' => 'فشلت عملية الاسترداد',
+    'recovery_process_successfully' => 'تم استرداد المبلغ بنجاح',
+    'error_during_recovery_process' => 'حدث خطأ أثناء عملية الاسترداد',
+    'no_successful_payment_order' => 'لا يوجد دفع ناجح لهذا الطلب',
+    'error_during_request' => 'حدث خطأ أثناء الطلب',
+    'payment_was_unsuccessful' => 'لم ينجح الدفع',
+    'invalid_order_id' => 'معرف الطلب غير صالح',
+    'order_paid' => 'الطلب مدفوع بالفعل',
+    'payment_confirmed' => 'تم تأكيد الدفع',
+    'missing_parent_transaction' => 'المعاملة الأصلية مفقودة',
+    'original_payment_not_found' => 'لم يتم العثور على الدفعة الأصلية',
+    'refund_confirmed' => 'تم تأكيد استرداد الأموال',
+
+
+    "payment_success_subject" => "تمت عملية الدفع بنجاح",
+    "hello" => "مرحبًا",
+    "payment_success_line" => "تمت معالجة دفعتك بنجاح. تفاصيل الطلب أدناه:",
+    "order_id" => "رقم الطلب",
+    "thank_you_for_your_purchase" => "شكرًا لشرائك من متجرنا!",
+    "best_regards" => "مع أطيب التحيات",
+    'code_delivery_subject' => 'تم تسليم الكود الخاص بك',
+    'code_delivery_line' => 'يرجى العثور على الكود الخاص بمنتجك أدناه.',
 
     // 
 
@@ -49,5 +79,6 @@ return [
     'rating' => 'التقييم',
     'coupon' => 'كوبون',
     'Slider' => 'سلايدر',
+    'order' => 'الطلب',
 
 ];

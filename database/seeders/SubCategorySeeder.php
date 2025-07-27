@@ -20,6 +20,7 @@ class SubCategorySeeder extends Seeder
                     'en' => 'test',
                     'ar' => 'تست'
                 ],
+                'icon' => 'uploads/categories/all images has same size6880a6cfd6e0b.png',
                 'image' => 'uploads/categories/all images has same size6880a6cfd6e0b.png',
                 'category_id' => $i,
             ]);

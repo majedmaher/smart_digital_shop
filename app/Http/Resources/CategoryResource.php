@@ -17,7 +17,9 @@ class CategoryResource extends JsonResource
         $data = [
             'id' => $this->id,
             'name' => $this->name,
-            'icon' => $this->icon
+            'slug' => $this->slug,
+            'icon' => $this->icon,
+            'image' => $this->image
         ];
         if ($sub_categories = $this->subCategories) {
             $data['sub_categories'] = SubCategoryResource::collection($sub_categories);

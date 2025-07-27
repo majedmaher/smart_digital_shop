@@ -17,7 +17,9 @@ return new class extends Migration
             $table->foreignId('category_id')->constrained('categories', 'id')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('parent_id')->nullable()->constrained('sub_categories')->nullOnDelete();
             $table->json('name');
+            $table->string('icon');
             $table->string('image');
+            $table->json('slug')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

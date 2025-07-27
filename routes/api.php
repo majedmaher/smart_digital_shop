@@ -17,6 +17,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/mobile-main-content', [MainController::class, 'getMobileMainScreen']);
 Route::get('/categories-subcategories', [MainController::class, 'getCategoriesWithSubCategories']);
 Route::get('/main-content', [MainController::class, 'getMainContent']);
+Route::get('/sub-category/{slug}', [MainController::class, 'getSubCategory']);
+Route::get('/product/{slug}', [MainController::class, 'getProduct']);
 
 Route::controller(PaymentController::class)->group(function () {
     Route::post('/payment/paymob/callback/processed', 'handlePaymobWebhook')->name('handlePaymobWebhook');
@@ -29,8 +31,9 @@ Route::controller(AuthController::class)->as('auth.')->group(function () {
     Route::post('confirm-otp', 'confirmOtp')->name('confirmOtp');
     Route::post('/logout', 'logout')->middleware('auth:sanctum')->name('logout');
 });
+Route::post('social-login', [SocialAuthController::class, 'socialLogin']);
 
-Route::prefix('auth')->group(function () {
+Route::prefix('social')->group(function () {
     Route::get('redirect/{provider}', [SocialAuthController::class, 'redirect']);
     Route::get('callback/{provider}', [SocialAuthController::class, 'callback']);
 });

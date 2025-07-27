@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enum\CouponTypeEnum;
 use App\Http\Controllers\API\BaseController;
 use App\Http\Resources\CouponResponseResource;
 use App\Models\Coupon;
@@ -44,7 +45,7 @@ class CouponService
         }
     }
 
-    public static function applyCoupon(string $code, User $user, array $items)
+    public static function validateCoupon(string $code, User $user, array $items)
     {
         try {
             $coupon = Coupon::where('code', $code)
@@ -121,9 +122,77 @@ class CouponService
             $coupon->total_price = $eligibleTotal; // إن أردت إرفاقها مؤقتًا            
             // unset($coupon['excluded_products'], $coupon['excluded_categories'], $coupon['excluded_subcategories'], $data['excluded_subcategory_ids']);
 
-            return $coupon;
+            return [
+                'coupon' => $coupon,
+                'items' => $items,
+                'eligible_items' => $eligibleItems,
+                'eligible_total' => $eligibleTotal,
+            ];
+            // return $coupon;
         } catch (\Throwable $th) {
             return [__('messages.something_went_wrong'), 404];
         }
+    }
+
+
+
+
+    /**
+     * توزيع الخصم على العناصر المؤهلة
+     */
+    public static function distributeDiscount(array $data): array
+    {
+        $coupon = $data['coupon'];
+        $items = $data['items'];
+        $eligibleItems = $data['eligible_items'];
+        $eligibleTotal = $data['eligible_total'];
+
+        $discountAmount = 0;
+
+        if ($coupon->type === CouponTypeEnum::FIXED->value) {
+            $discountAmount = min($coupon->value, $eligibleTotal);
+        } elseif ($coupon->type === CouponTypeEnum::PERCENT->value) {
+            $discountAmount = round($eligibleTotal * ($coupon->value / 100), 2);
+        }
+
+        // توزيع الخصم بالتناسب
+        $distributedItems = [];
+        $totalDistributed = 0;
+
+        foreach ($items as $item) {
+            $itemTotal = $item['price'] * $item['quantity'];
+            $isEligible = in_array($item, $eligibleItems, true);
+            // $isEligible = collect($eligibleItems)->contains(function ($eligible) use ($item) {
+            //     return $eligible['product_id'] === $item['product_id'];
+            // });
+
+            if ($isEligible && $eligibleTotal > 0) {
+                $share = $itemTotal / $eligibleTotal;
+                $itemDiscount = round($discountAmount * $share, 2);
+            } else {
+                $itemDiscount = 0;
+            }
+
+            $totalDistributed += $itemDiscount;
+
+            $distributedItems[] = array_merge($item, [
+                'discount' => $itemDiscount,
+                'final_price' => ($itemTotal - $itemDiscount),
+            ]);
+        }
+
+        // تصحيح الفروقات التقريبية
+        if ($totalDistributed !== $discountAmount) {
+            $diff = round($discountAmount - $totalDistributed, 2);
+            foreach ($distributedItems as &$item) {
+                if ($item['discount'] > 0) {
+                    $item['discount'] += $diff;
+                    $item['final_price'] -= $diff;
+                    break;
+                }
+            }
+        }
+
+        return $distributedItems;
     }
 }

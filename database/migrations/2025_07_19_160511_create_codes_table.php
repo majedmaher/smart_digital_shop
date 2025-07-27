@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('code');
             $table->boolean('is_used')->boolean(false);
             $table->timestamp('used_at')->nullable();
-            $table->foreignId('order_id')->nullable()->constrained('orders', 'id');
+            $table->foreignId('order_item_id')->nullable()->constrained('order_items', 'id');
             $table->text('notes')->nullable();
             $table->softDeletes();
             $table->timestamps();

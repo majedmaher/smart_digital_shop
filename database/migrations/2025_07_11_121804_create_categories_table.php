@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('icon');
             $table->string('image');
             $table->json('name');
+            $table->json('slug')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

@@ -25,3 +25,16 @@ if (!function_exists('saveImageInStorage')) {
         return 'uploads/' . $folder . '/' . $fileName;
     }
 }
+
+
+// if (!function_exists('createMultiLangSlug')) {
+//     function createMultiLangSlug($title): array
+//     {
+//         $randomNumber = rand(100000, 999999);
+//         $slug = [
+//             "ar" => $title['ar'] . '-' . $randomNumber,
+//             "en" => $title['en'] . '-' . $randomNumber,
+//         ];
+//         return $slug;
+//     }
+// }

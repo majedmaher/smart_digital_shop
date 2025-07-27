@@ -27,6 +27,7 @@ class SubCategoryRequest extends FormRequest
             'name.ar' => 'required|string',
             'name.en' => 'required|string',
             'image' => 'required|file|mimes:png,jpg,jpeg,webp|max:2048',
+            'icon' => 'required|file|mimes:png,jpg,jpeg,webp|max:2048',
             'parent_id' => 'nullable|exists:sub_categories,id'
         ];
     }

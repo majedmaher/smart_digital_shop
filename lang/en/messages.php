@@ -4,6 +4,8 @@ return [
     'register_successfully' => 'The account has been created, and the verification code has been sent to your email.',
     'login_successfully' => 'Login was successful, and the verification code has been sent to your email.',
     'login_failed' => 'Login failed. Please check your credentials.',
+    'provider_not_supported' => 'Provider is not supported',
+    'email_not_provided' => 'Email not available',
     'verification_code_sent' => 'A verification code has been sent to your email.',
     'Logged_out_successfully' => 'Logged out successfully!',
     'unauthenticated' => 'Authentication is required. Please log in first.',
@@ -12,6 +14,7 @@ return [
     'require_login' => 'Sorry, accessing this page requires you to log in first.',
     // 
 
+    'search_item_not_found' => 'Sorry, no results were found for your search',
     'sent_data' => 'All data has been sent successfully.',
     'can_not_sent_data' => 'An error occurred. The data could not be sent.',
     'store_successfully' => ':item Stored Successfully',
@@ -38,6 +41,32 @@ return [
     'enter_both_account_id' => 'Both account information must be entered',
     'field_required' => 'The :field field is required for this product',
     'shipping_method_unknown' => 'Shipping method unknown',
+    'failed_to_create_payment' => 'Failed to create payment',
+    'payment_request_created_successfully' => 'Payment request created successfully',
+    'transaction_not_exist' => 'The transaction does not exist',
+    'unpaid_transaction_can_not_refunded' => 'An unpaid transaction cannot be refunded',
+    'amount_refunded_greater_than_amount' => 'The amount requested to be refunded is greater than the original amount',
+    'recovery_process_failed' => 'Recovery process failed',
+    'recovery_process_successfully' => 'The amount has been successfully refunded',
+    'error_during_recovery_process' => 'An error occurred during the recovery process',
+    'no_successful_payment_order' => 'There is no successful payment for this order',
+    'error_during_request' => 'An error occurred during the request',
+    'payment_was_unsuccessful' => 'Payment was unsuccessful',
+    'invalid_order_id' => 'The order ID is invalid',
+    'order_paid' => 'Order already paid',
+    'payment_confirmed' => 'Payment confirmed',
+    'missing_parent_transaction' => 'Missing parent transaction',
+    'original_payment_not_found' => 'Original payment not found',
+    'refund_confirmed' => 'Refund confirmed',
+
+    "payment_success_subject" => "Payment Successful",
+    "hello" => "Hello",
+    "payment_success_line" => "Your payment has been successfully processed. Order details are below:",
+    "order_id" => "Order ID",
+    "thank_you_for_your_purchase" => "Thank you for your purchase!",
+    "best_regards" => "Best regards",
+    'code_delivery_subject' => 'Your code has been delivered',
+    'code_delivery_line' => 'Please find your product code below.',
 
     // 
     'error_subcategory_parent_id' => 'You cannot select a subcategory that contains another subcategory.',
@@ -48,5 +77,6 @@ return [
     'rating' => 'Rating',
     'coupon' => 'Coupon',
     'Slider' => 'slider',
+    'order' => 'Order',
 
 ];

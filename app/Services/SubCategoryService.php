@@ -38,7 +38,8 @@ class SubCategoryService extends Controller
             }
 
             $data['user_id'] = auth()->id();
-            $data['image'] = saveImage($data['image'], self::$image_folder);
+            $data['icon'] = saveImage($data['icon'], self::$image_folder . '/icons');
+            $data['image'] = saveImage($data['image'], self::$image_folder . '/images');
             $sub_category = SubCategory::create($data);
             DB::commit();
             return BaseController::sendResponse(SubCategoryResource::make($sub_category), __('messages.store_successfully', ['item' => __('messages.sub_category')]));

@@ -13,12 +13,14 @@ use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
 class OrderService extends Controller
 {
     public static function store($data): JsonResponse
     {
+
         $cart = $data['cart'];
         $couponCode = $data['coupon_code'] ?? null;
 
@@ -26,6 +28,9 @@ class OrderService extends Controller
             return BaseController::sendError(__('messages.cart_empty'), [], 400);
         }
 
+        if ($error = OrderService::validateCodeAvailability($cart)) {
+            return $error;
+        }
         DB::beginTransaction();
         try {
             $user = auth()->user();
@@ -106,7 +111,7 @@ class OrderService extends Controller
                 $appliedCoupon = $couponResult['coupon'];
                 $discountedItems = CouponService::distributeDiscount($couponResult);
 
-                $item['discount'] = $appliedCoupon->type === CouponTypeEnum::FIXED->value
+                $discount = $appliedCoupon->type === CouponTypeEnum::FIXED->value
                     ? $appliedCoupon->value
                     : round(($appliedCoupon->value / 100) * $couponResult['eligible_total'], 2);
 
@@ -135,45 +140,46 @@ class OrderService extends Controller
             $order->update([
                 'total_price' => $totalPrice,
                 'coupon_id' => $appliedCoupon?->id,
+                'discount' => $discount,
             ]);
-
-            //     $order->items()->create([
-            //         'order_id' => $order->id,
-            //         'product_id' => $product->id,
-            //         'quantity' => $quantity,
-            //         'price' => $product->price,
-            //         'total' => $quantity * $product->price,
-            //         'shipping_method' => $method,
-            //         'shipping_data' => json_encode($shipping),
-            //     ]);
-
-            //     $totalPrice += $quantity * $product->price;
-            // }
-
-            // 
-            // if (!empty($data['coupon_code']) && isset($data['coupon_code'])) {
-            //     $coupon = CouponService::applyCoupon($data['coupon_code'], auth()->user(), $data['cart']);
-            //     if (isset($coupon[0]) && is_string($coupon[0])) {
-            //         return response()->json(['message' => $coupon[0]], $coupon[1]);
-            //     }
-            //     $discountedItems = CouponService::distributeDiscount($coupon);
-
-            //     $totalPrice = max(0, $totalPrice - $discount); // التأكد ألا يكون أقل من صفر
-            //     $coupon->used = $coupon->used + 1;
-            //     $coupon->update();
-            // }
-            // $order->update(['total_price' => $totalPrice, 'coupon_id' => $coupon->id ?? null]);
 
             DB::commit();
 
             $responseData = [
                 'order_id' => $order->id,
                 'total_price' => $totalPrice,
+                'discount' => $discount,
             ];
             return BaseController::sendResponse($responseData, __('messages.order_created_successfully'));
         } catch (\Throwable $th) {
             DB::rollBack();
             return BaseController::sendError(__('messages.something_went_wrong'), [$th->getMessage()], 500);
         }
+    }
+
+    public static function validateCodeAvailability(array $items): ?\Illuminate\Http\JsonResponse
+    {
+        foreach ($items as $item) {
+            $product = Product::with(['codes' => function ($query) {
+                $query->whereNull('used_at');
+            }])->find($item['product_id']);
+            if (!$product) {
+                return BaseController::sendError(__('messages.item_not_found', ['item' => __('messages.product')]), [], 404);
+            }
+
+            if ($product->shipping_payment === ShippingMethodPayment::CODE->value) {
+                $requestedQuantity = collect($items)
+                    ->where('product_id', $product->id)
+                    ->sum('quantity');
+
+                $availableCodesCount = $product->codes->count();
+
+                if ($availableCodesCount < $requestedQuantity) {
+                    return BaseController::sendError(__('messages.quantity_is_high', ['quantity' => $availableCodesCount]), [], 400);
+                }
+            }
+        }
+
+        return null; // لا يوجد أخطاء
     }
 }

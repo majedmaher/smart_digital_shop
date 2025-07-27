@@ -16,9 +16,9 @@ return new class extends Migration
             $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
             $table->string('code')->unique();
             $table->enum('type', ['fixed', 'percent']);
-            $table->decimal('value', 8, 2);
+            $table->decimal('value', 10, 2);
             $table->integer('usage_limit')->nullable();
-            $table->decimal('min_order_total', 8, 2)->nullable();
+            $table->decimal('min_order_total', 10, 2)->nullable();
             $table->integer('used')->default(0);
             $table->boolean('active')->default(true);
             $table->timestamp('expires_from')->nullable();

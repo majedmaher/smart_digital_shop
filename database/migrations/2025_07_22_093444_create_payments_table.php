@@ -23,7 +23,7 @@ return new class extends Migration
 
             $table->string('payment_intention_id')->nullable(); // من paymob أو stripe
 
-            $table->string('currency', 3)->default('SAR');
+            $table->enum('currency', ['SAR'])->default('SAR');
             $table->integer('amount_cents'); // المبلغ هللة أو سنت
 
             $table->enum('status', ['pending', 'paid', 'refunded', 'failed'])->default('pending');

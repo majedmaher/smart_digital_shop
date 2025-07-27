@@ -19,8 +19,13 @@ class CouponController extends Controller
     public function applyCoupon(OrderRequest $request): JsonResponse
     {
         $data = $request->validated();
-        $coupon = CouponService::applyCoupon($data['coupon_code'], auth()->user(), $data['cart']);
-        if (is_array($coupon)) return BaseController::sendError($coupon[0], [], $coupon[1]);
-        return BaseController::sendResponse(CouponResponseResource::make($coupon), __('messages.sent_data'));
+        $couponResult = CouponService::validateCoupon($data['coupon_code'], auth()->user(), $data['cart']);
+        // if (is_array($coupon) && !isset($coupon['coupon'])) return BaseController::sendError($coupon[0], [], $coupon[1]);
+        if (isset($couponResult[0]) && is_string($couponResult[0])) {
+            return BaseController::sendError($couponResult[0], [], $couponResult[1]);
+        }
+        $result = CouponService::distributeDiscount($couponResult);
+
+        return BaseController::sendResponse($result, __('messages.sent_data'));
     }
 }

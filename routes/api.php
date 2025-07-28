@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CodeController;
 use App\Http\Controllers\CouponController;
+use App\Http\Controllers\FaqController;
 use App\Http\Controllers\MainController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentController;
@@ -17,8 +18,10 @@ use Illuminate\Support\Facades\Route;
 Route::get('/mobile-main-content', [MainController::class, 'getMobileMainScreen']);
 Route::get('/categories-subcategories', [MainController::class, 'getCategoriesWithSubCategories']);
 Route::get('/main-content', [MainController::class, 'getMainContent']);
-Route::get('/sub-category/{slug}', [MainController::class, 'getSubCategory']);
-Route::get('/product/{slug}', [MainController::class, 'getProduct']);
+Route::get('/category/{slug}', [MainController::class, 'getCategory'])->name('getCategory');
+Route::get('/sub-category/{slug}', [MainController::class, 'getSubCategory'])->name('getSubCategory');
+Route::get('/product/{slug}', [MainController::class, 'getProduct'])->name('getProduct');
+Route::post('/assistant/ask', [FaqController::class, 'ask']);
 
 Route::controller(PaymentController::class)->group(function () {
     Route::post('/payment/paymob/callback/processed', 'handlePaymobWebhook')->name('handlePaymobWebhook');
@@ -41,6 +44,7 @@ Route::prefix('social')->group(function () {
 Route::get('/rating', [RatingController::class, 'all']);
 Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
     Route::post('/rating/create', [RatingController::class, 'store']);
+    Route::post('/faq/create', [FaqController::class, 'store']);
 });
 
 Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {

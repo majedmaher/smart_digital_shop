@@ -78,5 +78,6 @@ return [
     'coupon' => 'Coupon',
     'Slider' => 'slider',
     'order' => 'Order',
+    'faq' => 'Frequently asked questions',
 
 ];

@@ -20,6 +20,10 @@ class MainController extends Controller
     }
 
 
+    public function getCategory($slug)
+    {
+        return MainService::getCategory($slug);
+    }
     public function getSubCategory($slug)
     {
         return MainService::getSubCategory($slug);

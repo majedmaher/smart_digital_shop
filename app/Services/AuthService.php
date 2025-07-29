@@ -60,7 +60,7 @@ class AuthService extends Controller
             $user->otp_expires_at = OtpService::expiresAt();
             $user->save();
 
-            // Mail::to($data->email)->send(new OtpCodeMail($otp));
+            Mail::to($data->email)->send(new OtpCodeMail($otp));
             DB::commit();
             // $token = $user->createToken('api-token')->plainTextToken;
             // $response = ['token' => $token];

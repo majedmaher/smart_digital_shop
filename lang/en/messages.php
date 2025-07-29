@@ -11,6 +11,7 @@ return [
     'unauthenticated' => 'Authentication is required. Please log in first.',
     'otp_error' => 'The verification code is invalid or expired.',
     'do_not_have_permission' => 'Sorry, you do not have permission to access this page.',
+    'invalid_permission_type' => 'Invalid permission type.',
     'require_login' => 'Sorry, accessing this page requires you to log in first.',
     // 
 
@@ -79,5 +80,7 @@ return [
     'Slider' => 'slider',
     'order' => 'Order',
     'faq' => 'Frequently asked questions',
+    'ticket' => 'Ticket',
+    'message' => 'Message',
 
 ];

@@ -17,8 +17,8 @@ class FaqController extends Controller
     {
         try {
             $data = $request->validated();
-            $data['user_id'] - auth()->id();
-            $faq = Faq::create();
+            $data['user_id'] = auth()->id();
+            $faq = Faq::create($data);
             return BaseController::sendResponse($faq, __('messages.store_successfully', ['item' => __('messages.faq')]));
         } catch (\Throwable $th) {
             return BaseController::sendError(__('messages.store_failed', ['item' => __('messages.faq')]), [$th->getMessage()], 500);
@@ -106,6 +106,7 @@ class FaqController extends Controller
         $response = OpenAI::chat()->create([
             'model' => 'gpt-4o',
             'messages' => $messages,
+            // 'max_tokens' => 100,
         ]);
 
         $aiAnswer = trim($response->choices[0]->message->content);

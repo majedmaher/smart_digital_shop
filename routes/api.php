@@ -13,6 +13,7 @@ use App\Http\Controllers\RatingController;
 use App\Http\Controllers\SliderController;
 use App\Http\Controllers\SocialAuthController;
 use App\Http\Controllers\SubCategoryController;
+use App\Http\Controllers\TicketController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/mobile-main-content', [MainController::class, 'getMobileMainScreen']);
@@ -32,7 +33,7 @@ Route::controller(AuthController::class)->as('auth.')->group(function () {
     Route::post('/register', 'register')->name('register');
     Route::post('/login', 'login')->name('login');
     Route::post('confirm-otp', 'confirmOtp')->name('confirmOtp');
-    Route::post('/logout', 'logout')->middleware('auth:sanctum')->name('logout');
+    Route::post('/logout', 'logout')->middleware(['should_auth', 'auth:sanctum'])->name('logout');
 });
 Route::post('social-login', [SocialAuthController::class, 'socialLogin']);
 
@@ -42,12 +43,12 @@ Route::prefix('social')->group(function () {
 });
 
 Route::get('/rating', [RatingController::class, 'all']);
-Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
+Route::middleware(['should_auth', 'auth:sanctum', 'role:admin'])->group(function () {
     Route::post('/rating/create', [RatingController::class, 'store']);
     Route::post('/faq/create', [FaqController::class, 'store']);
 });
 
-Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
+Route::middleware(['should_auth', 'auth:sanctum', 'custom_permission:role:admin'])->group(function () {
 
     Route::controller(CategoryController::class)->group(function () {
         Route::get('/categories', 'index');
@@ -95,4 +96,10 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
         Route::post('/refund/transaction', 'refundTransaction');
         Route::post('/refund', 'refundOrder');
     });
+});
+Route::group(['prefix' => '/tickets', 'controller' => TicketController::class], function () {
+    Route::get('/', 'index')->middleware(['should_auth', 'auth:sanctum', 'custom_permission:role:admin']);
+    Route::post('/create', 'store')->middleware(['should_auth', 'auth:sanctum', 'custom_permission:role:user']);
+    Route::get('/{ticket}', 'show')->middleware(['should_auth', 'auth:sanctum', 'custom_permission:permission:reply to messages']);
+    Route::post('/{ticket}/reply', 'reply')->middleware(['should_auth', 'auth:sanctum', 'custom_permission:permission:reply to messages']);
 });

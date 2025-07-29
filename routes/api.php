@@ -97,9 +97,17 @@ Route::middleware(['should_auth', 'auth:sanctum', 'custom_permission:role:admin'
         Route::post('/refund', 'refundOrder');
     });
 });
-Route::group(['prefix' => '/tickets', 'controller' => TicketController::class], function () {
-    Route::get('/', 'index')->middleware(['should_auth', 'auth:sanctum', 'custom_permission:role:admin']);
-    Route::post('/create', 'store')->middleware(['should_auth', 'auth:sanctum', 'custom_permission:role:user']);
-    Route::get('/{ticket}', 'show')->middleware(['should_auth', 'auth:sanctum', 'custom_permission:permission:reply to messages']);
-    Route::post('/{ticket}/reply', 'reply')->middleware(['should_auth', 'auth:sanctum', 'custom_permission:permission:reply to messages']);
+Route::group(['prefix' => '/tickets', 'middleware' => ['should_auth', 'auth:sanctum'], 'controller' => TicketController::class], function () {
+    Route::get('/', 'index');
+    Route::post('/create', 'store');
+    Route::get('/{ticket}', 'show');
+
+    // رسائل التذكرة
+    Route::post('/{ticket}/reply', 'reply');
+
+    // صلاحيات المشرف فقط
+    Route::middleware('can:reply to messages')->group(function () {
+        Route::get('/admin/tickets', 'adminIndex');
+        Route::patch('/tickets/{ticket}/status', 'updateStatus');
+    });
 });

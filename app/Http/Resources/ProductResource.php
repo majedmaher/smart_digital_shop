@@ -5,6 +5,8 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+use function PHPUnit\Framework\isEmpty;
+
 class ProductResource extends JsonResource
 {
     /**
@@ -14,6 +16,9 @@ class ProductResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $currency = strtoupper($request->header('Currency', 'SAR'));
+        // $currency = Number::defaultCurrency();
+
         return [
             'id' => $this->id,
             'category_id' => $this->category_id,
@@ -23,10 +28,11 @@ class ProductResource extends JsonResource
             'content' => $this->content,
             'description' => $this->description,
             'image' => $this->image,
-            'price_before' => $this->price_before,
-            'price' => $this->price,
-            'discount' => $this->discount,
+            'price_before' => $this->price_before ? currencyConverter($this->price_before, $currency, 2) : null,
+            'price' => $this->price ? currencyConverter($this->price, $currency, 2) : null,
+            'discount' => $this->discount ? currencyConverter($this->discount, $currency, 2) : null,
             'shipping_payment' => $this->shipping_payment,
+            'ratings' => $this->ratings ? RatingResource::collection($this->ratings) : null
         ];
     }
 }

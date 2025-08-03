@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Enum\PaymentProviderEnum;
+use App\Http\Controllers\API\BaseController;
 use App\Http\Requests\OrderRequest;
 use App\Services\OrderService;
 use App\Services\PaymobService;
@@ -15,9 +17,13 @@ class OrderController extends Controller
         return OrderService::store($request->validated());
     }
 
-    public function pay($order_id): JsonResponse
+    public function pay(Request $request): JsonResponse
     {
-        return PaymobService::createRedirectUrl($order_id);
+        if ($request->payment_gateway !== PaymentProviderEnum::PAYMOB->value) {
+            return BaseController::sendError(__('messages.invalid_payment_gateway'), [], 400);
+        }
+
+        return PaymobService::createRedirectUrl($request->order_id);
     }
 
     public function refundTransaction(Request $request)

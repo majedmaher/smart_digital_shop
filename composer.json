@@ -14,6 +14,7 @@
         "laravel/sanctum": "^4.0",
         "laravel/socialite": "^5.23",
         "laravel/tinker": "^2.10.1",
+        "mgcodeur/laravel-currency-converter": "^1.0",
         "openai-php/client": "^0.14.0",
         "openai-php/laravel": "^0.14.0",
         "spatie/laravel-permission": "^6.20",

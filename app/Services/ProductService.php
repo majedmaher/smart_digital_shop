@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Http\Controllers\API\BaseController;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
@@ -17,7 +18,7 @@ class ProductService extends Controller
     {
         $products = Product::where('sub_category_id', $sub_category_id)->latest()->get();
 
-        return BaseController::sendResponse($products, __('messages.sent_data'));
+        return BaseController::sendResponse(ProductResource::collection($products), __('messages.sent_data'));
     }
 
     static function store($data): JsonResponse

@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class CouponResponseResource extends JsonResource
+class RatingResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,10 +16,10 @@ class CouponResponseResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'code' => $this->code,
-            'type' => $this->type,
-            'value' => $this->value,
-            // 'total_price' => $this->total_price ?? null
+            'user_id' => $this->show_name == 1 ? $this->user_id : null,
+            // 'product_id'=> 1,
+            'stars' => 4,
+            'comment' => 'asdasd',
         ];
     }
 }

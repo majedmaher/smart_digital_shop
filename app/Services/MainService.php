@@ -117,11 +117,11 @@ class MainService extends Controller
     public static function getProduct($slug): JsonResponse
     {
         try {
-            $products = Product::query()->whereJsonContainsLocales('slug', ['en', 'ar'], $slug)->first();
+            $products = Product::with('ratings')->whereJsonContainsLocales('slug', ['en', 'ar'], $slug)->first();
             if ($products === null) return BaseController::sendError(__('messages.search_item_not_found'), [], 422);
             return BaseController::sendResponse(ProductResource::make($products), __('messages.sent_data'));
         } catch (\Throwable $th) {
-            return BaseController::sendError(__('something wrong'), [], 500);
+            return BaseController::sendError(__('something wrong'), [$th->getMessage()], 500);
         }
     }
 }

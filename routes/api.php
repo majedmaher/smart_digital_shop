@@ -92,7 +92,7 @@ Route::middleware(['should_auth', 'auth:sanctum', 'custom_permission:role:admin'
 
     Route::group(['prefix' => '/order', 'as' => 'order.', 'controller' => OrderController::class], function () {
         Route::post('/create', 'store')->name('create');
-        Route::get('/pay/{order_id}', 'pay')->name('pay');
+        Route::post('/pay', 'pay')->name('pay');
         Route::post('/refund/transaction', 'refundTransaction');
         Route::post('/refund', 'refundOrder');
     });

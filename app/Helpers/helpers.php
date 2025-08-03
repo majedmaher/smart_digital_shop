@@ -1,5 +1,8 @@
 <?php
 
+use Illuminate\Support\Number;
+use Mgcodeur\CurrencyConverter\Facades\CurrencyConverter;
+
 if (!function_exists('saveImage')) {
     function saveImage($photo, $folder_name): string
     {
@@ -27,14 +30,21 @@ if (!function_exists('saveImageInStorage')) {
 }
 
 
-// if (!function_exists('createMultiLangSlug')) {
-//     function createMultiLangSlug($title): array
-//     {
-//         $randomNumber = rand(100000, 999999);
-//         $slug = [
-//             "ar" => $title['ar'] . '-' . $randomNumber,
-//             "en" => $title['en'] . '-' . $randomNumber,
-//         ];
-//         return $slug;
-//     }
-// }
+if (!function_exists('currencyConverter')) {
+    function currencyConverter($amount, $to, $decimals = 2): string
+    {
+        $amount =  round(
+            CurrencyConverter::convert($amount)
+                ->from('SAR')
+                ->to($to)
+                ->get(),
+            $decimals
+        );
+        if (app()->getLocale() == 'ar') {
+            $string = Number::currency($amount, in: $to, locale: 'ar');
+            return str_replace(["\u{200f}", "\u{200e}"], '', $string);
+        } else {
+            return Number::currency($amount, in: $to);
+        }
+    }
+}

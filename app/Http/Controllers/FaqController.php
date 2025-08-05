@@ -31,13 +31,14 @@ class FaqController extends Controller
         $locale = app()->getLocale(); // 'ar' أو 'en'
 
         // البحث عن سؤال مشابه
-        $existingFaq = Faq::where("question->{$locale}", 'LIKE', "%$question%")->first();
+        $existingFaq = Faq::where("question->ar", 'LIKE', "%$question%")
+            ->orWhere("question->en", 'LIKE', "%$question%")->first();
         if ($existingFaq) {
-            return response()->json([
-                'answer' => $existingFaq->getTranslation('answer', $locale),
-                'from_cache' => true,
-            ]);
-            // return BaseController::sendResponse($existingFaq->getTranslation('answer', $locale),__('resp'))
+            // return response()->json([
+            //     'answer' => $existingFaq->getTranslation('answer', $locale),
+            //     'from_cache' => true,
+            // ]);
+            return BaseController::sendResponse($existingFaq->getTranslation('answer', $locale), '');
         }
 
         // تحميل التصنيفات مع روابطها

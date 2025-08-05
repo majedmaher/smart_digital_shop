@@ -33,6 +33,15 @@ if (!function_exists('saveImageInStorage')) {
 if (!function_exists('currencyConverter')) {
     function currencyConverter($amount, $to, $decimals = 2): string
     {
+        // التحقق من القيمة
+        if (is_null($amount) || $amount == 0) {
+            if (app()->getLocale() == 'ar') {
+                $string = Number::currency($amount, in: $to, locale: 'ar');
+                return str_replace(["\u{200f}", "\u{200e}"], '', $string);
+            } else {
+                return Number::currency($amount, in: $to);
+            }
+        }
         $amount =  round(
             CurrencyConverter::convert($amount)
                 ->from('SAR')

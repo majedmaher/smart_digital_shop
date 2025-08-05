@@ -69,6 +69,7 @@ return [
     'code_delivery_subject' => 'Your code has been delivered',
     'code_delivery_line' => 'Please find your product code below.',
     'invalid_payment_gateway' => 'Payment is not accepted using this Gateway.',
+    'please_enter_a_word_to_search' => 'Please enter a word to search',
 
     // 
     'error_subcategory_parent_id' => 'You cannot select a subcategory that contains another subcategory.',

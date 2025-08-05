@@ -14,7 +14,8 @@ class OrderController extends Controller
 {
     public function store(OrderRequest $request): JsonResponse
     {
-        return OrderService::store($request->validated());
+        $currency = strtoupper($request->header('Currency', 'SAR'));
+        return OrderService::store($request->validated(), $currency);
     }
 
     public function pay(Request $request): JsonResponse

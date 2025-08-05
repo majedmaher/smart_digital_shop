@@ -7,18 +7,14 @@ use App\Enum\OrderStatusEnum;
 use App\Enum\ShippingMethodPayment;
 use App\Http\Controllers\API\BaseController;
 use App\Http\Controllers\Controller;
-use App\Models\Coupon;
-use App\Models\CouponUserUsage;
 use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Validation\ValidationException;
 
 class OrderService extends Controller
 {
-    public static function store($data): JsonResponse
+    public static function store($data, $currency): JsonResponse
     {
 
         $cart = $data['cart'];
@@ -147,8 +143,8 @@ class OrderService extends Controller
 
             $responseData = [
                 'order_id' => $order->id,
-                'total_price' => $totalPrice,
-                'discount' => $discount,
+                'total_price' => $totalPrice ? currencyConverter($totalPrice, $currency, 2) : null,
+                'discount' => $discount ? currencyConverter($discount, $currency, 2) : null,
             ];
             return BaseController::sendResponse($responseData, __('messages.order_created_successfully'));
         } catch (\Throwable $th) {

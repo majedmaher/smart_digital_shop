@@ -29,4 +29,25 @@ class OrderRequest extends FormRequest
             'coupon_code' => 'nullable|exists:coupons,code',
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'cart.required' => __('messages.cart_empty'),
+            'cart.array' => __('validation.array'),
+            'cart.min' => __('validation.min.integer'),
+
+            'cart.*.product_id.required' => __('validation.exists'),
+            'cart.*.product_id.exists' => __('validation.exists'),
+
+            'cart.*.quantity.required' => __('validation.required'),
+            'cart.*.quantity.integer' => __('validation.numeric'),
+            'cart.*.quantity.min' => __('validation.min.numeric'),
+
+            'cart.*.shipping_data.required' => __('validation.required'),
+            'cart.*.shipping_data.array' => __('validation.array'),
+
+            'coupon_code.exists' => __('validation.exists'),
+        ];
+    }
 }

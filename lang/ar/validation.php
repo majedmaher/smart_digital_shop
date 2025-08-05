@@ -11,11 +11,17 @@ return [
     'unique' => 'تم أخذ :attribute بالفعل.',
     'min' => [
         'string' => 'يجب أن يكون :attribute على الأقل :min حروف.',
+        'integer' => 'يجب أن يكون :attribute على الأقل :min عنصر.',
     ],
     'confirmed' => 'تأكيد :attribute غير متطابق.',
+    'exists' => ':attribute غير موجود.',
 
     'attributes' => [
         'name' => 'الاسم',
+        'cart' => 'السلة',
+        'quantity' => 'الكمية',
+        'shipping_data' => 'بيانات الشحن',
+        'coupon_code' => 'كوبون الخصم',
         'email' => 'عنوان البريد الإلكتروني',
         'password' => 'كلمة المرور',
     ],

@@ -5,10 +5,14 @@ namespace App\Services;
 use App\Http\Controllers\API\BaseController;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CategoryResource;
+use App\Http\Resources\FaqResource;
+use App\Http\Resources\OrderResponseResource;
 use App\Http\Resources\ProductResource;
 use App\Http\Resources\SliderResource;
 use App\Http\Resources\SubCategoryResource;
 use App\Models\Category;
+use App\Models\Faq;
+use App\Models\Order;
 use App\Models\Product;
 use App\Models\Slider;
 use App\Models\SubCategory;
@@ -120,6 +124,56 @@ class MainService extends Controller
             $products = Product::with('ratings')->whereJsonContainsLocales('slug', ['en', 'ar'], $slug)->first();
             if ($products === null) return BaseController::sendError(__('messages.search_item_not_found'), [], 422);
             return BaseController::sendResponse(ProductResource::make($products), __('messages.sent_data'));
+        } catch (\Throwable $th) {
+            return BaseController::sendError(__('something wrong'), [$th->getMessage()], 500);
+        }
+    }
+
+    public static function getFAQS(): JsonResponse
+    {
+        try {
+            $faqs = Faq::latest()->get();
+            return BaseController::sendResponse(FaqResource::collection($faqs), __('messages.sent_data'));
+        } catch (\Throwable $th) {
+            return BaseController::sendError(__('something wrong'), [$th->getMessage()], 500);
+        }
+    }
+
+    public static function getOrders(): JsonResponse
+    {
+        try {
+            $orders = Order::where('user_id', auth()->id())->latest()->get();
+            return BaseController::sendResponse(OrderResponseResource::collection($orders), __('messages.sent_data'));
+        } catch (\Throwable $th) {
+            return BaseController::sendError(__('something wrong'), [$th->getMessage()], 500);
+        }
+    }
+
+    public static function search($query): JsonResponse
+    {
+        try {
+            if (!$query) return BaseController::sendError(__('messages.please_enter_a_word_to_search'), [], 422);
+
+            $products = Product::select('id', 'title', 'slug')->where('title->en', 'like', "%{$query}%")
+                ->orWhere('title->ar', 'like', "%{$query}%")
+                ->orWhere('description->ar', 'like', "%{$query}%")
+                ->orWhere('description->en', 'like', "%{$query}%")
+                ->get();
+
+            $categories = Category::select('id', 'name', 'slug')->where('name->en', 'like', "%{$query}%")
+                ->orWhere('name->ar', 'like', "%{$query}%")
+                ->get();
+
+            $subCategories = SubCategory::select('id', 'name', 'slug')->where('name->en', 'like', "%{$query}%")
+                ->orWhere('name->ar', 'like', "%{$query}%")
+                ->get();
+
+            $response = [
+                'products' => ProductResource::collection($products),
+                'categories' => CategoryResource::collection($categories),
+                'sub_categories' => SubCategoryResource::collection($subCategories)
+            ];
+            return BaseController::sendResponse($response, __('messages.sent_data'));
         } catch (\Throwable $th) {
             return BaseController::sendError(__('something wrong'), [$th->getMessage()], 500);
         }

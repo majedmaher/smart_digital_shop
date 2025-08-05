@@ -70,6 +70,7 @@ return [
     'code_delivery_subject' => 'تم تسليم الكود الخاص بك',
     'code_delivery_line' => 'يرجى العثور على الكود الخاص بمنتجك أدناه.',
     'invalid_payment_gateway' => 'لا يتم قبول الدفع باستخدام هذه البوابة.',
+    'please_enter_a_word_to_search' => 'يرجى إدخال كلمة للبحث',
 
     // 
 

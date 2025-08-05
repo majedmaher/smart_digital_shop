@@ -16,12 +16,17 @@ use App\Http\Controllers\SubCategoryController;
 use App\Http\Controllers\TicketController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/mobile-main-content', [MainController::class, 'getMobileMainScreen']);
-Route::get('/categories-subcategories', [MainController::class, 'getCategoriesWithSubCategories']);
-Route::get('/main-content', [MainController::class, 'getMainContent']);
-Route::get('/category/{slug}', [MainController::class, 'getCategory'])->name('getCategory');
-Route::get('/sub-category/{slug}', [MainController::class, 'getSubCategory'])->name('getSubCategory');
-Route::get('/product/{slug}', [MainController::class, 'getProduct'])->name('getProduct');
+Route::controller(MainController::class)->group(function () {
+    Route::get('/mobile-main-content', 'getMobileMainScreen');
+    Route::get('/categories-subcategories', 'getCategoriesWithSubCategories');
+    Route::get('/main-content', 'getMainContent');
+    Route::get('/category/{slug}', 'getCategory')->name('getCategory');
+    Route::get('/sub-category/{slug}', 'getSubCategory')->name('getSubCategory');
+    Route::get('/product/{slug}', 'getProduct')->name('getProduct');
+    Route::get('/faqs', 'getFAQS');
+    Route::get('/orders', 'getOrders')->middleware(['should_auth', 'auth:sanctum']);
+    Route::get('/search', 'search');
+});
 Route::post('/assistant/ask', [FaqController::class, 'ask']);
 
 Route::controller(PaymentController::class)->group(function () {

@@ -31,29 +31,39 @@ if (!function_exists('saveImageInStorage')) {
 
 
 if (!function_exists('currencyConverter')) {
-    function currencyConverter($amount, $to, $decimals = 2): string
+    function currencyConverter($amount, $to, $decimals = 2): array
     {
+        $result = '';
         // التحقق من القيمة
         if (is_null($amount) || $amount == 0) {
-            if (app()->getLocale() == 'ar') {
-                $string = Number::currency($amount, in: $to, locale: 'ar');
-                return str_replace(["\u{200f}", "\u{200e}"], '', $string);
-            } else {
-                return Number::currency($amount, in: $to);
-            }
-        }
-        $amount =  round(
-            CurrencyConverter::convert($amount)
-                ->from('SAR')
-                ->to($to)
-                ->get(),
-            $decimals
-        );
-        if (app()->getLocale() == 'ar') {
-            $string = Number::currency($amount, in: $to, locale: 'ar');
-            return str_replace(["\u{200f}", "\u{200e}"], '', $string);
+            // if (app()->getLocale() == 'ar') {
+            //     $string = Number::currency($amount, in: $to, locale: 'ar');
+            //     return str_replace(["\u{200f}", "\u{200e}"], '', $string);
+            // } else {
+            $result = Number::currency($amount, in: $to);
+            // }
         } else {
-            return Number::currency($amount, in: $to);
+            $amount =  round(
+                CurrencyConverter::convert($amount)
+                    ->from('SAR')
+                    ->to($to)
+                    ->get(),
+                $decimals
+            );
+            // if (app()->getLocale() == 'ar') {
+            //     $string = Number::currency($amount, in: $to, locale: 'ar');
+            //     return str_replace(["\u{200f}", "\u{200e}"], '', $string);
+            // } else {
+            $result = Number::currency($amount, in: $to);
+            // }
         }
+        // استخراج الرقم والعملة
+        preg_match('/([\d.,]+)/u', $result, $amountMatch);
+        preg_match('/[^\d.,\s]+/u', $result, $currencyMatch);
+
+        return [
+            'amount' => isset($amountMatch[1]) ? (float) str_replace(',', '', $amountMatch[1]) : 0,
+            'currency' => $currencyMatch[0] ?? ''
+        ];
     }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Number;
 use Mgcodeur\CurrencyConverter\Facades\CurrencyConverter;
 
@@ -36,34 +37,39 @@ if (!function_exists('currencyConverter')) {
         $result = '';
         // التحقق من القيمة
         if (is_null($amount) || $amount == 0) {
-            // if (app()->getLocale() == 'ar') {
-            //     $string = Number::currency($amount, in: $to, locale: 'ar');
-            //     return str_replace(["\u{200f}", "\u{200e}"], '', $string);
-            // } else {
-            $result = Number::currency($amount, in: $to);
-            // }
+            if (app()->getLocale() == 'ar') {
+                $string = Number::currency($amount, in: $to, locale: 'ar');
+                $result = str_replace(["\u{200f}", "\u{200e}", "\u{00a0}"], '', $string); // إضافة non-breaking space
+            } else {
+                $result = Number::currency($amount, in: $to);
+            }
         } else {
-            $amount =  round(
+            $amount = round(
                 CurrencyConverter::convert($amount)
                     ->from('SAR')
                     ->to($to)
                     ->get(),
                 $decimals
             );
-            // if (app()->getLocale() == 'ar') {
-            //     $string = Number::currency($amount, in: $to, locale: 'ar');
-            //     return str_replace(["\u{200f}", "\u{200e}"], '', $string);
-            // } else {
-            $result = Number::currency($amount, in: $to);
-            // }
+            if (app()->getLocale() == 'ar') {
+                $string = Number::currency($amount, in: $to, locale: 'ar');
+                $result = str_replace(["\u{200f}", "\u{200e}", "\u{00a0}"], '', $string); // إضافة non-breaking space
+            } else {
+                $result = Number::currency($amount, in: $to);
+            }
         }
+
         // استخراج الرقم والعملة
-        preg_match('/([\d.,]+)/u', $result, $amountMatch);
-        preg_match('/[^\d.,\s]+/u', $result, $currencyMatch);
+        preg_match('/([\d٫٬\.]+)/u', $result, $amountMatch);  // استخراج الرقم
+        preg_match('/[^\d٫٬\.]+/u', $result, $currencyMatch);  // استخراج رمز العملة
+        Log::info($currencyMatch);  // طباعة النتيجة في اللوج لمراجعتها
+
+        // التأكد من أن قيمة العملة تحتوي على الحروف الكاملة (د.ك أو ر.س)
+        $currency = isset($currencyMatch[0]) ? trim($currencyMatch[0]) : '';
 
         return [
-            'amount' => isset($amountMatch[1]) ? (float) str_replace(',', '', $amountMatch[1]) : 0,
-            'currency' => $currencyMatch[0] ?? ''
+            'amount' => isset($amountMatch[1]) ? (float) str_replace([',', '٫', '٬'], '.', $amountMatch[1]) : 0,
+            'currency' => $currency
         ];
     }
 }

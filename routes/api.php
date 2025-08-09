@@ -96,8 +96,10 @@ Route::middleware(['should_auth', 'auth:sanctum', 'custom_permission:role:admin'
     });
 
     Route::group(['prefix' => '/order', 'as' => 'order.', 'controller' => OrderController::class], function () {
-        Route::post('/create', 'store')->name('create');
-        Route::post('/pay', 'pay')->name('pay');
+        Route::withoutMiddleware(['custom_permission:role:admin'])->group(function () {
+            Route::post('/create', 'store')->name('create');
+            Route::post('/pay', 'pay')->name('pay');
+        });
         Route::post('/refund/transaction', 'refundTransaction');
         Route::post('/refund', 'refundOrder');
     });

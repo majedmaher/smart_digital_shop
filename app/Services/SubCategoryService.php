@@ -53,16 +53,19 @@ class SubCategoryService extends Controller
     {
         DB::beginTransaction();
         try {
-            if (SubCategory::find($data['parent_id'])->parent_id != null) {
-                return BaseController::sendError(__('messages.error_subcategory_parent_id'), [], 403);
-            }
+            // if (SubCategory::find($data['parent_id'])->parent_id != null) {
+            //     return BaseController::sendError(__('messages.error_subcategory_parent_id'), [], 403);
+            // }
             $data['user_id'] = auth()->id();
             $sub_category = SubCategory::find($id);
             if ($sub_category == null) {
                 return BaseController::sendError(__('messages.item_not_found', ['item' => __('messages.sub_category')]), [], 404);
             }
             if ($data['image'] || $data->hasFile('image')) {
-                $sub_category->image = saveImage($data['image'], self::$image_folder);
+                $sub_category->image = saveImage($data['image'], self::$image_folder . '/image');
+            }
+            if ($data['icon'] || $data->hasFile('icon')) {
+                $sub_category->icon = saveImage($data['icon'], self::$image_folder . '/icons');
             }
             $sub_category->name = $data['name'];
             $sub_category->category_id = $data['category_id'];
@@ -72,7 +75,7 @@ class SubCategoryService extends Controller
             return BaseController::sendResponse(SubCategoryResource::make($sub_category), __('messages.update_successfully', ['item' => __('messages.sub_category')]));
         } catch (\Throwable $th) {
             DB::rollBack();
-            return BaseController::sendError(__('messages.update_failed', ['item' => __('messages.sub_category')]), [], 500);
+            return BaseController::sendError(__('messages.update_failed', ['item' => __('messages.sub_category')]), [$th->getMessage()], 500);
         }
     }
 

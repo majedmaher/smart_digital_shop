@@ -51,9 +51,13 @@ class CategoryService extends Controller
             if (!$category || $category == null) {
                 return BaseController::sendError(__('messages.item_not_found', ['item' => __('messages.category')]), [], 404);
             }
-            if ($data['icon'] || $data->hasFile('image')) {
-                $icon = saveImage($data['icon'], self::$image_folder);
+            if ($data['icon'] || $data->hasFile('icon')) {
+                $icon = saveImage($data['icon'], self::$image_folder) . '/icons';
                 $category->icon = $icon;
+            }
+            if ($data['image'] || $data->hasFile('image')) {
+                $image = saveImage($data['image'], self::$image_folder . '/image');
+                $category->image = $image;
             }
             $category->name = $data['name'];
             $category->update();

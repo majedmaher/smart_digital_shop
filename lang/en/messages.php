@@ -79,7 +79,7 @@ return [
     'product' => 'Product',
     'rating' => 'Rating',
     'coupon' => 'Coupon',
-    'Slider' => 'slider',
+    'slider' => 'Slider',
     'order' => 'Order',
     'faq' => 'Frequently asked questions',
     'ticket' => 'Ticket',

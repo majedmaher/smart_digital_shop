@@ -65,6 +65,7 @@ Route::middleware(['should_auth', 'auth:sanctum', 'custom_permission:role:admin'
     });
     Route::controller(SubCategoryController::class)->group(function () {
         Route::get('/sub-categories', 'index');
+        Route::get('/categories-and-sub-categories', 'getCategoriesAndSubcategories');
         Route::group(['prefix' => '/sub-category', 'as' => 'subcategory.'], function () {
             Route::post('/create', 'store')->name('create');
             Route::post('/update/{id}', 'update')->name('update');
@@ -72,7 +73,8 @@ Route::middleware(['should_auth', 'auth:sanctum', 'custom_permission:role:admin'
         });
     });
     Route::controller(ProductController::class)->group(function () {
-        Route::get('/sub-categories/{sub_category_id}/products', 'index');
+        Route::get('/sub-categories/{sub_category_id}/products', 'subcategoryProducts');
+        Route::get('/products', 'index');
         Route::group(['prefix' => '/product', 'as' => 'product.'], function () {
             Route::post('/create', 'store')->name('create');
             Route::post('/update/{id}', 'update')->name('update');
@@ -88,11 +90,12 @@ Route::middleware(['should_auth', 'auth:sanctum', 'custom_permission:role:admin'
         });
     });
     Route::post('/coupon/create', [CouponController::class, 'create']);
-    Route::post('/coupon/apply-coupon', [CouponController::class, 'applyCoupon']);
+    Route::post('/coupon/apply-coupon', [CouponController::class, 'applyCoupon'])->withoutMiddleware('custom_permission:role:admin');
 
     Route::controller(SliderController::class)->group(function () {
         Route::get('/sliders', 'index');
         Route::post('/slider/create', 'store');
+        Route::get('/slider/{id}', 'delete');
     });
 
     Route::group(['prefix' => '/order', 'as' => 'order.', 'controller' => OrderController::class], function () {

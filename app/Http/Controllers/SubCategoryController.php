@@ -10,6 +10,11 @@ use Illuminate\Http\Request;
 class SubCategoryController extends Controller
 {
 
+    public function getCategoriesAndSubcategories(): JsonResponse
+    {
+        return SubCategoryService::getCategoriesAndSubcategories();
+    }
+
     public function index(): JsonResponse
     {
         return SubCategoryService::index();

@@ -9,9 +9,14 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    public function index($sub_category_id): JsonResponse
+    public function subcategoryProducts($sub_category_id): JsonResponse
     {
-        return ProductService::index($sub_category_id);
+        return ProductService::subcategoryProducts($sub_category_id);
+    }
+
+    public function index(): JsonResponse
+    {
+        return ProductService::index();
     }
 
     public function store(ProductRequest $request): JsonResponse

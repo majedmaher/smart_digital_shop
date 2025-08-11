@@ -4,21 +4,26 @@ namespace App\Services;
 
 use App\Http\Controllers\API\BaseController;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Dashboard\ProductResource as DashboardProductResource;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 
-use function PHPUnit\Framework\isEmpty;
-
 class ProductService extends Controller
 {
     private static string $image_folder = 'products';
-    static function index($sub_category_id): JsonResponse
+    static function index(): JsonResponse
     {
-        $products = Product::where('sub_category_id', $sub_category_id)->latest()->get();
+        $products = Product::withCount('codes')->getNecessaryData()->latest()->get();
 
-        return BaseController::sendResponse(ProductResource::collection($products), __('messages.sent_data'));
+        return BaseController::sendResponse(DashboardProductResource::collection($products), __('messages.sent_data'));
+    }
+    static function subcategoryProducts($sub_category_id): JsonResponse
+    {
+        $products = Product::where('sub_category_id', $sub_category_id)->withCount('codes')->getNecessaryData()->latest()->get();
+
+        return BaseController::sendResponse($products, __('messages.sent_data'));
     }
 
     static function store($data): JsonResponse

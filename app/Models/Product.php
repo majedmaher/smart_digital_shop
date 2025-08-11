@@ -22,6 +22,11 @@ class Product extends Model
 
     public array $translatable = ['title', 'content', 'description', 'slug'];
 
+    public function scopeGetNecessaryData($query)
+    {
+        return $query->select('id', 'title', 'slug', 'image', 'price', 'price_before', 'discount', 'shipping_payment');
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);

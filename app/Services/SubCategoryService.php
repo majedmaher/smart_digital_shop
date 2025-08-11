@@ -4,16 +4,29 @@ namespace App\Services;
 
 use App\Http\Controllers\API\BaseController;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\CategoryResource;
+use App\Http\Resources\Dashboard\CategoryResource as DashboardCategoryResource;
+use App\Http\Resources\Dashboard\SubCategoryResource as DashboardSubCategoryResource;
 use App\Http\Resources\SubCategoryResource;
+use App\Models\Category;
 use App\Models\SubCategory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 
-use function PHPUnit\Framework\isEmpty;
-
 class SubCategoryService extends Controller
 {
     private static string $image_folder = 'subCategories';
+
+    public static function getCategoriesAndSubcategories(): JsonResponse
+    {
+        $categories = Category::select('id', 'name')->latest()->get();
+        $sub_categories = SubCategory::select('id', 'name')->whereNull('parent_id')->latest()->get();
+        $data = [
+            'categories' => DashboardCategoryResource::collection($categories),
+            'sub_categories' => DashboardSubCategoryResource::collection($sub_categories),
+        ];
+        return BaseController::sendResponse($data, __('messages.sent_data'));
+    }
     static function index(): JsonResponse
     {
         // $sub_categories = SubCategory::withCount('children')->where(function ($query) {
@@ -22,11 +35,13 @@ class SubCategoryService extends Controller
         //     $query->whereNull('parent_id')->whereDoesntHave('children');
         // })->latest()->get();
 
-        $sub_categories = SubCategory::withCount('children')->whereNull('parent_id')->latest()->get();
+        $sub_categories = SubCategory::withCount('children')->withCount('products')
+            // ->whereNull('parent_id')
+            ->latest()->get();
 
 
         // return BaseController::sendResponse($sub_categories, __('messages.sent_data'));
-        return BaseController::sendResponse(SubCategoryResource::collection($sub_categories), __('messages.sent_data'));
+        return BaseController::sendResponse(DashboardSubCategoryResource::collection($sub_categories), __('messages.sent_data'));
     }
 
     static function store($data): JsonResponse

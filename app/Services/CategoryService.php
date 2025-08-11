@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Http\Controllers\API\BaseController;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CategoryResource;
+use App\Http\Resources\Dashboard\CategoryResource as DashboardCategoryResource;
 use App\Models\Category;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
@@ -14,11 +15,11 @@ class CategoryService extends Controller
     private static string $image_folder = 'categories';
     static function index(): JsonResponse
     {
-        $categories = Category::getNecessaryData()
+        $categories = Category::getNecessaryData()->withCount('subCategories')->withCount('products')
             ->latest()
             ->get();
 
-        return BaseController::sendResponse(CategoryResource::collection($categories), __('messages.sent_data'));
+        return BaseController::sendResponse(DashboardCategoryResource::collection($categories), __('messages.sent_data'));
     }
 
     static function store($data): JsonResponse

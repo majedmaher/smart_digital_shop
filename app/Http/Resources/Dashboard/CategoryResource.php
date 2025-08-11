@@ -14,18 +14,14 @@ class CategoryResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $data = [
+        return [
             'id' => $this->id,
             'name' => $this->name,
             'slug' => $this->slug,
             'icon' => $this->icon,
-            'image' => $this->image
+            'image' => $this->image,
+            'products_count' => $this->products_count,
+            'sub_categories_count' => $this->sub_categories_count,
         ];
-
-        if (isset($this->products_count)) {
-            $data['products_count'] = $this->products_count;
-        }
-
-        return $data;
     }
 }

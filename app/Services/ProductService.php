@@ -15,7 +15,7 @@ class ProductService extends Controller
     private static string $image_folder = 'products';
     static function index(): JsonResponse
     {
-        $products = Product::withCount('codes')->getNecessaryData()->latest()->get();
+        $products = Product::getNecessaryData()->withCount('codes')->latest()->get();
 
         return BaseController::sendResponse(DashboardProductResource::collection($products), __('messages.sent_data'));
     }

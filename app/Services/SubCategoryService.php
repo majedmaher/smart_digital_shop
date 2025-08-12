@@ -17,15 +17,21 @@ class SubCategoryService extends Controller
 {
     private static string $image_folder = 'subCategories';
 
-    public static function getCategoriesAndSubcategories(): JsonResponse
+    public static function getCategories(): JsonResponse
     {
         $categories = Category::select('id', 'name')->latest()->get();
-        $sub_categories = SubCategory::select('id', 'name')->whereNull('parent_id')->latest()->get();
-        $data = [
-            'categories' => DashboardCategoryResource::collection($categories),
-            'sub_categories' => DashboardSubCategoryResource::collection($sub_categories),
-        ];
-        return BaseController::sendResponse($data, __('messages.sent_data'));
+
+        return BaseController::sendResponse(DashboardCategoryResource::collection($categories), __('messages.sent_data'));
+    }
+    public static function getSubCategoriesByCategory($categoryId): JsonResponse
+    {
+        $subCategories = SubCategory::select('id', 'name')
+            ->where('category_id', $categoryId)
+            ->whereNull('parent_id') // نجيب بس اللي ما إلها أب
+            ->latest()
+            ->get();
+
+        return BaseController::sendResponse(DashboardSubCategoryResource::collection($subCategories), __('messages.sent_data'));
     }
     static function index(): JsonResponse
     {
@@ -75,6 +81,9 @@ class SubCategoryService extends Controller
             $sub_category = SubCategory::find($id);
             if ($sub_category == null) {
                 return BaseController::sendError(__('messages.item_not_found', ['item' => __('messages.sub_category')]), [], 404);
+            }
+            if ($id == $data['parent_id']) {
+                return BaseController::sendError(__('messages.parent_id_is_same_as_the_id'), [], 422);
             }
             if ($data['image'] || $data->hasFile('image')) {
                 $sub_category->image = saveImage($data['image'], self::$image_folder . '/image');

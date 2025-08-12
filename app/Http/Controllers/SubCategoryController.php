@@ -5,14 +5,18 @@ namespace App\Http\Controllers;
 use App\Http\Requests\SubCategoryRequest;
 use App\Services\SubCategoryService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class SubCategoryController extends Controller
 {
 
-    public function getCategoriesAndSubcategories(): JsonResponse
+    public function getCategories(): JsonResponse
     {
-        return SubCategoryService::getCategoriesAndSubcategories();
+        return SubCategoryService::getCategories();
+    }
+
+    public function getSubCategoriesByCategory($categoryId): JsonResponse
+    {
+        return SubCategoryService::getSubCategoriesByCategory($categoryId);
     }
 
     public function index(): JsonResponse
@@ -25,7 +29,7 @@ class SubCategoryController extends Controller
         return SubCategoryService::store($request->validated());
     }
 
-    public function update(int $id, Request $request): JsonResponse
+    public function update(int $id, SubCategoryRequest $request): JsonResponse
     {
         return SubCategoryService::update($id, $request);
     }

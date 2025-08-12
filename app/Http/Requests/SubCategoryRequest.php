@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class SubCategoryRequest extends FormRequest
 {
@@ -21,14 +22,34 @@ class SubCategoryRequest extends FormRequest
      */
     public function rules(): array
     {
+        $isUpdate = $this->route('id') !== null;
         return [
             'category_id' => 'required|exists:categories,id',
             'name' => 'required|array',
             'name.ar' => 'required|string',
             'name.en' => 'required|string',
-            'image' => 'required|file|mimes:png,jpg,jpeg,webp|max:2048',
-            'icon' => 'required|file|mimes:png,jpg,jpeg,webp|max:2048',
-            'parent_id' => 'nullable|exists:sub_categories,id'
+            'image' => [
+                $isUpdate ? 'nullable' : 'required',
+                'file',
+                'mimes:png,jpg,jpeg,webp',
+                'max:2048'
+            ],
+
+            'icon' => [
+                $isUpdate ? 'nullable' : 'required',
+                'file',
+                'mimes:png,jpg,jpeg,webp',
+                'max:2048'
+            ],
+            // 'parent_id' => 'nullable|exists:sub_categories,id'
+            'parent_id' => [
+                'nullable',
+                'exists:sub_categories,id',
+                Rule::exists('sub_categories', 'id')->where(function ($query) {
+                    // نضمن أن الأب ينتمي لنفس الـ category
+                    $query->where('category_id', $this->category_id);
+                }),
+            ]
         ];
     }
 }

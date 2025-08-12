@@ -5,8 +5,10 @@ namespace App\Services;
 use App\Http\Controllers\API\BaseController;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Dashboard\ProductResource as DashboardProductResource;
+use App\Http\Resources\Dashboard\SubCategoryResource;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
+use App\Models\SubCategory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 
@@ -24,6 +26,20 @@ class ProductService extends Controller
         $products = Product::where('sub_category_id', $sub_category_id)->withCount('codes')->getNecessaryData()->latest()->get();
 
         return BaseController::sendResponse($products, __('messages.sent_data'));
+    }
+
+    static function categorySubcategoryProducts($category_id): JsonResponse
+    {
+        try {
+            $leafSubCategories = SubCategory::where('category_id', $category_id)
+                ->whereDoesntHave('children')
+                ->select('id', 'name')->get();
+
+
+            return BaseController::sendResponse(SubCategoryResource::collection($leafSubCategories), __('messages.sent_data'));
+        } catch (\Throwable $th) {
+            return BaseController::sendError($th->getMessage(), [], 500);
+        }
     }
 
     static function store($data): JsonResponse

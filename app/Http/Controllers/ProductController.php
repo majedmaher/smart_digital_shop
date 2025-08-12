@@ -14,6 +14,11 @@ class ProductController extends Controller
         return ProductService::subcategoryProducts($sub_category_id);
     }
 
+    public function categorySubcategoryProducts($category_id): JsonResponse
+    {
+        return ProductService::categorySubcategoryProducts($category_id);
+    }
+
     public function index(): JsonResponse
     {
         return ProductService::index();

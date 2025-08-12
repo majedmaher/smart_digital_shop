@@ -25,6 +25,7 @@ return [
     'update_failed' => ':item failed in update',
     'delete_failed' => ':item failed in delete',
     'item_not_found' => ':item nof found in database',
+    'parent_id_is_same_as_the_id' => 'You cannot use parent_id for the same element',
     'cart_empty' => 'The cart is empty',
     'quantity_is_low' => 'Quantity must be :quantity or more',
     'quantity_is_high' => 'The required quantity is not available for this product',

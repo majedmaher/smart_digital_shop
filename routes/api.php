@@ -66,7 +66,7 @@ Route::middleware(['should_auth', 'auth:sanctum', 'custom_permission:role:admin'
     Route::controller(SubCategoryController::class)->group(function () {
         Route::get('/sub-categories', 'index');
         Route::get('/get/categories', 'getCategories');
-        Route::get('/get/category/{categoryId}/sub-categories', 'getSubCategories');
+        Route::get('/get/category/{categoryId}/sub-categories', 'getSubCategoriesByCategory');
         Route::group(['prefix' => '/sub-category', 'as' => 'subcategory.'], function () {
             Route::post('/create', 'store')->name('create');
             Route::post('/update/{id}', 'update')->name('update');

@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Http\Controllers\API\BaseController;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Dashboard\CodeResource;
 use App\Models\Code;
 use Illuminate\Http\JsonResponse;
 
@@ -13,7 +14,7 @@ class CodeService extends Controller
     {
         try {
             $codes = Code::where('product_id', $product_id)->latest()->get();
-            return BaseController::sendResponse($codes, __('messages.sent_data'));
+            return BaseController::sendResponse(CodeResource::collection($codes), __('messages.sent_data'));
         } catch (\Throwable $th) {
             return BaseController::sendError(__('something wrong'), [], 500);
         }

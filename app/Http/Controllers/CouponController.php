@@ -11,10 +11,21 @@ use Illuminate\Http\JsonResponse;
 
 class CouponController extends Controller
 {
+    public function index(): JsonResponse
+    {
+        return CouponService::index();
+    }
+
+    public function optionsCoupon(): JsonResponse
+    {
+        return CouponService::optionsCoupon();
+    }
+
     public function create(CouponRequest $request): JsonResponse
     {
         return CouponService::store($request->validated());
     }
+
     public function applyCoupon(OrderRequest $request): JsonResponse
     {
         try {

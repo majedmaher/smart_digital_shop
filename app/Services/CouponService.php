@@ -5,14 +5,49 @@ namespace App\Services;
 use App\Enum\CouponTypeEnum;
 use App\Http\Controllers\API\BaseController;
 use App\Http\Resources\CouponResponseResource;
+use App\Http\Resources\Dashboard\CategoryResource;
+use App\Http\Resources\Dashboard\ProductResource;
+use App\Http\Resources\Dashboard\SubCategoryResource;
+use App\Models\Category;
 use App\Models\Coupon;
 use App\Models\Product;
+use App\Models\SubCategory;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
 
 class CouponService
 {
+
+    public static function index(): JsonResponse
+    {
+        try {
+            $coupons = Coupon::getNecessaryData()->latest()->get();
+            return BaseController::sendResponse($coupons, __('messages.sent_data'));
+        } catch (\Throwable $th) {
+            return BaseController::sendError(__('messages.something_went_wrong'), [], 500);
+        }
+    }
+
+    public static function optionsCoupon(): JsonResponse
+    {
+        try {
+            $categories = Category::select('id', 'name')->latest()->get();
+            $sub_categories = SubCategory::select('id', 'name')->latest()->get();
+            $products = Product::select('id', 'title')->latest()->get();
+            $users = User::select('id', 'name')->latest()->get();
+            $data = [
+                'categories' => CategoryResource::collection($categories),
+                'sub_categories' => SubCategoryResource::collection($sub_categories),
+                'products' => ProductResource::collection($products),
+                'users' => $users,
+            ];
+            return BaseController::sendResponse($data, __('messages.sent_data'));
+        } catch (\Throwable $th) {
+            return BaseController::sendError(__('messages.something_went_wrong'), [], 500);
+        }
+    }
+
     public static function store($data): JsonResponse
     {
         try {

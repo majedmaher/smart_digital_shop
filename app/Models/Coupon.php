@@ -11,6 +11,11 @@ class Coupon extends Model
     use HidesTimestamps, SoftDeletes;
     protected $guarded = [];
 
+    public function scopeGetNecessaryData($query)
+    {
+        return $query->select('id', 'code', 'type', 'value');
+    }
+
     public function orders()
     {
         return $this->hasMany(Order::class);

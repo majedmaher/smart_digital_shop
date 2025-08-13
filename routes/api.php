@@ -94,8 +94,15 @@ Route::middleware(['should_auth', 'auth:sanctum', 'custom_permission:role:admin'
             Route::get('/delete/{id}', 'delete')->name('delete');
         });
     });
-    Route::post('/coupon/create', [CouponController::class, 'create']);
-    Route::post('/coupon/apply-coupon', [CouponController::class, 'applyCoupon'])->withoutMiddleware('custom_permission:role:admin');
+
+    Route::controller(CouponController::class)->group(function () {
+        Route::get('/coupons',  'index');
+        Route::group(['prefix' => '/coupon', 'as' => 'coupon.'], function () {
+            Route::get('/options',  'optionsCoupon');
+            Route::post('/create',  'create');
+            Route::post('/apply-coupon',  'applyCoupon')->withoutMiddleware('custom_permission:role:admin');
+        });
+    });
 
     Route::controller(SliderController::class)->group(function () {
         Route::get('/sliders', 'index');

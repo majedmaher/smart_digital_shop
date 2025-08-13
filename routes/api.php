@@ -59,6 +59,7 @@ Route::middleware(['should_auth', 'auth:sanctum', 'custom_permission:role:admin'
         Route::get('/categories', 'index');
         Route::group(['prefix' => '/category', 'as' => 'category.'], function () {
             Route::post('/create', 'store')->name('create');
+            Route::get('/show/{id}', 'show')->name('show');
             Route::post('/update/{id}', 'update')->name('update');
             Route::get('/delete/{id}', 'delete')->name('delete');
         });
@@ -69,6 +70,7 @@ Route::middleware(['should_auth', 'auth:sanctum', 'custom_permission:role:admin'
         Route::get('/get/category/{categoryId}/sub-categories', 'getSubCategoriesByCategory');
         Route::group(['prefix' => '/sub-category', 'as' => 'subcategory.'], function () {
             Route::post('/create', 'store')->name('create');
+            Route::get('/show/{id}', 'show')->name('show');
             Route::post('/update/{id}', 'update')->name('update');
             Route::get('/delete/{id}', 'delete')->name('delete');
         });
@@ -79,6 +81,7 @@ Route::middleware(['should_auth', 'auth:sanctum', 'custom_permission:role:admin'
         Route::get('/products', 'index');
         Route::group(['prefix' => '/product', 'as' => 'product.'], function () {
             Route::post('/create', 'store')->name('create');
+            Route::get('/show/{id}', 'show')->name('show');
             Route::post('/update/{id}', 'update')->name('update');
             Route::get('/delete/{id}', 'delete')->name('delete');
         });

@@ -29,6 +29,11 @@ class ProductController extends Controller
         return ProductService::store($request->validated());
     }
 
+    public function show($id): JsonResponse
+    {
+        return ProductService::show($id);
+    }
+
     public function update($id, Request $request): JsonResponse
     {
         return ProductService::update($id, $request);

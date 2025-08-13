@@ -23,6 +23,7 @@ class SubCategoryService extends Controller
 
         return BaseController::sendResponse(DashboardCategoryResource::collection($categories), __('messages.sent_data'));
     }
+
     public static function getSubCategoriesByCategory($categoryId): JsonResponse
     {
         $subCategories = SubCategory::select('id', 'name')
@@ -33,6 +34,7 @@ class SubCategoryService extends Controller
 
         return BaseController::sendResponse(DashboardSubCategoryResource::collection($subCategories), __('messages.sent_data'));
     }
+
     static function index(): JsonResponse
     {
         // $sub_categories = SubCategory::withCount('children')->where(function ($query) {
@@ -66,6 +68,19 @@ class SubCategoryService extends Controller
             return BaseController::sendResponse(SubCategoryResource::make($sub_category), __('messages.store_successfully', ['item' => __('messages.sub_category')]));
         } catch (\Throwable $th) {
             DB::rollBack();
+            return BaseController::sendError(__('messages.store_failed', ['item' => __('messages.sub_category')]), [$th->getMessage()], 500);
+        }
+    }
+
+    static function show($id): JsonResponse
+    {
+        try {
+            $sub_category = SubCategory::find($id);
+            if ($sub_category == null) {
+                return BaseController::sendError(__('messages.item_not_found', ['item' => __('messages.sub_category')]), [], 404);
+            }
+            return BaseController::sendResponse($sub_category, __('messages.store_successfully', ['item' => __('messages.sub_category')]));
+        } catch (\Throwable $th) {
             return BaseController::sendError(__('messages.store_failed', ['item' => __('messages.sub_category')]), [$th->getMessage()], 500);
         }
     }

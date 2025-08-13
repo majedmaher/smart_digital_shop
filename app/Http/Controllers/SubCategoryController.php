@@ -29,6 +29,11 @@ class SubCategoryController extends Controller
         return SubCategoryService::store($request->validated());
     }
 
+    public function show($id): JsonResponse
+    {
+        return SubCategoryService::show($id);
+    }
+
     public function update(int $id, SubCategoryRequest $request): JsonResponse
     {
         return SubCategoryService::update($id, $request);

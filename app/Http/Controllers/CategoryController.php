@@ -20,6 +20,12 @@ class CategoryController extends Controller
     {
         return CategoryService::store($request->validated());
     }
+
+    public function show($id): JsonResponse
+    {
+        return CategoryService::show($id);
+    }
+
     public function update($id, Request $request): JsonResponse
     {
         return CategoryService::update($id, $request);

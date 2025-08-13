@@ -43,6 +43,19 @@ class CategoryService extends Controller
         }
     }
 
+    static function show($id): JsonResponse
+    {
+        try {
+            $category = Category::find($id);
+            if ($category == null) {
+                return BaseController::sendError(__('messages.item_not_found', ['item' => __('messages.cate$category')]), [], 404);
+            }
+            return BaseController::sendResponse($category, __('messages.store_successfully', ['item' => __('messages.cate$category')]));
+        } catch (\Throwable $th) {
+            return BaseController::sendError(__('messages.store_failed', ['item' => __('messages.cate$category')]), [$th->getMessage()], 500);
+        }
+    }
+
     static function update($id, $data): JsonResponse
     {
         DB::beginTransaction();

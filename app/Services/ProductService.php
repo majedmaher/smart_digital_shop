@@ -57,6 +57,19 @@ class ProductService extends Controller
         }
     }
 
+    static function show($id): JsonResponse
+    {
+        try {
+            $product = Product::find($id);
+            if ($product == null) {
+                return BaseController::sendError(__('messages.item_not_found', ['item' => __('messages.product')]), [], 404);
+            }
+            return BaseController::sendResponse($product, __('messages.store_successfully', ['item' => __('messages.product')]));
+        } catch (\Throwable $th) {
+            return BaseController::sendError(__('messages.store_failed', ['item' => __('messages.product')]), [$th->getMessage()], 500);
+        }
+    }
+
     static function update($id, $data): JsonResponse
     {
         $data['user_id'] = auth()->id();

@@ -92,6 +92,7 @@ Route::middleware(['should_auth', 'auth:sanctum', 'custom_permission:role:admin'
         Route::group(['prefix' => '/code', 'as' => 'code.'], function () {
             Route::get('/get-products', 'getProducts');
             Route::post('/create', 'store')->name('create');
+            Route::get('/show/{id}', 'show')->name('show');
             Route::post('/update/{id}', 'update')->name('update');
             Route::get('/delete/{id}', 'delete')->name('delete');
         });

@@ -29,6 +29,11 @@ class CodeController extends Controller
         return CodeService::store($request->validated());
     }
 
+    public function show($id): JsonResponse
+    {
+        return CodeService::show($id);
+    }
+
     public function update($id, CodeRequest $request): JsonResponse
     {
         return CodeService::update($id, $request);

@@ -54,6 +54,19 @@ class CodeService extends Controller
         }
     }
 
+    static function show($id): JsonResponse
+    {
+        try {
+            $code = Code::find($id);
+            if ($code == null) {
+                return BaseController::sendError(__('messages.item_not_found', ['item' => __('messages.code')]), [], 404);
+            }
+            return BaseController::sendResponse($code, __('messages.store_successfully', ['item' => __('messages.cate$category')]));
+        } catch (\Throwable $th) {
+            return BaseController::sendError(__('messages.store_failed', ['item' => __('messages.cate$category')]), [$th->getMessage()], 500);
+        }
+    }
+
     static function update(int $id, $data): JsonResponse
     {
         try {

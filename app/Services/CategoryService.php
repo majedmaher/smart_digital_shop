@@ -48,11 +48,11 @@ class CategoryService extends Controller
         try {
             $category = Category::find($id);
             if ($category == null) {
-                return BaseController::sendError(__('messages.item_not_found', ['item' => __('messages.cate$category')]), [], 404);
+                return BaseController::sendError(__('messages.item_not_found', ['item' => __('messages.category')]), [], 404);
             }
-            return BaseController::sendResponse($category, __('messages.store_successfully', ['item' => __('messages.cate$category')]));
+            return BaseController::sendResponse($category, __('messages.store_successfully', ['item' => __('messages.category')]));
         } catch (\Throwable $th) {
-            return BaseController::sendError(__('messages.store_failed', ['item' => __('messages.cate$category')]), [$th->getMessage()], 500);
+            return BaseController::sendError(__('messages.store_failed', ['item' => __('messages.category')]), [$th->getMessage()], 500);
         }
     }
 

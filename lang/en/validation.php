@@ -15,6 +15,8 @@ return [
     ],
     'confirmed' => 'The :attribute confirmation does not match.',
     'exists' => 'The :attribute does not exist.',
+    'before_or_equal' => 'The start date must be a date before or equal to today and before or equal to end date.',
+    'after_or_equal' => 'The end date must be a date before or equal to today and after or equal to start date.',
 
     'attributes' => [
         'name' => 'name',

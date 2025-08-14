@@ -20,6 +20,15 @@ class OrderController extends Controller
     {
         return OrderService::ordersCountStats();
     }
+    public function ordersCountStatsManual(Request $request): JsonResponse
+    {
+        $data = $request->validate([
+            'start_date' => 'required|date|before_or_equal:today|before_or_equal:end_date',  // start_date يجب أن يكون قبل أو يساوي اليوم وأيضًا قبل أو يساوي end_date
+            'end_date' => 'required|date|before_or_equal:today|after_or_equal:start_date',  // end_date يجب أن يكون قبل أو يساوي اليوم وأيضًا بعد أو يساوي start_date
+        ]);
+
+        return OrderService::ordersCountStatsManual($data['start_date'], $data['end_date']);
+    }
 
     public function store(OrderRequest $request): JsonResponse
     {

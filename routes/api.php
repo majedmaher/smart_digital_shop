@@ -52,6 +52,7 @@ Route::get('/rating', [RatingController::class, 'all']);
 Route::middleware(['should_auth', 'auth:sanctum', 'role:admin'])->group(function () {
     Route::post('/rating/create', [RatingController::class, 'store']);
     Route::post('/faq/create', [FaqController::class, 'store']);
+    Route::get('/faq/delete/{id}', [FaqController::class, 'delete']);
 });
 
 Route::middleware(['should_auth', 'auth:sanctum', 'custom_permission:role:admin'])->group(function () {
@@ -122,6 +123,7 @@ Route::middleware(['should_auth', 'auth:sanctum', 'custom_permission:role:admin'
         });
         Route::get('/orders-statistics', 'orderStatistics');
         Route::get('/orders-count-statistics', 'ordersCountStats');
+        Route::post('/orders-count-statistics-manual', 'ordersCountStatsManual');
         Route::post('/refund/transaction', 'refundTransaction');
         Route::post('/refund', 'refundOrder');
     });

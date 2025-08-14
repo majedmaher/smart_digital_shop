@@ -21,7 +21,21 @@ class FaqController extends Controller
             $faq = Faq::create($data);
             return BaseController::sendResponse($faq, __('messages.store_successfully', ['item' => __('messages.faq')]));
         } catch (\Throwable $th) {
-            return BaseController::sendError(__('messages.store_failed', ['item' => __('messages.faq')]), [$th->getMessage()], 500);
+            return BaseController::sendError(__('messages.store_failed', ['item' => __('messages.faq')]), [], 500);
+        }
+    }
+
+    public function delete($id): JsonResponse
+    {
+        try {
+            $faq = Faq::find($id);
+            if (!$faq || !isset($faq)) {
+                return BaseController::sendError(__('messages.item_not_found', ['item' => __('messages.faq')]), [], 404);
+            }
+            $faq->delete();
+            return BaseController::sendResponse($faq, __('messages.delete_successfully', ['item' => __('messages.faq')]));
+        } catch (\Throwable $th) {
+            return BaseController::sendError(__('messages.delete_failed', ['item' => __('messages.faq')]), [], 500);
         }
     }
 

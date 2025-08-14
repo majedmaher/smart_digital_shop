@@ -38,6 +38,7 @@ class OrderService extends Controller
             $today = now()->startOfDay();
             $weekAgo = now()->subDays(7);
             $monthAgo = now()->subDays(30);
+            $yearAgo = now()->subYear(); // بداية السنة الماضية
 
             $stats = Order::selectRaw("
         SUM(CASE WHEN DATE(created_at) = ? THEN 1 ELSE 0 END) as today_orders_count,
@@ -53,7 +54,13 @@ class OrderService extends Controller
         SUM(CASE WHEN created_at >= ? THEN 1 ELSE 0 END) as month_orders_count,
         SUM(CASE WHEN created_at >= ? THEN total_price ELSE 0 END) as month_orders_amount,
         SUM(CASE WHEN status = 'paid' AND created_at >= ? THEN 1 ELSE 0 END) as month_paid_orders_count,
-        SUM(CASE WHEN status = 'paid' AND created_at >= ? THEN total_price ELSE 0 END) as month_paid_orders_amount
+        SUM(CASE WHEN status = 'paid' AND created_at >= ? THEN total_price ELSE 0 END) as month_paid_orders_amount,
+
+        SUM(CASE WHEN created_at >= ? THEN 1 ELSE 0 END) as year_orders_count,
+        SUM(CASE WHEN created_at >= ? THEN total_price ELSE 0 END) as year_orders_amount,
+        SUM(CASE WHEN status = 'paid' AND created_at >= ? THEN 1 ELSE 0 END) as year_paid_orders_count,
+        SUM(CASE WHEN status = 'paid' AND created_at >= ? THEN total_price ELSE 0 END) as year_paid_orders_amount
+
     ", [
                 $today,
                 $today,
@@ -66,7 +73,12 @@ class OrderService extends Controller
                 $monthAgo,
                 $monthAgo,
                 $monthAgo,
-                $monthAgo
+                $monthAgo,
+                $yearAgo,
+                $yearAgo,
+                $yearAgo,
+                $yearAgo
+
             ])->first();
 
             $response = [
@@ -87,7 +99,14 @@ class OrderService extends Controller
                     'orders_amount' => (float) $stats->month_orders_amount,
                     'paid_orders_count' => (int) $stats->month_paid_orders_count,
                     'paid_orders_amount' => (float) $stats->month_paid_orders_amount,
+                ],
+                'last_year' => [
+                    'orders_count' => (int) $stats->year_orders_count,
+                    'orders_amount' => (float) $stats->year_orders_amount,
+                    'paid_orders_count' => (int) $stats->year_paid_orders_count,
+                    'paid_orders_amount' => (float) $stats->year_paid_orders_amount,
                 ]
+
             ];
             return BaseController::sendResponse($response, __('messages.sent_data'));
         } catch (\Throwable $th) {
@@ -95,6 +114,52 @@ class OrderService extends Controller
         }
     }
 
+    public static function ordersCountStatsManual($startDate, $endDate): JsonResponse
+    {
+        try {
+            // التحقق من أن التواريخ موجودة
+            if (!$startDate || !$endDate) {
+                return BaseController::sendError(__('messages.invalid_date_range'), [], 400);
+            }
+
+            // تحويل المدخلات من النص إلى كائنات Carbon
+            $startDate = \Carbon\Carbon::parse($startDate)->startOfDay();
+            $endDate = \Carbon\Carbon::parse($endDate)->endOfDay();
+
+            // التحقق أن startDate قبل endDate
+            if ($startDate > $endDate) {
+                return BaseController::sendError(__('messages.start_date_after_end_date'), [], 400);
+            }
+
+            // الاستعلام مع التواريخ المدخلة
+            $stats = Order::selectRaw("
+            SUM(CASE WHEN created_at BETWEEN ? AND ? THEN 1 ELSE 0 END) as orders_count,
+            SUM(CASE WHEN created_at BETWEEN ? AND ? THEN total_price ELSE 0 END) as orders_amount,
+            SUM(CASE WHEN status = 'paid' AND created_at BETWEEN ? AND ? THEN 1 ELSE 0 END) as paid_orders_count,
+            SUM(CASE WHEN status = 'paid' AND created_at BETWEEN ? AND ? THEN total_price ELSE 0 END) as paid_orders_amount
+        ", [
+                $startDate,
+                $endDate,
+                $startDate,
+                $endDate,
+                $startDate,
+                $endDate,
+                $startDate,
+                $endDate
+            ])->first();
+
+            $response = [
+                'orders_count' => (int) $stats->orders_count,
+                'orders_amount' => (float) $stats->orders_amount,
+                'paid_orders_count' => (int) $stats->paid_orders_count,
+                'paid_orders_amount' => (float) $stats->paid_orders_amount,
+            ];
+
+            return BaseController::sendResponse($response, __('messages.sent_data'));
+        } catch (\Throwable $th) {
+            return BaseController::sendError(__('messages.something_went_wrong'), [], 500);
+        }
+    }
 
     public static function store($data, $currency): JsonResponse
     {

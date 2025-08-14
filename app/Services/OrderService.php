@@ -14,6 +14,88 @@ use Illuminate\Support\Facades\DB;
 
 class OrderService extends Controller
 {
+    public static function orderStatistics(): JsonResponse
+    {
+        try {
+            $today = now()->startOfDay();
+            $total = Order::where('status', OrderStatusEnum::PAID->value)->sum('total_price');
+            $today_total = Order::where('status', OrderStatusEnum::PAID->value)
+                ->whereDate('created_at', $today)
+                ->sum('total_price');
+            $response = [
+                'total' => $total,
+                'today' => $today_total,
+            ];
+            return BaseController::sendResponse($response, __('messages.sent_data'));
+        } catch (\Throwable $th) {
+            return BaseController::sendError(__('messages.something_went_wrong'), [], 500);
+        }
+    }
+
+    public static function ordersCountStats(): JsonResponse
+    {
+        try {
+            $today = now()->startOfDay();
+            $weekAgo = now()->subDays(7);
+            $monthAgo = now()->subDays(30);
+
+            $stats = Order::selectRaw("
+        SUM(CASE WHEN DATE(created_at) = ? THEN 1 ELSE 0 END) as today_orders_count,
+        SUM(CASE WHEN DATE(created_at) = ? THEN total_price ELSE 0 END) as today_orders_amount,
+        SUM(CASE WHEN status = 'paid' AND DATE(created_at) = ? THEN 1 ELSE 0 END) as today_paid_orders_count,
+        SUM(CASE WHEN status = 'paid' AND DATE(created_at) = ? THEN total_price ELSE 0 END) as today_paid_orders_amount,
+
+        SUM(CASE WHEN created_at >= ? THEN 1 ELSE 0 END) as week_orders_count,
+        SUM(CASE WHEN created_at >= ? THEN total_price ELSE 0 END) as week_orders_amount,
+        SUM(CASE WHEN status = 'paid' AND created_at >= ? THEN 1 ELSE 0 END) as week_paid_orders_count,
+        SUM(CASE WHEN status = 'paid' AND created_at >= ? THEN total_price ELSE 0 END) as week_paid_orders_amount,
+
+        SUM(CASE WHEN created_at >= ? THEN 1 ELSE 0 END) as month_orders_count,
+        SUM(CASE WHEN created_at >= ? THEN total_price ELSE 0 END) as month_orders_amount,
+        SUM(CASE WHEN status = 'paid' AND created_at >= ? THEN 1 ELSE 0 END) as month_paid_orders_count,
+        SUM(CASE WHEN status = 'paid' AND created_at >= ? THEN total_price ELSE 0 END) as month_paid_orders_amount
+    ", [
+                $today,
+                $today,
+                $today,
+                $today,
+                $weekAgo,
+                $weekAgo,
+                $weekAgo,
+                $weekAgo,
+                $monthAgo,
+                $monthAgo,
+                $monthAgo,
+                $monthAgo
+            ])->first();
+
+            $response = [
+                'today' => [
+                    'orders_count' => (int) $stats->today_orders_count,
+                    'orders_amount' => (float) $stats->today_orders_amount,
+                    'paid_orders_count' => (int) $stats->today_paid_orders_count,
+                    'paid_orders_amount' => (float) $stats->today_paid_orders_amount,
+                ],
+                'last_week' => [
+                    'orders_count' => (int) $stats->week_orders_count,
+                    'orders_amount' => (float) $stats->week_orders_amount,
+                    'paid_orders_count' => (int) $stats->week_paid_orders_count,
+                    'paid_orders_amount' => (float) $stats->week_paid_orders_amount,
+                ],
+                'last_month' => [
+                    'orders_count' => (int) $stats->month_orders_count,
+                    'orders_amount' => (float) $stats->month_orders_amount,
+                    'paid_orders_count' => (int) $stats->month_paid_orders_count,
+                    'paid_orders_amount' => (float) $stats->month_paid_orders_amount,
+                ]
+            ];
+            return BaseController::sendResponse($response, __('messages.sent_data'));
+        } catch (\Throwable $th) {
+            return BaseController::sendError(__('messages.something_went_wrong'), [], 500);
+        }
+    }
+
+
     public static function store($data, $currency): JsonResponse
     {
 

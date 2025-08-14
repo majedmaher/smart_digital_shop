@@ -12,6 +12,15 @@ use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
+    public function orderStatistics(): JsonResponse
+    {
+        return OrderService::orderStatistics();
+    }
+    public function ordersCountStats(): JsonResponse
+    {
+        return OrderService::ordersCountStats();
+    }
+
     public function store(OrderRequest $request): JsonResponse
     {
         $currency = strtoupper($request->header('Currency', 'SAR'));

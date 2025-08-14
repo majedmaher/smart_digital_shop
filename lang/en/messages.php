@@ -85,5 +85,6 @@ return [
     'faq' => 'Frequently asked questions',
     'ticket' => 'Ticket',
     'message' => 'Message',
+    'notification' => 'Notification',
 
 ];

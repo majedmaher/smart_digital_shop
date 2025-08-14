@@ -6,6 +6,7 @@ use App\Http\Controllers\CodeController;
 use App\Http\Controllers\CouponController;
 use App\Http\Controllers\FaqController;
 use App\Http\Controllers\MainController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductController;
@@ -119,6 +120,8 @@ Route::middleware(['should_auth', 'auth:sanctum', 'custom_permission:role:admin'
             Route::post('/create', 'store')->name('create');
             Route::post('/pay', 'pay')->name('pay');
         });
+        Route::get('/orders-statistics', 'orderStatistics');
+        Route::get('/orders-count-statistics', 'ordersCountStats');
         Route::post('/refund/transaction', 'refundTransaction');
         Route::post('/refund', 'refundOrder');
     });
@@ -136,4 +139,11 @@ Route::group(['prefix' => '/tickets', 'middleware' => ['should_auth', 'auth:sanc
         Route::get('/admin/tickets', 'adminIndex');
         Route::patch('/tickets/{ticket}/status', 'updateStatus');
     });
+});
+
+Route::group(['prefix' => '/notifications', 'middleware' => ['should_auth', 'auth:sanctum'], 'controller' => NotificationController::class], function () {
+    Route::get('/', [NotificationController::class, 'getNotifications']);
+    Route::get('/{id}/read', [NotificationController::class, 'markAsRead']);
+    Route::post('/read-multiple', [NotificationController::class, 'markMultipleAsRead']);
+    Route::get('/read-all', [NotificationController::class, 'markAllAsRead']);
 });

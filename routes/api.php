@@ -87,8 +87,10 @@ Route::middleware(['should_auth', 'auth:sanctum', 'custom_permission:role:admin'
         });
     });
     Route::controller(CodeController::class)->group(function () {
-        Route::get('/product/{product_id}/codes', 'index');
+        Route::get('/codes', 'index');
+        Route::get('/product/{product_id}/codes', 'ProductCodes');
         Route::group(['prefix' => '/code', 'as' => 'code.'], function () {
+            Route::get('/get-products', 'getProducts');
             Route::post('/create', 'store')->name('create');
             Route::post('/update/{id}', 'update')->name('update');
             Route::get('/delete/{id}', 'delete')->name('delete');
@@ -100,6 +102,7 @@ Route::middleware(['should_auth', 'auth:sanctum', 'custom_permission:role:admin'
         Route::group(['prefix' => '/coupon', 'as' => 'coupon.'], function () {
             Route::get('/options',  'optionsCoupon');
             Route::post('/create',  'create');
+            Route::get('/delete/{id}',  'delete');
             Route::post('/apply-coupon',  'applyCoupon')->withoutMiddleware('custom_permission:role:admin');
         });
     });

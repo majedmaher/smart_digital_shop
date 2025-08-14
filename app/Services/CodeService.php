@@ -5,18 +5,40 @@ namespace App\Services;
 use App\Http\Controllers\API\BaseController;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Dashboard\CodeResource;
+use App\Http\Resources\Dashboard\ProductResource;
 use App\Models\Code;
+use App\Models\Product;
 use Illuminate\Http\JsonResponse;
 
 class CodeService extends Controller
 {
-    static function index($product_id): JsonResponse
+    static function index(): JsonResponse
+    {
+        try {
+            $codes = Code::latest()->get();
+            return BaseController::sendResponse(CodeResource::collection($codes), __('messages.sent_data'));
+        } catch (\Throwable $th) {
+            return BaseController::sendError(__('something wrong'), [], 500);
+        }
+    }
+
+    static function ProductCodes($product_id): JsonResponse
     {
         try {
             $codes = Code::where('product_id', $product_id)->latest()->get();
             return BaseController::sendResponse(CodeResource::collection($codes), __('messages.sent_data'));
         } catch (\Throwable $th) {
             return BaseController::sendError(__('something wrong'), [], 500);
+        }
+    }
+
+    public static function getProducts(): JsonResponse
+    {
+        try {
+            $products = Product::select('id', 'title')->latest()->get();
+            return BaseController::sendResponse(ProductResource::collection($products), __('messages.sent_data'));
+        } catch (\Throwable $th) {
+            return BaseController::sendError(__('messages.something_went_wrong'), [], 500);
         }
     }
 

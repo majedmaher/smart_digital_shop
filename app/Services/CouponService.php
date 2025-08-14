@@ -29,6 +29,20 @@ class CouponService
         }
     }
 
+    public static function delete($id): JsonResponse
+    {
+        try {
+            $coupon = Coupon::find($id);
+            if (!$coupon || $coupon == null) {
+                return BaseController::sendError(__('messages.item_not_found', ['item' => __('messages.coupon'), [], 404]));
+            }
+            $coupon->delete();
+            return BaseController::sendResponse($coupon, __('messages.sent_data'));
+        } catch (\Throwable $th) {
+            return BaseController::sendError(__('messages.something_went_wrong'), [], 500);
+        }
+    }
+
     public static function optionsCoupon(): JsonResponse
     {
         try {

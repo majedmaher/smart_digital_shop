@@ -26,6 +26,11 @@ class CouponController extends Controller
         return CouponService::store($request->validated());
     }
 
+    public function delete($id): JsonResponse
+    {
+        return CouponService::delete($id);
+    }
+
     public function applyCoupon(OrderRequest $request): JsonResponse
     {
         try {

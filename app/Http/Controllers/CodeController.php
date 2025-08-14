@@ -9,9 +9,19 @@ use Illuminate\Http\Request;
 
 class CodeController extends Controller
 {
-    public function index($sub_category_id): JsonResponse
+    public function index(): JsonResponse
     {
-        return CodeService::index($sub_category_id);
+        return CodeService::index();
+    }
+
+    public function ProductCodes($sub_category_id): JsonResponse
+    {
+        return CodeService::ProductCodes($sub_category_id);
+    }
+
+    public function getProducts(): JsonResponse
+    {
+        return CodeService::getProducts();
     }
 
     public function store(CodeRequest $request): JsonResponse

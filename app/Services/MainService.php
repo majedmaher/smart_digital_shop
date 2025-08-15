@@ -135,6 +135,7 @@ class MainService extends Controller
     {
         try {
             $ratings = Rating::where('id', $id)->latest()->get();
+            if ($ratings === null || !isset($ratings) || isEmpty($ratings)) return BaseController::sendError(__('messages.search_item_not_found'), [], 422);
             return BaseController::sendResponse(RatingResource::collection($ratings), __('messages.sent_data'));
         } catch (\Throwable $th) {
             return BaseController::sendError(__('something wrong'), [$th->getMessage()], 500);

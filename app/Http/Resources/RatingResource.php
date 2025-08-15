@@ -18,8 +18,9 @@ class RatingResource extends JsonResource
             'id' => $this->id,
             'user_id' => $this->show_name == 1 ? $this->user_id : null,
             // 'product_id'=> 1,
-            'stars' => $this->star,
+            'stars' => $this->stars,
             'comment' => $this->comment,
+            'images' => $this->images,
         ];
     }
 }

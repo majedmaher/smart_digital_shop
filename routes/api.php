@@ -24,6 +24,7 @@ Route::controller(MainController::class)->group(function () {
     Route::get('/category/{slug}', 'getCategory')->name('getCategory');
     Route::get('/sub-category/{slug}', 'getSubCategory')->name('getSubCategory');
     Route::get('/product/{slug}', 'getProduct')->name('getProduct');
+    Route::get('/ratings/product/{id}', 'getProductRatings')->name('getProductRatings');
     Route::get('/faqs', 'getFAQS');
     Route::get('/orders', 'getOrders')->middleware(['should_auth', 'auth:sanctum']);
     Route::get('/search', 'search');

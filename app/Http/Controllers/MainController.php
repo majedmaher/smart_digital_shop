@@ -34,6 +34,10 @@ class MainController extends Controller
     {
         return MainService::getProduct($slug);
     }
+    public function getProductRatings($id): JsonResponse
+    {
+        return MainService::getProductRatings($id);
+    }
 
     public function getFAQS(): JsonResponse
     {

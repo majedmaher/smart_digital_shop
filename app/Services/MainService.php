@@ -8,12 +8,14 @@ use App\Http\Resources\CategoryResource;
 use App\Http\Resources\FaqResource;
 use App\Http\Resources\OrderResponseResource;
 use App\Http\Resources\ProductResource;
+use App\Http\Resources\RatingResource;
 use App\Http\Resources\SliderResource;
 use App\Http\Resources\SubCategoryResource;
 use App\Models\Category;
 use App\Models\Faq;
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\Rating;
 use App\Models\Slider;
 use App\Models\SubCategory;
 use Illuminate\Http\JsonResponse;
@@ -121,9 +123,19 @@ class MainService extends Controller
     public static function getProduct($slug): JsonResponse
     {
         try {
-            $products = Product::with('ratings')->whereJsonContainsLocales('slug', ['en', 'ar'], $slug)->first();
-            if ($products === null) return BaseController::sendError(__('messages.search_item_not_found'), [], 422);
-            return BaseController::sendResponse(ProductResource::make($products), __('messages.sent_data'));
+            $product = Product::with('ratings')->whereJsonContainsLocales('slug', ['en', 'ar'], $slug)->first();
+            if ($product === null) return BaseController::sendError(__('messages.search_item_not_found'), [], 422);
+            return BaseController::sendResponse(ProductResource::make($product), __('messages.sent_data'));
+        } catch (\Throwable $th) {
+            return BaseController::sendError(__('something wrong'), [$th->getMessage()], 500);
+        }
+    }
+
+    public static function getProductRatings($id): JsonResponse
+    {
+        try {
+            $ratings = Rating::where('id', $id)->latest()->get();
+            return BaseController::sendResponse(RatingResource::collection($ratings), __('messages.sent_data'));
         } catch (\Throwable $th) {
             return BaseController::sendError(__('something wrong'), [$th->getMessage()], 500);
         }

@@ -37,6 +37,27 @@ class TicketService
         }
     }
 
+    public static function getAllReplies(Ticket $ticket): JsonResponse
+    {
+        try {
+            $messages = $ticket->messages;
+
+            return BaseController::sendResponse($messages, __('messages.sent_data'));
+        } catch (\Throwable $th) {
+            return BaseController::sendError(__('messages.something_went_wrong'), [], 500);
+        }
+    }
+    // public static function getAllReplies($ticket_id): JsonResponse
+    // {
+    //     try {
+    //         $messages = TicketMessage::where('ticket_id', $ticket_id)->latest()->get();
+
+    //         return BaseController::sendResponse($messages, __('messages.sent_data'));
+    //     } catch (\Throwable $th) {
+    //         return BaseController::sendError(__('messages.something_went_wrong'), [], 500);
+    //     }
+    // }
+
     public static function store($data): JsonResponse
     {
         try {

@@ -25,6 +25,14 @@ class TicketController extends Controller
         return TicketService::adminIndex();
     }
 
+    public function getAllReplies(Ticket $ticket)
+    {
+        if (Gate::denies('update', $ticket)) {
+            return BaseController::sendError(__('messages.do_not_have_permission'), [], 403);
+        }
+
+        return TicketService::getAllReplies($ticket);
+    }
 
     public function store(TicketRequest $request): JsonResponse
     {

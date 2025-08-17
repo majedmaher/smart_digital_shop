@@ -142,12 +142,14 @@ Route::group(['prefix' => '/tickets', 'middleware' => ['should_auth', 'auth:sanc
     Route::get('/{ticket}', 'show');
 
     // رسائل التذكرة
+    Route::get('/{ticket}/all-replies', 'getAllReplies');
     Route::post('/{ticket}/reply', 'reply');
 
     // صلاحيات المشرف فقط
     Route::middleware('can:reply to messages')->group(function () {
+        Route::get('/{ticket_id}/all-replies', 'getAllReplies');
         Route::get('/admin/tickets', 'adminIndex');
-        Route::patch('/tickets/{ticket}/status', 'updateStatus');
+        Route::post('/{ticket}/status', 'updateStatus');
     });
 });
 

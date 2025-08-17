@@ -54,4 +54,8 @@ class MainController extends Controller
         $query = $request->input('query');
         return MainService::search($query);
     }
+    public function getTotalPaid(Request $request): JsonResponse
+    {
+        return MainService::getTotalPaid($request->header('Currency', 'SAR'));
+    }
 }

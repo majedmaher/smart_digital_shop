@@ -51,6 +51,7 @@ Route::prefix('social')->group(function () {
 
 Route::get('/rating', [RatingController::class, 'all']);
 Route::middleware(['should_auth', 'auth:sanctum', 'role:admin'])->group(function () {
+    Route::get('/user/total-paid', [MainController::class, 'getTotalPaid']);
     Route::post('/rating/create', [RatingController::class, 'store']);
     Route::post('/faq/create', [FaqController::class, 'store']);
     Route::get('/faq/delete/{id}', [FaqController::class, 'delete']);
@@ -122,6 +123,7 @@ Route::middleware(['should_auth', 'auth:sanctum', 'custom_permission:role:admin'
             Route::post('/create', 'store')->name('create');
             Route::post('/pay', 'pay')->name('pay');
         });
+        Route::get('/admin/get-orders', 'getAdminOrders');
         Route::get('/get-order-items/{id}', 'getOrderItems');
         Route::get('/orders-statistics', 'orderStatistics');
         Route::get('/orders-count-statistics', 'ordersCountStats');

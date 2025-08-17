@@ -161,6 +161,18 @@ class MainService extends Controller
         }
     }
 
+    public static function getTotalPaid($currency): JsonResponse
+    {
+        try {
+            $totalPaid = Order::where('user_id', auth()->id())
+                ->where('status', 'paid') // إذا عندك حالة دفع
+                ->sum('total_price');
+            return BaseController::sendResponse(currencyConverter($totalPaid, $currency), __('messages.sent_data'));
+        } catch (\Throwable $th) {
+            return BaseController::sendError(__('something wrong'), [$th->getMessage()], 500);
+        }
+    }
+
     public static function search($query): JsonResponse
     {
         try {

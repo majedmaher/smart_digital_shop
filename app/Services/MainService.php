@@ -134,7 +134,7 @@ class MainService extends Controller
     public static function getProductRatings($id): JsonResponse
     {
         try {
-            $ratings = Rating::where('id', $id)->latest()->get();
+            $ratings = Rating::where('product_id', $id)->latest()->get();
             return BaseController::sendResponse(RatingResource::collection($ratings), __('messages.sent_data'));
         } catch (\Throwable $th) {
             return BaseController::sendError(__('something wrong'), [$th->getMessage()], 500);
@@ -167,7 +167,7 @@ class MainService extends Controller
             $totalPaid = Order::where('user_id', auth()->id())
                 ->where('status', 'paid') // إذا عندك حالة دفع
                 ->sum('total_price');
-            return BaseController::sendResponse(currencyConverter($totalPaid, $currency), __('messages.sent_data'));
+            return BaseController::sendResponse(currencyConverter($totalPaid ?? 0, $currency), __('messages.sent_data'));
         } catch (\Throwable $th) {
             return BaseController::sendError(__('something wrong'), [$th->getMessage()], 500);
         }

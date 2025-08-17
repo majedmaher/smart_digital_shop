@@ -81,6 +81,7 @@ class ProductService extends Controller
         $product->fill($data->only(['name', 'category_id', 'sub_category_id', 'content', 'description', 'price_before', 'price', 'discount', 'shipping_payment', 'status']));
 
         if ($data['image'] || $data->hasFile('image')) {
+            if ($product->image) unlink(public_path($product->image));
             $product->image = saveImage($data['image'], self::$image_folder);
         }
         $product->update();

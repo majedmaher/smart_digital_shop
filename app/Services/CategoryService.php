@@ -67,10 +67,12 @@ class CategoryService extends Controller
             }
             if ($data['icon'] || $data->hasFile('icon')) {
                 $icon = saveImage($data['icon'], self::$image_folder) . '/icons';
+                if ($category->icon) unlink(public_path($category->icon));
                 $category->icon = $icon;
             }
             if ($data['image'] || $data->hasFile('image')) {
                 $image = saveImage($data['image'], self::$image_folder . '/image');
+                if ($category->image) unlink(public_path($category->image));
                 $category->image = $image;
             }
             $category->name = $data['name'];

@@ -77,4 +77,13 @@ class OrderController extends Controller
 
         return PaymobService::refundOrder($request->order_id);
     }
+
+    public function uploadProofFile(Request $request)
+    {
+        $data = $request->validate([
+            'order_item_id' => 'required|integer|exists:order_items,id',
+            'proof_file' => 'required|file',
+        ]);
+        return OrderService::uploadProofFile($data);
+    }
 }

@@ -50,12 +50,15 @@ Route::prefix('social')->group(function () {
 });
 
 Route::get('/rating', [RatingController::class, 'all']);
-Route::middleware(['should_auth', 'auth:sanctum', 'role:admin'])->group(function () {
+Route::middleware(['should_auth', 'auth:sanctum'])->group(function () {
     Route::get('/user/total-paid', [MainController::class, 'getTotalPaid']);
     Route::post('/rating/create', [RatingController::class, 'store']);
-    Route::post('/faq/create', [FaqController::class, 'store']);
-    Route::get('/faq/delete/{id}', [FaqController::class, 'delete']);
+    Route::middleware(['role:admin'])->group(function () {
+        Route::post('/faq/create', [FaqController::class, 'store']);
+        Route::get('/faq/delete/{id}', [FaqController::class, 'delete']);
+    });
 });
+
 
 Route::middleware(['should_auth', 'auth:sanctum', 'custom_permission:role:admin'])->group(function () {
 
@@ -130,6 +133,7 @@ Route::middleware(['should_auth', 'auth:sanctum', 'custom_permission:role:admin'
         Route::post('/orders-count-statistics-manual', 'ordersCountStatsManual');
         Route::post('/refund/transaction', 'refundTransaction');
         Route::post('/refund', 'refundOrder');
+        Route::post('/upload/proof-file', 'uploadProofFile');
     });
 });
 Route::group(['prefix' => '/tickets', 'middleware' => ['should_auth', 'auth:sanctum'], 'controller' => TicketController::class], function () {

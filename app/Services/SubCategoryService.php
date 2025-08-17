@@ -101,9 +101,11 @@ class SubCategoryService extends Controller
                 return BaseController::sendError(__('messages.parent_id_is_same_as_the_id'), [], 422);
             }
             if ($data['image'] || $data->hasFile('image')) {
+                if ($sub_category->image) unlink(public_path($sub_category->image));
                 $sub_category->image = saveImage($data['image'], self::$image_folder . '/image');
             }
             if ($data['icon'] || $data->hasFile('icon')) {
+                if ($sub_category->icon) unlink(public_path($sub_category->icon));
                 $sub_category->icon = saveImage($data['icon'], self::$image_folder . '/icons');
             }
             $sub_category->name = $data['name'];

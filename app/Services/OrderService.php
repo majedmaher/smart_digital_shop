@@ -8,6 +8,7 @@ use App\Enum\ShippingMethodPayment;
 use App\Http\Controllers\API\BaseController;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use App\Models\OrderItem;
 use App\Models\Product;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
@@ -15,6 +16,7 @@ use Illuminate\Support\Facades\DB;
 class OrderService extends Controller
 {
 
+    private static string $image_folder = 'orders';
     public static function getAdminOrders(): JsonResponse
     {
         try {
@@ -33,6 +35,21 @@ class OrderService extends Controller
             if (!$order) return BaseController::sendError(__('messages.item_not_found', ['item' => __('messages.order')]), [], 404);
 
             return BaseController::sendResponse($order, __('messages.sent_data'));
+        } catch (\Throwable $th) {
+            return BaseController::sendError(__('messages.something_went_wrong'), [$th->getMessage()], 500);
+        }
+    }
+    public static function uploadProofFile($data): JsonResponse
+    {
+        try {
+            $order = OrderItem::find($data['order_item_id']);
+            if (!$order) return BaseController::sendError(__('messages.item_not_found', ['item' => __('messages.order')]), [], 404);
+            if ($order->proof_file) unlink(public_path($order->proof_file));
+
+            $order->proof_file = saveImage($data['proof_file'], self::$image_folder . '/proof-file');
+            $order->update();
+
+            return BaseController::sendResponse($order, __('messages.store_successfully'));
         } catch (\Throwable $th) {
             return BaseController::sendError(__('messages.something_went_wrong'), [$th->getMessage()], 500);
         }

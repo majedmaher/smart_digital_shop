@@ -122,6 +122,7 @@ Route::middleware(['should_auth', 'auth:sanctum', 'custom_permission:role:admin'
             Route::post('/create', 'store')->name('create');
             Route::post('/pay', 'pay')->name('pay');
         });
+        Route::get('/get-order-items/{id}', 'getOrderItems');
         Route::get('/orders-statistics', 'orderStatistics');
         Route::get('/orders-count-statistics', 'ordersCountStats');
         Route::post('/orders-count-statistics-manual', 'ordersCountStatsManual');

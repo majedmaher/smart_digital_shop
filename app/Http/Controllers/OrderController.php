@@ -12,6 +12,10 @@ use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
+    public function getOrderItems($id): JsonResponse
+    {
+        return OrderService::getOrderItems($id);
+    }
     public function orderStatistics(): JsonResponse
     {
         return OrderService::orderStatistics();

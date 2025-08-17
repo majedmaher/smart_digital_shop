@@ -14,6 +14,18 @@ use Illuminate\Support\Facades\DB;
 
 class OrderService extends Controller
 {
+
+    public static function getOrderItems($id): JsonResponse
+    {
+        try {
+            $order = Order::with('items')->find($id);
+            if (!$order) return BaseController::sendError(__('messages.item_not_found', ['item' => __('messages.order')]), [], 404);
+
+            return BaseController::sendResponse($order, __('messages.sent_data'));
+        } catch (\Throwable $th) {
+            return BaseController::sendError(__('messages.something_went_wrong'), [$th->getMessage()], 500);
+        }
+    }
     public static function orderStatistics(): JsonResponse
     {
         try {

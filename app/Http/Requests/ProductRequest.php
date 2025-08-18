@@ -35,7 +35,7 @@ class ProductRequest extends FormRequest
             'description.en' => 'required|string',
             'price' => 'required',
             'discount' => 'nullable|max:100',
-            'shipping_payment' => 'required|in:code, account_id, multi_id, access',
+            'shipping_payment' => 'required|in:code,account_id,multi_id,access',
             'image' => 'required|file|mimes:png,jpg,jpeg,webp|max:2048',
         ];
     }

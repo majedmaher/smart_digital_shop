@@ -15,6 +15,7 @@ use App\Http\Controllers\SliderController;
 use App\Http\Controllers\SocialAuthController;
 use App\Http\Controllers\SubCategoryController;
 use App\Http\Controllers\TicketController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::controller(MainController::class)->group(function () {
@@ -49,20 +50,15 @@ Route::prefix('social')->group(function () {
     Route::get('callback/{provider}', [SocialAuthController::class, 'callback']);
 });
 
-Route::get('/rating', [RatingController::class, 'all']);
 Route::middleware(['should_auth', 'auth:sanctum'])->group(function () {
     Route::get('/user/total-paid', [MainController::class, 'getTotalPaid']);
     Route::post('/rating/create', [RatingController::class, 'store']);
-    Route::middleware(['role:admin'])->group(function () {
+    Route::middleware(['custom_permission:permission:manage settings'])->group(function () {
         Route::post('/faq/create', [FaqController::class, 'store']);
         Route::get('/faq/delete/{id}', [FaqController::class, 'delete']);
     });
-});
 
-
-Route::middleware(['should_auth', 'auth:sanctum', 'custom_permission:role:admin'])->group(function () {
-
-    Route::controller(CategoryController::class)->group(function () {
+    Route::group(['middleware' => 'custom_permission:permission:manage categories', 'controller' => CategoryController::class], (function () {
         Route::get('/categories', 'index');
         Route::group(['prefix' => '/category', 'as' => 'category.'], function () {
             Route::post('/create', 'store')->name('create');
@@ -70,8 +66,8 @@ Route::middleware(['should_auth', 'auth:sanctum', 'custom_permission:role:admin'
             Route::post('/update/{id}', 'update')->name('update');
             Route::get('/delete/{id}', 'delete')->name('delete');
         });
-    });
-    Route::controller(SubCategoryController::class)->group(function () {
+    }));
+    Route::group(['middleware' => 'custom_permission:permission:manage subcategories', 'controller' => SubCategoryController::class], (function () {
         Route::get('/sub-categories', 'index');
         Route::get('/get/categories', 'getCategories');
         Route::get('/get/category/{categoryId}/sub-categories', 'getSubCategoriesByCategory');
@@ -81,8 +77,9 @@ Route::middleware(['should_auth', 'auth:sanctum', 'custom_permission:role:admin'
             Route::post('/update/{id}', 'update')->name('update');
             Route::get('/delete/{id}', 'delete')->name('delete');
         });
-    });
-    Route::controller(ProductController::class)->group(function () {
+    }));
+
+    Route::group(['middleware' => 'custom_permission:permission:manage products', 'controller' => ProductController::class], (function () {
         Route::get('/categories/{category_id}/sub-categories/products', 'categorySubcategoryProducts');
         Route::get('/sub-categories/{sub_category_id}/products', 'subcategoryProducts');
         Route::get('/products', 'index');
@@ -92,8 +89,9 @@ Route::middleware(['should_auth', 'auth:sanctum', 'custom_permission:role:admin'
             Route::post('/update/{id}', 'update')->name('update');
             Route::get('/delete/{id}', 'delete')->name('delete');
         });
-    });
-    Route::controller(CodeController::class)->group(function () {
+    }));
+
+    Route::group(['middleware' => 'custom_permission:permission:manage codes', 'controller' => CodeController::class], (function () {
         Route::get('/codes', 'index');
         Route::get('/product/{product_id}/codes', 'ProductCodes');
         Route::group(['prefix' => '/code', 'as' => 'code.'], function () {
@@ -103,9 +101,9 @@ Route::middleware(['should_auth', 'auth:sanctum', 'custom_permission:role:admin'
             Route::post('/update/{id}', 'update')->name('update');
             Route::get('/delete/{id}', 'delete')->name('delete');
         });
-    });
+    }));
 
-    Route::controller(CouponController::class)->group(function () {
+    Route::group(['middleware' => 'custom_permission:permission:manage coupons', 'controller' => CouponController::class], (function () {
         Route::get('/coupons',  'index');
         Route::group(['prefix' => '/coupon', 'as' => 'coupon.'], function () {
             Route::get('/options',  'optionsCoupon');
@@ -113,16 +111,16 @@ Route::middleware(['should_auth', 'auth:sanctum', 'custom_permission:role:admin'
             Route::get('/delete/{id}',  'delete');
             Route::post('/apply-coupon',  'applyCoupon')->withoutMiddleware('custom_permission:role:admin');
         });
-    });
+    }));
 
-    Route::controller(SliderController::class)->group(function () {
+    Route::group(['middleware' => 'custom_permission:permission:manage coupons', 'controller' => SliderController::class], (function () {
         Route::get('/sliders', 'index');
         Route::post('/slider/create', 'store');
         Route::get('/slider/{id}', 'delete');
-    });
+    }));
 
-    Route::group(['prefix' => '/order', 'as' => 'order.', 'controller' => OrderController::class], function () {
-        Route::withoutMiddleware(['custom_permission:role:admin'])->group(function () {
+    Route::group(['prefix' => '/order', 'middleware' => 'custom_permission:permission:manage coupons', 'as' => 'order.', 'controller' => OrderController::class], function () {
+        Route::withoutMiddleware(['custom_permission:permission:manage orders'])->group(function () {
             Route::post('/create', 'store')->name('create');
             Route::post('/pay', 'pay')->name('pay');
         });
@@ -135,27 +133,40 @@ Route::middleware(['should_auth', 'auth:sanctum', 'custom_permission:role:admin'
         Route::post('/refund', 'refundOrder');
         Route::post('/upload/proof-file', 'uploadProofFile');
     });
-});
-Route::group(['prefix' => '/tickets', 'middleware' => ['should_auth', 'auth:sanctum'], 'controller' => TicketController::class], function () {
-    Route::get('/', 'index');
-    Route::post('/create', 'store');
-    Route::get('/{ticket}', 'show');
 
-    // رسائل التذكرة
-    Route::get('/{ticket}/all-replies', 'getAllReplies');
-    Route::post('/{ticket}/reply', 'reply');
-
-    // صلاحيات المشرف فقط
-    Route::middleware('can:reply to messages')->group(function () {
-        Route::get('/{ticket_id}/all-replies', 'getAllReplies');
-        Route::get('/admin/tickets', 'adminIndex');
-        Route::post('/{ticket}/status', 'updateStatus');
+    Route::group(['prefix' => '/users', 'middleware' => 'custom_permission:permission:manage users', 'controller' => UserController::class], function () {
+        Route::get('/', 'getAllUsers');
+        Route::get('/get/permissions', 'getPermissions');
+        Route::post('/create', 'createCustomerUser');
+        Route::post('/update/{user}/permissions', 'updateUserPermissions');
     });
-});
 
-Route::group(['prefix' => '/notifications', 'middleware' => ['should_auth', 'auth:sanctum'], 'controller' => NotificationController::class], function () {
-    Route::get('/', [NotificationController::class, 'getNotifications']);
-    Route::get('/{id}/read', [NotificationController::class, 'markAsRead']);
-    Route::post('/read-multiple', [NotificationController::class, 'markMultipleAsRead']);
-    Route::get('/read-all', [NotificationController::class, 'markAllAsRead']);
+    Route::get('/rating', [RatingController::class, 'all'])->middleware('custom_permission:permission:manage ratings');
+
+
+    Route::group(['prefix' => '/tickets', 'middleware' => 'custom_permission:permission:reply tickets', 'controller' => TicketController::class], function () {
+        Route::get('/', 'index');
+        Route::post('/create', 'store');
+        Route::get('/{ticket}', 'show');
+
+        // رسائل التذكرة
+        Route::get('/{ticket}/all-replies', 'getAllReplies');
+        Route::post('/{ticket}/reply', 'reply');
+
+        // صلاحيات المشرف فقط
+        Route::middleware('can:reply to messages')->group(function () {
+            Route::get('/{ticket_id}/all-replies', 'getAllReplies');
+            Route::get('/admin/tickets', 'adminIndex');
+            Route::post('/{ticket}/status', 'updateStatus');
+        });
+    });
+
+
+
+    Route::group(['prefix' => '/notifications', 'controller' => NotificationController::class], function () {
+        Route::get('/', [NotificationController::class, 'getNotifications']);
+        Route::get('/{id}/read', [NotificationController::class, 'markAsRead']);
+        Route::post('/read-multiple', [NotificationController::class, 'markMultipleAsRead']);
+        Route::get('/read-all', [NotificationController::class, 'markAllAsRead']);
+    });
 });

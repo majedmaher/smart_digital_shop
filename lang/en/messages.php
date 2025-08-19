@@ -86,5 +86,6 @@ return [
     'ticket' => 'Ticket',
     'message' => 'Message',
     'notification' => 'Notification',
+    'user' => 'User',
 
 ];

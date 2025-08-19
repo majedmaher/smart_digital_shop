@@ -88,5 +88,6 @@ return [
     'ticket' => 'التذكرة',
     'message' => 'الرسالة',
     'notification' => 'الإشعار',
+    'user' => 'المستخدم',
 
 ];

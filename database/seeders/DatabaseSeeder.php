@@ -15,19 +15,21 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $user = User::factory()->create([
-            'name' => 'Wassim',
-            'email' => 'wasimabdelhadi78@gmail.com',
-            // 'name' => 'Test User',
-            // 'email' => 'test@test.com',
-            'password' => 'asdasd123123',
-        ]);
+        // $user = User::factory()->create([
+        //     'name' => 'Wassim',
+        //     'email' => 'wasimabdelhadi78@gmail.com',
+        //     // 'name' => 'Test User',
+        //     // 'email' => 'test@test.com',
+        //     'password' => 'asdasd123123',
+        // ]);
+
+        $user = User::first();
         $this->call([
             RolesAndPermissionsSeeder::class,
-            CategorySeeder::class,
-            SubCategorySeeder::class,
-            ProductSeeder::class,
-            CodeSeeder::class,
+            // CategorySeeder::class,
+            // SubCategorySeeder::class,
+            // ProductSeeder::class,
+            // CodeSeeder::class,
         ]);
         $user->assignRole(RoleEnum::ADMIN);
         // User::factory(10)->create();

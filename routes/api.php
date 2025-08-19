@@ -144,7 +144,7 @@ Route::middleware(['should_auth', 'auth:sanctum'])->group(function () {
     Route::get('/rating', [RatingController::class, 'all'])->middleware('custom_permission:permission:manage ratings');
 
 
-    Route::group(['prefix' => '/tickets', 'middleware' => 'custom_permission:permission:reply tickets', 'controller' => TicketController::class], function () {
+    Route::group(['prefix' => '/tickets', 'controller' => TicketController::class], function () {
         Route::get('/', 'index');
         Route::post('/create', 'store');
         Route::get('/{ticket}', 'show');

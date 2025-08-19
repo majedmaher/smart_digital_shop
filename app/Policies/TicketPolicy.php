@@ -24,7 +24,7 @@ class TicketPolicy
      */
     public function view(User $user, Ticket $ticket): bool
     {
-        return $user->id === $ticket->user_id || $user->hasPermissionTo(PermissionEnum::REPLY_TO_MESSAGES);
+        return $user->id === $ticket->user_id || $user->hasPermissionTo(PermissionEnum::REPLY_TO_TICKETS);
     }
 
     /**
@@ -40,7 +40,7 @@ class TicketPolicy
      */
     public function update(User $user, Ticket $ticket): bool
     {
-        return ((($user->id === $ticket->user_id) || ($user->hasPermissionTo(PermissionEnum::REPLY_TO_MESSAGES)) && ($ticket->status == TicketStatusEnum::OPEN->value || $ticket->status == TicketStatusEnum::PENDING->value)));
+        return ((($user->id === $ticket->user_id) || ($user->hasPermissionTo(PermissionEnum::REPLY_TO_TICKETS)) && ($ticket->status == TicketStatusEnum::OPEN->value || $ticket->status == TicketStatusEnum::PENDING->value)));
     }
 
     /**

@@ -154,7 +154,7 @@ Route::middleware(['should_auth', 'auth:sanctum'])->group(function () {
         Route::post('/{ticket}/reply', 'reply');
 
         // صلاحيات المشرف فقط
-        Route::middleware('can:reply to messages')->group(function () {
+        Route::middleware('can:reply tickets')->group(function () {
             Route::get('/{ticket_id}/all-replies', 'getAllReplies');
             Route::get('/admin/tickets', 'adminIndex');
             Route::post('/{ticket}/status', 'updateStatus');

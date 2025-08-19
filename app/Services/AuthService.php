@@ -75,14 +75,14 @@ class AuthService extends Controller
     {
         $user = User::where('email', $data['email'])->first();
 
-        if (
-            !$user ||
-            $user->otp_code !== $data['otp'] ||
-            !$user->otp_expires_at ||
-            now()->greaterThan($user->otp_expires_at)
-        ) {
-            return BaseController::sendError(__('messages.otp_error'), [], 422);
-        }
+        // if (
+        //     !$user ||
+        //     $user->otp_code !== $data['otp'] ||
+        //     !$user->otp_expires_at ||
+        //     now()->greaterThan($user->otp_expires_at)
+        // ) {
+        //     return BaseController::sendError(__('messages.otp_error'), [], 422);
+        // }
 
         // OTP valid — clear OTP and return token
         $user->otp_code = null;

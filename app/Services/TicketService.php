@@ -82,6 +82,9 @@ class TicketService
                     ]);
                 }
             }
+
+            event(new TicketMessageCreated($message));
+
             return BaseController::sendResponse($ticket->load('messages'), __('messages.store_successfully', ['item' => __('messages.ticket')]));
         } catch (\Throwable $th) {
             return BaseController::sendError(__('messages.store_failed', ['item' => __('messages.ticket')]), [$th->getMessage()], 500);

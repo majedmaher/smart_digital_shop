@@ -22,6 +22,11 @@ class AuthController extends BaseController
 
         return AuthService::login($request);
     }
+    public function updateUser(Request $request)
+    {
+
+        return AuthService::updateUser($request);
+    }
 
     public function confirmOtp(Request $request)
     {

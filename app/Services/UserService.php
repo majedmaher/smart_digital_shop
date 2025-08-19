@@ -14,8 +14,32 @@ class UserService
     public static function getAllUsers(): JsonResponse
     {
         try {
+            $users = User::where('id', '!=', auth()->id())->get();
+            return BaseController::sendResponse($users, __('messages.sent_data'));
+        } catch (\Throwable $th) {
+            return BaseController::sendError(__('messages.something_went_wrong'), [], 500);
+        }
+    }
+
+    public static function getAllCustomerUsers(): JsonResponse
+    {
+        try {
             $users = User::role('custom')->where('id', '!=', auth()->id())->get();
             return BaseController::sendResponse($users, __('messages.sent_data'));
+        } catch (\Throwable $th) {
+            return BaseController::sendError(__('messages.something_went_wrong'), [], 500);
+        }
+    }
+
+    public static function deleteUser($user_id): JsonResponse
+    {
+        try {
+            $user = User::find($user_id);
+            if (!$user) {
+                return BaseController::sendError(__('messages.item_not_found', ['item' => __('messages.user')]), [], 404);
+            }
+            $user->delete();
+            return BaseController::sendResponse($user, __('messages.delete_successfully', ['item' => __('messages.user')]));
         } catch (\Throwable $th) {
             return BaseController::sendError(__('messages.something_went_wrong'), [], 500);
         }

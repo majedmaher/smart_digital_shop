@@ -15,6 +15,16 @@ class UserController extends Controller
         return UserService::getAllUsers();
     }
 
+    public function getAllCustomerUsers(): JsonResponse
+    {
+        return UserService::getAllCustomerUsers();
+    }
+
+    public function deleteUser($user_id): JsonResponse
+    {
+        return UserService::deleteUser($user_id);
+    }
+
     public function getPermissions(): JsonResponse
     {
         return UserService::getPermissions();

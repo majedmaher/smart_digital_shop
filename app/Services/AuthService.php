@@ -71,6 +71,28 @@ class AuthService extends Controller
             return BaseController::sendError((__('messages.login_failed')), [$th->getMessage()], 500);
         }
     }
+
+    static function updateUser($request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'password' => 'nullable|string|min:8|confirmed',
+        ]);
+
+        try {
+            $user = auth()->user();
+            // return response()->json([Hash::check($request->password, $user->password)]);
+            $user->name = $validated['name'];
+            if ($validated['password']) {
+                $user->password = $validated['password'];
+            }
+            $user->update();
+
+            return BaseController::sendResponse($user, __('messages.update_successfully', ['item' => __('messages.user')]));
+        } catch (\Throwable $th) {
+            return BaseController::sendError((__('messages.login_failed')), [$th->getMessage()], 500);
+        }
+    }
     static function confirmOtp($data)
     {
         $user = User::where('email', $data['email'])->first();

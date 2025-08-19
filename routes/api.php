@@ -40,6 +40,7 @@ Route::controller(PaymentController::class)->group(function () {
 Route::controller(AuthController::class)->as('auth.')->group(function () {
     Route::post('/register', 'register')->name('register');
     Route::post('/login', 'login')->name('login');
+    Route::post('/update-user', 'updateUser')->name('updateUser')->middleware(['should_auth', 'auth:sanctum']);
     Route::post('confirm-otp', 'confirmOtp')->name('confirmOtp');
     Route::post('/logout', 'logout')->middleware(['should_auth', 'auth:sanctum'])->name('logout');
 });
@@ -135,7 +136,9 @@ Route::middleware(['should_auth', 'auth:sanctum'])->group(function () {
     });
 
     Route::group(['prefix' => '/users', 'middleware' => 'custom_permission:permission:manage users', 'controller' => UserController::class], function () {
-        Route::get('/', 'getAllUsers');
+        Route::get('/', 'getAllCustomerUsers');
+        Route::get('/all', 'getAllUsers');
+        Route::get('/delete/{user_id}', 'deleteUser');
         Route::get('/get/permissions', 'getPermissions');
         Route::post('/create', 'createCustomerUser');
         Route::post('/update/{user}/permissions', 'updateUserPermissions');

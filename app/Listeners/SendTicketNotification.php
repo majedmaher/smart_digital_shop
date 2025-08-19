@@ -27,7 +27,7 @@ class SendTicketNotification implements ShouldQueue
         $message = $event->message;
         $ticket = $message->ticket;
 
-        if ($message->user?->hasPermissionTo('reply to messages')) {
+        if ($message->user?->hasPermissionTo('reply tickets')) {
             // تعيين هذا المشرف إذا لم يتم التعيين من قبل
             if (!$ticket->assigned_to) {
                 $ticket->assigned_to = $message->user_id;
@@ -48,7 +48,7 @@ class SendTicketNotification implements ShouldQueue
             // إذا بدك تبعت لكل المشرفين في حال ما في تعيين:
             $recipients = $ticket->assigned_to
                 ? [User::find($ticket->assigned_to)]
-                : User::permission('reply to messages')->get();
+                : User::permission('reply tickets')->get();
             foreach ($recipients as $recipient) {
                 if ($recipient->id !== $message->user_id) {
                     $recipient->notify(new TicketReplyNotification($ticket, $message));

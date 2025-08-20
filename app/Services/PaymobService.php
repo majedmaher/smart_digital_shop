@@ -6,6 +6,7 @@ use App\Enum\OrderStatusEnum;
 use App\Enum\PaymentCurrencyEnum;
 use App\Enum\PaymentProviderEnum;
 use App\Enum\PaymentStatusEnum;
+use App\Helpers\OrderHelper;
 use App\Http\Controllers\API\BaseController;
 use App\Jobs\SendCodeAfterPayment;
 use App\Models\Order;
@@ -33,19 +34,11 @@ class PaymobService
             $billingData = self::buildBillingData();
 
             $integrationId = config('services.paymob.integration_id');
-
             $paymobPayload = [
-                'amount' => (float) $order->total_price * 100,
+                'amount' => (int) round($order->total_price * 100),
                 'currency' => PaymentCurrencyEnum::SAR->value,
                 'payment_methods' => [intval($integrationId)],
-                'items' => $order->items->map(fn($item) => [
-                    'name' => $item->product->name,
-                    'amount' => $item->quantity > 0
-                        ? round(($item->total / $item->quantity) * 100)
-                        : 0, // سعر الوحدة بعد الخصم * 100
-                    'description' => $item->product->description ?? 'Product',
-                    'quantity' => $item->quantity,
-                ])->toArray(),
+                'items' => OrderHelper::buildItems($order),
                 'billing_data' => $billingData,
                 // 'special_reference' => 'order-' . $order->id,
                 'special_reference' => 'order-' . $order->id . '-' . uniqid(),
@@ -122,11 +115,11 @@ class PaymobService
                 'amount_cents' => (string) $amountToRefund // إرسال المبلغ بالهللة/السنتات مباشرة
             ]);
             if ($response->failed()) {
-                Log::error('Paymob Refund API Error', [
-                    'transaction_id' => $transaction_id,
-                    'amount_cents' => $amountToRefund,
-                    'response' => $response->body()
-                ]);
+                // Log::error('Paymob Refund API Error', [
+                //     'transaction_id' => $transaction_id,
+                //     'amount_cents' => $amountToRefund,
+                //     'response' => $response->body()
+                // ]);
                 return BaseController::sendError(__('messages.recovery_process_failed'), [], 500);
             }
 
@@ -230,7 +223,7 @@ class PaymobService
         try {
             $data = $request->all();
 
-            Log::info('📥 Paymob Webhook Received', $data);
+            // Log::info('📥 Paymob Webhook Received', $data);
 
             if (!self::verifyHmac($data)) {
                 // Log::warning('❌ Invalid HMAC signature');
@@ -316,7 +309,6 @@ class PaymobService
 
         if ($pointsToAdd > 0) {
             $user->increment('points', $pointsToAdd);
-            Log::info('user', ['user' => $user]);
         }
 
 

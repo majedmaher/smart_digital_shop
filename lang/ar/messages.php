@@ -62,6 +62,7 @@ return [
     'refund_confirmed' => 'تم تأكيد استرداد الأموال',
     'your_balance_less_than_the_minimum_transfer_amount' => 'رصيدك أقل من الحد الأدنى للتحويل (1000 نقطة)',
     'points_have_been_transferred_successfully' => 'تم تحويل النقاط بنجاح',
+    'not_enough_balance_in_wallet' => 'رصيد محفظتك غير كافٍ لإتمام عملية الدفع.',
 
 
     "payment_success_subject" => "تمت عملية الدفع بنجاح",

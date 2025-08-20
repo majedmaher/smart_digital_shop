@@ -7,6 +7,7 @@ use App\Http\Controllers\API\BaseController;
 use App\Http\Requests\OrderRequest;
 use App\Services\OrderService;
 use App\Services\PaymobService;
+use App\Services\WalletService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -46,6 +47,9 @@ class OrderController extends Controller
 
     public function pay(Request $request): JsonResponse
     {
+        if ($request->payment_gateway == PaymentProviderEnum::WALLET->value) {
+            return WalletService::payUsingWallet($request->order_id);
+        }
         if ($request->payment_gateway !== PaymentProviderEnum::PAYMOB->value) {
             return BaseController::sendError(__('messages.invalid_payment_gateway'), [], 400);
         }

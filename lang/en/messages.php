@@ -62,6 +62,7 @@ return [
     'refund_confirmed' => 'Refund confirmed',
     'your_balance_less_than_the_minimum_transfer_amount' => 'Your balance is less than the minimum transfer amount (1000 points)',
     'points_have_been_transferred_successfully' => 'Points have been transferred successfully',
+    'not_enough_balance_in_wallet' => 'Your wallet balance is not enough to complete this payment.',
 
     "payment_success_subject" => "Payment Successful",
     "hello" => "Hello",

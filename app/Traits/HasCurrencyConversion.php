@@ -10,7 +10,8 @@ trait HasCurrencyConversion
     {
         static::creating(function ($model) {
             $currencyCode = Request::header('Currency', 'SAR');
-            $total_price = currencyConverter((float) $model->total_price ?? (float) $model->total, $currencyCode, 2);
+            $total = isset($model->total_price) ? $model->total_price : $model->total;
+            $total_price = currencyConverter($total, $currencyCode, 2);
             $model->currency_code = $total_price['currency'];
             $model->total_price_user_currency = $total_price['amount'];
 
@@ -19,8 +20,9 @@ trait HasCurrencyConversion
         });
 
         static::updating(function ($model) {
-            $currencyCode = Request::header('Currency', 'SAR');
-            $total_price = currencyConverter((float) $model->total_price ?? (float) $model->total, $currencyCode, 2);
+            $currencyCode = Request::header('Currency', 'SAR') ?? $model->currency_code;
+            $total = isset($model->total_price) ? $model->total_price : $model->total;
+            $total_price = currencyConverter($total, $currencyCode, 2);
             $model->currency_code = $total_price['currency'];
             $model->total_price_user_currency = $total_price['amount'];
 

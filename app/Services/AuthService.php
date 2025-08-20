@@ -5,8 +5,10 @@ namespace App\Services;
 use App\Http\Controllers\API\BaseController;
 use App\Http\Controllers\Controller;
 use App\Mail\OtpCodeMail;
+use App\Models\Referral;
 use App\Models\User;
 use App\RoleEnum;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -20,12 +22,38 @@ class AuthService extends Controller
         DB::beginTransaction();
         try {
             $users_count = User::all()->count();
-            $user = User::create($data);
+            $user = User::create(Arr::except($data, ['referral_code']));
             if ($users_count >= 1) {
                 $user->assignRole(RoleEnum::USER);
             } else {
                 $user->assignRole(RoleEnum::ADMIN);
             }
+
+            // توليد كود الدعوة للمستخدم الجديد
+            $user->generateReferralCode();
+
+            // التحقق من كود الدعوة المدخل
+            $referralCode = $data['referral_code'];
+
+            if ($referralCode) {
+                $referrer = User::where('referral_code', $referralCode)
+                    ->where('id', '!=', $user->id) // لا يمكن أن يستخدم نفسه
+                    ->first();
+
+                if ($referrer) {
+                    Referral::create([
+                        'referrer_id' => $referrer->id,
+                        'referred_id' => $user->id,
+                        'code' => $referralCode,
+                        'reward_given' => true,
+                    ]);
+
+                    // إضافة النقاط لصاحب الدعوة
+                    $referrer->increment('points', 1000);
+                }
+            }
+
+
             $otp = OtpService::generate();
             $user->otp_code = $otp;
             $user->otp_expires_at = OtpService::expiresAt();

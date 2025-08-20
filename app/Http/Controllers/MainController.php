@@ -49,6 +49,11 @@ class MainController extends Controller
         return MainService::getOrders();
     }
 
+    public function getOrderItems($id): JsonResponse
+    {
+        return MainService::getOrderItems($id);
+    }
+
     public function search(Request $request): JsonResponse
     {
         $query = $request->input('query');
@@ -57,6 +62,10 @@ class MainController extends Controller
     public function getTotalPaid(Request $request): JsonResponse
     {
         return MainService::getTotalPaid($request->header('Currency', 'SAR'));
+    }
+    public function myReferrals(): JsonResponse
+    {
+        return MainService::myReferrals();
     }
     public function getMyPoints(): JsonResponse
     {

@@ -6,6 +6,7 @@ use App\Http\Controllers\API\BaseController;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CategoryResource;
 use App\Http\Resources\FaqResource;
+use App\Http\Resources\OrderItemResponseResource;
 use App\Http\Resources\OrderResponseResource;
 use App\Http\Resources\ProductResource;
 use App\Http\Resources\RatingResource;
@@ -161,6 +162,19 @@ class MainService extends Controller
         }
     }
 
+    public static function getOrderItems($id): JsonResponse
+    {
+        try {
+            $items = Order::find($id)->items()->with(['product' => function ($query) {
+                $query->select('id', 'title'); // تحديد الأعمدة التي تريد جلبها من جدول products
+            }])->get();
+
+            return BaseController::sendResponse(OrderItemResponseResource::collection($items), __('messages.sent_data'));
+        } catch (\Throwable $th) {
+            return BaseController::sendError(__('something wrong'), [$th->getMessage()], 500);
+        }
+    }
+
     public static function getTotalPaid($currency): JsonResponse
     {
         try {
@@ -168,6 +182,20 @@ class MainService extends Controller
                 ->where('status', 'paid') // إذا عندك حالة دفع
                 ->sum('total_price');
             return BaseController::sendResponse(currencyConverter($totalPaid ?? 0, $currency), __('messages.sent_data'));
+        } catch (\Throwable $th) {
+            return BaseController::sendError(__('something wrong'), [], 500);
+        }
+    }
+
+    public static function myReferrals(): JsonResponse
+    {
+        try {
+            $data = [
+                'total_referrals' => auth()->user()->successfulReferrals()->count(),
+                'points_earned' => auth()->user()->successfulReferrals()->count() * 1000,
+                'referrals' => auth()->user()->successfulReferrals()->get(),
+            ];
+            return BaseController::sendResponse($data, __('messages.sent_data'));
         } catch (\Throwable $th) {
             return BaseController::sendError(__('something wrong'), [], 500);
         }

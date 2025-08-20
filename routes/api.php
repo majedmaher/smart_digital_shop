@@ -28,7 +28,6 @@ Route::controller(MainController::class)->group(function () {
     Route::get('/product/{slug}', 'getProduct')->name('getProduct');
     Route::get('/ratings/product/{id}', 'getProductRatings')->name('getProductRatings');
     Route::get('/faqs', 'getFAQS');
-    Route::get('/orders', 'getOrders')->middleware(['should_auth', 'auth:sanctum']);
     Route::get('/search', 'search');
 });
 Route::post('/assistant/ask', [FaqController::class, 'ask']);
@@ -53,10 +52,15 @@ Route::prefix('social')->group(function () {
 });
 
 Route::middleware(['should_auth', 'auth:sanctum'])->group(function () {
-    Route::get('/user/my-points', [MainController::class, 'getMyPoints']);
-    Route::get('/user/my-wallet', [MainController::class, 'getMyWallet']);
+    Route::controller(MainController::class)->group(function () {
+        Route::get('/user/my-referrals', 'myReferrals');
+        Route::get('/user/my-points', 'getMyPoints');
+        Route::get('/user/my-wallet', 'getMyWallet');
+        Route::get('/user/total-paid', 'getTotalPaid');
+        Route::get('/orders', 'getOrders');
+        Route::get('/order/{id}/items', 'getOrderItems');
+    });
     Route::get('/user/increase-my-redeem', [PointsRedemptionController::class, 'redeem']);
-    Route::get('/user/total-paid', [MainController::class, 'getTotalPaid']);
     Route::post('/rating/create', [RatingController::class, 'store']);
     Route::middleware(['custom_permission:permission:manage settings'])->group(function () {
         Route::post('/faq/create', [FaqController::class, 'store']);

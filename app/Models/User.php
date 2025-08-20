@@ -57,4 +57,23 @@ class User extends Authenticatable
 
         ];
     }
+
+    public function generateReferralCode(): string
+    {
+        if (!$this->referral_code) {
+            $this->referral_code = strtoupper(uniqid('REF'));
+            $this->save();
+        }
+        return $this->referral_code;
+    }
+
+    public function referralsMade()
+    {
+        return $this->hasMany(Referral::class, 'referrer_id');
+    }
+
+    public function successfulReferrals()
+    {
+        return $this->referralsMade()->whereNotNull('referred_id');
+    }
 }

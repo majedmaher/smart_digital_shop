@@ -309,10 +309,22 @@ class PaymobService
         $order->update(['status' => OrderStatusEnum::PAID->value]);
         $user = $order->user;
 
+
+        $total = (float) $order->total_price;
+        $blocks = floor($total / 100);                   // كل 100$ = بلوك واحد
+        $pointsToAdd = (int) ($blocks * 1000);         // كل بلوك = 1000 نقطة
+
+        if ($pointsToAdd > 0) {
+            $user->increment('points', $pointsToAdd);
+            Log::info('user', ['user' => $user]);
+        }
+
+
+
         if ($user && $user->email) {
             $user->notify(new PaymentSuccessNotification($order));
         }
-        Log::info('✅ Order already paid', ['order_id' => $order]);
+        // Log::info('✅ Order already paid', ['order_id' => $order]);
 
         SendCodeAfterPayment::dispatch($order);
 

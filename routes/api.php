@@ -9,6 +9,7 @@ use App\Http\Controllers\MainController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\PointsRedemptionController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RatingController;
 use App\Http\Controllers\SliderController;
@@ -52,6 +53,9 @@ Route::prefix('social')->group(function () {
 });
 
 Route::middleware(['should_auth', 'auth:sanctum'])->group(function () {
+    Route::get('/user/my-points', [MainController::class, 'getMyPoints']);
+    Route::get('/user/my-wallet', [MainController::class, 'getMyWallet']);
+    Route::get('/user/increase-my-redeem', [PointsRedemptionController::class, 'redeem']);
     Route::get('/user/total-paid', [MainController::class, 'getTotalPaid']);
     Route::post('/rating/create', [RatingController::class, 'store']);
     Route::middleware(['custom_permission:permission:manage settings'])->group(function () {

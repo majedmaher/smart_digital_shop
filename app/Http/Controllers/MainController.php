@@ -58,4 +58,12 @@ class MainController extends Controller
     {
         return MainService::getTotalPaid($request->header('Currency', 'SAR'));
     }
+    public function getMyPoints(): JsonResponse
+    {
+        return MainService::getMyPoints();
+    }
+    public function getMyWallet(): JsonResponse
+    {
+        return MainService::getMyWallet();
+    }
 }

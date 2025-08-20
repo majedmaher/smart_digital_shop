@@ -60,6 +60,8 @@ return [
     'missing_parent_transaction' => 'المعاملة الأصلية مفقودة',
     'original_payment_not_found' => 'لم يتم العثور على الدفعة الأصلية',
     'refund_confirmed' => 'تم تأكيد استرداد الأموال',
+    'your_balance_less_than_the_minimum_transfer_amount' => 'رصيدك أقل من الحد الأدنى للتحويل (1000 نقطة)',
+    'points_have_been_transferred_successfully' => 'تم تحويل النقاط بنجاح',
 
 
     "payment_success_subject" => "تمت عملية الدفع بنجاح",

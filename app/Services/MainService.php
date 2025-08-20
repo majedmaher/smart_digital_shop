@@ -74,7 +74,7 @@ class MainService extends Controller
 
             return BaseController::sendResponse($data, __('messages.sent_data'));
         } catch (\Throwable $th) {
-            return BaseController::sendError(__('something wrong'), [$th->getMessage()], 500);
+            return BaseController::sendError(__('something wrong'), [], 500);
         }
     }
 
@@ -87,7 +87,7 @@ class MainService extends Controller
             if ($category === null) return BaseController::sendError(__('messages.search_item_not_found'), [], 422);
             return BaseController::sendResponse(CategoryResource::make($category), __('messages.sent_data'));
         } catch (\Throwable $th) {
-            return BaseController::sendError(__('something wrong'), [$th->getMessage()], 500);
+            return BaseController::sendError(__('something wrong'), [], 500);
         }
     }
 
@@ -127,7 +127,7 @@ class MainService extends Controller
             if ($product === null) return BaseController::sendError(__('messages.search_item_not_found'), [], 422);
             return BaseController::sendResponse(ProductResource::make($product), __('messages.sent_data'));
         } catch (\Throwable $th) {
-            return BaseController::sendError(__('something wrong'), [$th->getMessage()], 500);
+            return BaseController::sendError(__('something wrong'), [], 500);
         }
     }
 
@@ -137,7 +137,7 @@ class MainService extends Controller
             $ratings = Rating::where('product_id', $id)->latest()->get();
             return BaseController::sendResponse(RatingResource::collection($ratings), __('messages.sent_data'));
         } catch (\Throwable $th) {
-            return BaseController::sendError(__('something wrong'), [$th->getMessage()], 500);
+            return BaseController::sendError(__('something wrong'), [], 500);
         }
     }
 
@@ -147,7 +147,7 @@ class MainService extends Controller
             $faqs = Faq::latest()->get();
             return BaseController::sendResponse(FaqResource::collection($faqs), __('messages.sent_data'));
         } catch (\Throwable $th) {
-            return BaseController::sendError(__('something wrong'), [$th->getMessage()], 500);
+            return BaseController::sendError(__('something wrong'), [], 500);
         }
     }
 
@@ -157,7 +157,7 @@ class MainService extends Controller
             $orders = Order::where('user_id', auth()->id())->latest()->get();
             return BaseController::sendResponse(OrderResponseResource::collection($orders), __('messages.sent_data'));
         } catch (\Throwable $th) {
-            return BaseController::sendError(__('something wrong'), [$th->getMessage()], 500);
+            return BaseController::sendError(__('something wrong'), [], 500);
         }
     }
 
@@ -169,7 +169,29 @@ class MainService extends Controller
                 ->sum('total_price');
             return BaseController::sendResponse(currencyConverter($totalPaid ?? 0, $currency), __('messages.sent_data'));
         } catch (\Throwable $th) {
-            return BaseController::sendError(__('something wrong'), [$th->getMessage()], 500);
+            return BaseController::sendError(__('something wrong'), [], 500);
+        }
+    }
+
+    public static function getMyPoints(): JsonResponse
+    {
+        try {
+            return BaseController::sendResponse(auth()->user()->points, __('messages.sent_data'));
+        } catch (\Throwable $th) {
+            return BaseController::sendError(__('something wrong'), [], 500);
+        }
+    }
+
+    public static function getMyWallet(): JsonResponse
+    {
+        try {
+            $response = [
+                'wallet_balance' => auth()->user()->wallet_balance,
+                'points_balance' => auth()->user()->points,
+            ];
+            return BaseController::sendResponse($response, __('messages.sent_data'));
+        } catch (\Throwable $th) {
+            return BaseController::sendError(__('something wrong'), [], 500);
         }
     }
 
@@ -199,7 +221,7 @@ class MainService extends Controller
             ];
             return BaseController::sendResponse($response, __('messages.sent_data'));
         } catch (\Throwable $th) {
-            return BaseController::sendError(__('something wrong'), [$th->getMessage()], 500);
+            return BaseController::sendError(__('something wrong'), [], 500);
         }
     }
 }

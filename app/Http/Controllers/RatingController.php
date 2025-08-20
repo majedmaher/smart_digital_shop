@@ -29,7 +29,7 @@ class RatingController extends Controller
                 'product_id' => $request->product_id, // تأكد من إرسالها
                 'stars' => $request->stars,
                 'comment' => $request->comment,
-                'show_name' => $request->has('show_name'),
+                'show_name' => $request->show_name,
             ]);
 
             if ($request->hasFile('images')) {

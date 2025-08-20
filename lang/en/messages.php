@@ -60,6 +60,8 @@ return [
     'missing_parent_transaction' => 'Missing parent transaction',
     'original_payment_not_found' => 'Original payment not found',
     'refund_confirmed' => 'Refund confirmed',
+    'your_balance_less_than_the_minimum_transfer_amount' => 'Your balance is less than the minimum transfer amount (1000 points)',
+    'points_have_been_transferred_successfully' => 'Points have been transferred successfully',
 
     "payment_success_subject" => "Payment Successful",
     "hello" => "Hello",

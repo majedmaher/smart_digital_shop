@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 
@@ -35,6 +36,22 @@ class OrderService extends Controller
             if (!$order) return BaseController::sendError(__('messages.item_not_found', ['item' => __('messages.order')]), [], 404);
 
             return BaseController::sendResponse($order, __('messages.sent_data'));
+        } catch (\Throwable $th) {
+            return BaseController::sendError(__('messages.something_went_wrong'), [$th->getMessage()], 500);
+        }
+    }
+    public static function getUsersPaidProduct($product_id): JsonResponse
+    {
+        try {
+            $customers = User::query()
+                ->select(['users.name', 'users.email', 'users.phone'])
+                ->distinct()
+                ->join('orders', 'orders.user_id', '=', 'users.id')
+                ->join('order_items', 'order_items.order_id', '=', 'orders.id')
+                ->where('order_items.product_id', $product_id)
+                ->paginate(50);
+
+            return BaseController::sendResponse($customers, __('messages.sent_data'));
         } catch (\Throwable $th) {
             return BaseController::sendError(__('messages.something_went_wrong'), [$th->getMessage()], 500);
         }

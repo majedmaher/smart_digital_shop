@@ -21,6 +21,10 @@ class OrderController extends Controller
     {
         return OrderService::getOrderItems($id);
     }
+    public function getUsersPaidProduct($product_id): JsonResponse
+    {
+        return OrderService::getUsersPaidProduct($product_id);
+    }
     public function orderStatistics(): JsonResponse
     {
         return OrderService::orderStatistics();

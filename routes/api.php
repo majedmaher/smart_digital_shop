@@ -66,6 +66,8 @@ Route::prefix('social')->group(function () {
 });
 
 Route::middleware(['should_auth', 'auth:sanctum'])->group(function () {
+    Route::get('/users/paid/product-{product_id}', [OrderController::class, 'getUsersPaidProduct'])->middleware('custom_permission:permission:manage orders');
+
     Route::controller(MainController::class)->group(function () {
         Route::get('/user/my-referrals', 'myReferrals');
         Route::get('/user/my-points', 'getMyPoints');

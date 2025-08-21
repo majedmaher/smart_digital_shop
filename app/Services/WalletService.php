@@ -35,7 +35,6 @@ class WalletService
                 // النقاط اللي رح تتحول
                 $pointsToRedeem = $blocks * 1000;
 
-                // المبلغ بالدولار
                 $totalAmount = $blocks * 0.5;
 
                 // نخصم النقاط

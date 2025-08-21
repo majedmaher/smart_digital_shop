@@ -216,6 +216,7 @@ class MainService extends Controller
             $response = [
                 'wallet_balance' => currencyConverter(auth()->user()->wallet_balance, $currency),
                 'points_balance' => auth()->user()->points,
+                'points_to_cash' => currencyConverter((auth()->user()->points / 1000 * 0.5), $currency),
             ];
             return BaseController::sendResponse($response, __('messages.sent_data'));
         } catch (\Throwable $th) {

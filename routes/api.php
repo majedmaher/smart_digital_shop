@@ -5,6 +5,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CodeController;
 use App\Http\Controllers\CouponController;
 use App\Http\Controllers\FaqController;
+use App\Http\Controllers\InterestController;
 use App\Http\Controllers\MainController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OrderController;
@@ -12,6 +13,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PointsRedemptionController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RatingController;
+use App\Http\Controllers\SeoController;
 use App\Http\Controllers\SliderController;
 use App\Http\Controllers\SocialAuthController;
 use App\Http\Controllers\SubCategoryController;
@@ -30,6 +32,17 @@ Route::controller(MainController::class)->group(function () {
     Route::get('/faqs', 'getFAQS');
     Route::get('/search', 'search');
 });
+
+Route::controller(SeoController::class)->group(function () {
+    Route::get('/get/seo', 'get');
+    Route::post('/update/seo', 'update')->middleware(['should_auth', 'auth:sanctum', 'custom_permission:permission:manage settings']);
+});
+
+Route::group(['middleware' => ['should_auth', 'auth:sanctum'], 'controller' => InterestController::class], function () {
+    Route::get('/get/interests', 'myInterests');
+    Route::post('/create/interest', 'store');
+});
+
 Route::post('/assistant/ask', [FaqController::class, 'ask']);
 
 Route::controller(PaymentController::class)->group(function () {

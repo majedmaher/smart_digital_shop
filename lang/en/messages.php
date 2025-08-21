@@ -25,6 +25,7 @@ return [
     'update_failed' => ':item failed in update',
     'delete_failed' => ':item failed in delete',
     'item_not_found' => ':item nof found in database',
+    'this_product_was_previously_stored_for_this_user' => 'This product was previously stored for this user',
     'parent_id_is_same_as_the_id' => 'You cannot use parent_id for the same element',
     'cart_empty' => 'The cart is empty',
     'quantity_is_low' => 'Quantity must be :quantity or more',
@@ -90,5 +91,6 @@ return [
     'message' => 'Message',
     'notification' => 'Notification',
     'user' => 'User',
+    'interest' => 'Interest',
 
 ];

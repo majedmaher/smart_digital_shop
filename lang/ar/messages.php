@@ -25,7 +25,8 @@ return [
     'update_failed' => 'فشلت عملية تعديل :item',
     'delete_failed' => 'فشلت عملية حذف :item',
     'item_not_found' => 'هذا :item غير موجود في قاعدة البيانات',
-    'parent_id_is_same_as_the_id' => 'لا يمكنك استخدام parent_id لنفس العنصر',
+    'this_product_was_previously_stored_for_this_user' => 'This product was previously stored for this user',
+    'parent_id_is_same_as_the_id' => 'تم تخزين هذا المنتج مسبقًا لهذا المستخدم',
     'cart_empty' => 'العربة فارغة',
     'quantity_is_low' => 'يجب أن تكون الكمية :quantity أو أكثر',
     'quantity_is_high' => 'الكمية المطلوبة غير متوفرة لهذا المنتج',
@@ -92,5 +93,6 @@ return [
     'message' => 'الرسالة',
     'notification' => 'الإشعار',
     'user' => 'المستخدم',
+    'interest' => 'الاهتمام',
 
 ];

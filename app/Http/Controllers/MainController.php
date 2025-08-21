@@ -71,8 +71,8 @@ class MainController extends Controller
     {
         return MainService::getMyPoints();
     }
-    public function getMyWallet(): JsonResponse
+    public function getMyWallet(Request $request): JsonResponse
     {
-        return MainService::getMyWallet();
+        return MainService::getMyWallet($request->header('Currency', 'SAR'));
     }
 }

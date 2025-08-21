@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\DB;
 
 class WalletService
 {
-    public static function redeem(): JsonResponse
+    public static function redeem($currency): JsonResponse
     {
         try {
             $user = auth()->user();
@@ -28,7 +28,7 @@ class WalletService
                 return BaseController::sendError(__('messages.your_balance_less_than_the_minimum_transfer_amount'), [], 422);
             }
 
-            return DB::transaction(function () use ($user) {
+            return DB::transaction(function () use ($user, $currency) {
                 // نحسب كم بلوك من 1000 نقطة عنده
                 $blocks = floor($user->points / 1000);
 
@@ -59,9 +59,9 @@ class WalletService
 
                 $response = [
                     'points_redeemed' => $pointsToRedeem,
-                    'amount_usd' => $totalAmount,
-                    'wallet_balance' => $user->fresh()->wallet_balance,
                     'points_balance' => $user->fresh()->points,
+                    'amount' => currencyConverter($totalAmount, $currency),
+                    'wallet_balance' => currencyConverter($user->fresh()->wallet_balance, $currency),
                 ];
                 return BaseController::sendResponse($response, __('messages.points_have_been_transferred_successfully'));
             });

@@ -210,11 +210,11 @@ class MainService extends Controller
         }
     }
 
-    public static function getMyWallet(): JsonResponse
+    public static function getMyWallet($currency): JsonResponse
     {
         try {
             $response = [
-                'wallet_balance' => auth()->user()->wallet_balance,
+                'wallet_balance' => currencyConverter(auth()->user()->wallet_balance, $currency),
                 'points_balance' => auth()->user()->points,
             ];
             return BaseController::sendResponse($response, __('messages.sent_data'));

@@ -40,4 +40,18 @@ class InterestController extends Controller
             return BaseController::sendError(__('messages.store_failed', ['item' => __('messages.interest')]), [], 500);
         }
     }
+
+    public function delete($id): JsonResponse
+    {
+        try {
+            $interest = Interest::find($id);
+            if (!$interest || !isset($interest)) {
+                return BaseController::sendError(__('messages.item_not_found', ['item' => __('messages.interest')]), [], 422);
+            }
+            $interest->delete();
+            return BaseController::sendResponse($interest, __('messages.delete_successfully', ['item' => __('messages.interest')]));
+        } catch (\Throwable $th) {
+            return BaseController::sendError(__('messages.delete_failed', ['item' => __('messages.interest')]), [], 500);
+        }
+    }
 }

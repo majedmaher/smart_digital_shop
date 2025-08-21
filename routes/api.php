@@ -41,6 +41,7 @@ Route::controller(SeoController::class)->group(function () {
 Route::group(['middleware' => ['should_auth', 'auth:sanctum'], 'controller' => InterestController::class], function () {
     Route::get('/get/interests', 'myInterests');
     Route::post('/create/interest', 'store');
+    Route::get('/delete/interest/{id}', 'delete');
 });
 
 Route::post('/assistant/ask', [FaqController::class, 'ask']);

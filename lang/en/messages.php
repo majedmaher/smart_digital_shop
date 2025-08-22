@@ -16,6 +16,7 @@ return [
     // 
 
     'search_item_not_found' => 'Sorry, no results were found for your search',
+    'empty_question' => 'The question is empty',
     'sent_data' => 'All data has been sent successfully.',
     'can_not_sent_data' => 'An error occurred. The data could not be sent.',
     'store_successfully' => ':item Stored Successfully',

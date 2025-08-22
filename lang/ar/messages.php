@@ -16,6 +16,7 @@ return [
 
     // Category Messages
     'search_item_not_found' => 'عذراً، لم يتم العثور على نتائج لبحثك',
+    'empty_question' => 'السؤال فارغ',
     'sent_data' => 'تم ارسال كل البيانات بنجاح.',
     'can_not_sent_data' => 'حدث خطأ. لم يتم إرسال البيانات.',
     'store_successfully' => 'تم تخزين :item بنجاح',

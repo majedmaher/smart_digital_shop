@@ -170,7 +170,9 @@ class FaqController extends Controller
 
 
             return response()->json([
-                'answer' => $aiAnswer,
+                'answer' => $locale === 'ar'
+                    ? 'تم العثور على النتائج التالية:'
+                    : 'Here are the results found:',
                 'from_cache' => false,
                 'links' => [
                     'categories'     => $catLinks,
@@ -233,29 +235,45 @@ class FaqController extends Controller
         $lookupKey = "chat_lookup:{$locale}:" . md5($question);
 
         return Cache::remember($lookupKey, 600, function () use ($question, $baseUrl) {
-            $questionLower = mb_strtolower($question);
+
+            // تنظيف السؤال من رموز وعلامات
+            $questionClean = preg_replace('/[^\p{L}\p{N}\s]/u', ' ', $question);
+            $words = array_filter(explode(' ', mb_strtolower($questionClean)));
 
             // ======== Categories ========
             $categories = Category::query()
                 ->select('id', 'name', 'slug')
-                ->where('name->ar', 'LIKE', "%{$questionLower}%")
-                ->orWhere('name->en', 'LIKE', "%{$questionLower}%")
-                ->limit(5)->get();
+                ->where(function ($q) use ($words) {
+                    foreach ($words as $word) {
+                        $q->orWhere('name->ar', 'LIKE', "%{$word}%")
+                            ->orWhere('name->en', 'LIKE', "%{$word}%");
+                    }
+                })
+                ->limit(5)
+                ->get();
 
             // ======== SubCategories ========
             $subcats = SubCategory::query()
                 ->select('id', 'name', 'slug', 'category_id')
-                ->where('name->ar', 'LIKE', "%{$questionLower}%")
-                ->orWhere('name->en', 'LIKE', "%{$questionLower}%")
+                ->where(function ($q) use ($words) {
+                    foreach ($words as $word) {
+                        $q->orWhere('name->ar', 'LIKE', "%{$word}%")
+                            ->orWhere('name->en', 'LIKE', "%{$word}%");
+                    }
+                })
                 ->limit(5)
                 ->get()
                 ->load('category:id,slug');
 
             // ======== Products ========
             $products = Product::query()
-                ->select('id', 'title', 'slug', 'sub_category_id')
-                ->where('title->ar', 'LIKE', "%{$questionLower}%")
-                ->orWhere('title->en', 'LIKE', "%{$questionLower}%")
+                ->select('id', 'title', 'slug', 'price', 'sub_category_id')
+                ->where(function ($q) use ($words) {
+                    foreach ($words as $word) {
+                        $q->orWhere('title->ar', 'LIKE', "%{$word}%")
+                            ->orWhere('title->en', 'LIKE', "%{$word}%");
+                    }
+                })
                 ->limit(5)
                 ->get()
                 ->load(['subCategory:id,slug,category_id', 'subCategory.category:id,slug']);
@@ -280,6 +298,7 @@ class FaqController extends Controller
                 return [
                     'title_ar' => $p->getTranslation('title', 'ar'),
                     'title_en' => $p->getTranslation('title', 'en'),
+                    'price' => $p->price,
                     'url'      => ($catSlug && $subSlug)
                         ? "{$baseUrl}/categories/{$catSlug}/{$subSlug}/product/{$p->slug}"
                         : null,

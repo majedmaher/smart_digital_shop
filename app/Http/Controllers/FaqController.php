@@ -50,7 +50,8 @@ class FaqController extends Controller
         $locale   = app()->getLocale(); // 'ar' أو 'en'
         $baseUrl  = 'https://enjoy-games.vercel.app';
         $uniqueId = $request->unique_id;
-
+        $currency = strtoupper($request->header('Currency', 'SAR'));
+        // return response()->json([$currency]);
         if ($question === '') {
             return BaseController::sendError(__('messages.empty_question'), [], 422);
         }
@@ -90,7 +91,7 @@ class FaqController extends Controller
         $previousMessages = $chatSession->getMessages();
 
         // 4) البحث عن تطابقات المنتجات/التصنيفات
-        [$catLinks, $subcatLinks, $productLinks] = $this->findMatchingLinks($question, $locale, $baseUrl);
+        [$catLinks, $subcatLinks, $productLinks] = $this->findMatchingLinks($question, $locale, $baseUrl, $currency);
 
         // 5) تجهيز System Message
         $systemMessage = $this->buildSystemMessage($locale, $catLinks, $subcatLinks, $productLinks);
@@ -230,11 +231,11 @@ class FaqController extends Controller
         return false;
     }
 
-    protected function findMatchingLinks(string $question, string $locale, string $baseUrl): array
+    protected function findMatchingLinks(string $question, string $locale, string $baseUrl, string $currency): array
     {
         $lookupKey = "chat_lookup:{$locale}:" . md5($question);
 
-        return Cache::remember($lookupKey, 600, function () use ($question, $baseUrl) {
+        return Cache::remember($lookupKey, 600, function () use ($question, $baseUrl, $currency) {
 
             // تنظيف السؤال من رموز وعلامات
             $questionClean = preg_replace('/[^\p{L}\p{N}\s]/u', ' ', $question);
@@ -291,14 +292,14 @@ class FaqController extends Controller
                 'url'     => $sc->category ? "{$baseUrl}/categories/{$sc->category->slug}/{$sc->slug}" : null
             ])->filter(fn($x) => $x['url'] !== null)->values()->all();
 
-            $productLinks = $products->map(function ($p) use ($baseUrl) {
+            $productLinks = $products->map(function ($p) use ($baseUrl, $currency) {
                 $sc = $p->subCategory;
                 $catSlug = $sc?->category?->slug;
                 $subSlug = $sc?->slug;
                 return [
                     'title_ar' => $p->getTranslation('title', 'ar'),
                     'title_en' => $p->getTranslation('title', 'en'),
-                    'price' => $p->price,
+                    'price' => currencyConverter($p->price, $currency),
                     'url'      => ($catSlug && $subSlug)
                         ? "{$baseUrl}/categories/{$catSlug}/{$subSlug}/product/{$p->slug}"
                         : null,

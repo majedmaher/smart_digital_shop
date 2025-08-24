@@ -49,7 +49,7 @@ class OrderService extends Controller
                 ->join('orders', 'orders.user_id', '=', 'users.id')
                 ->join('order_items', 'order_items.order_id', '=', 'orders.id')
                 ->where('order_items.product_id', $product_id)
-                ->paginate(50);
+                ->get();
 
             return BaseController::sendResponse($customers, __('messages.sent_data'));
         } catch (\Throwable $th) {

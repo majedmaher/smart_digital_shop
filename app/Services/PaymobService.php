@@ -260,71 +260,76 @@ class PaymobService
      */
     private static function handlePaymentWebhook($obj)
     {
-        $merchantOrderId = $obj['merchant_order_id']
-            ?? $obj['payment_key_claims']['extra']['merchant_order_id']
-            ?? null;
+        try {
+            $merchantOrderId = $obj['merchant_order_id']
+                ?? $obj['payment_key_claims']['extra']['merchant_order_id']
+                ?? null;
 
-        if (!$merchantOrderId || !str_starts_with($merchantOrderId, 'order-')) {
-            // Log::error('❌ Invalid merchant_order_id for payment', ['merchant_order_id' => $merchantOrderId]);
-            return BaseController::sendError(__('messages.invalid_order_id'), [], 400);
-            // return response()->json(['error' => 'Invalid order ID'], 400);
+            if (!$merchantOrderId || !str_starts_with($merchantOrderId, 'order-')) {
+                // Log::error('❌ Invalid merchant_order_id for payment', ['merchant_order_id' => $merchantOrderId]);
+                return BaseController::sendError(__('messages.invalid_order_id'), [], 400);
+                // return response()->json(['error' => 'Invalid order ID'], 400);
+            }
+            $parts = explode('-', $merchantOrderId);
+            $orderId = isset($parts[1]) ? (int) $parts[1] : null;
+            // $orderId = (int) str_replace('order-', '', $merchantOrderId);
+            $order = Order::with('items.product')->find($orderId);
+
+            if (!$order) {
+                // Log::error('❌ Order not found', ['order_id' => $orderId]);
+                return BaseController::sendError(__('messages.item_not_found', ['item' => __('messages.order')]), [], 404);
+                // return response()->json(['error' => 'Order not found'], 404);
+            }
+
+            if ($order->status === OrderStatusEnum::PAID->value) {
+                // Log::info('✅ Order already paid', ['order_id' => $orderId]);
+                return BaseController::sendResponse(['order_id' => $orderId], __('messages.order_paid'));
+                // return response()->json(['message' => 'Already paid'], 200);
+            }
+
+            $order->payments()->create([
+                'order_id' => $order->id,
+                'user_id' => $order->user_id,
+                'payment_provider' => PaymentProviderEnum::PAYMOB->value,
+                'reference' => $obj['id'], // transaction ID
+                'payment_intention_id' => $obj['payment_key_claims']['next_payment_intention'] ?? null,
+                'currency' => $obj['currency'] ?? PaymentCurrencyEnum::SAR->value,
+                'amount_cents' => $obj['amount_cents'],
+                'status' => PaymentStatusEnum::PAID->value,
+                'paid_at' => now(),
+                'raw_response' => $obj,
+            ]);
+
+            $order->update(['status' => OrderStatusEnum::PAID->value]);
+            $user = $order->user;
+
+
+            $total = (float) $order->total_price;
+            if ($total >= 100) {
+                // $blocks = floor($total / 100);                   // كل 100$ = بلوك واحد
+                // $pointsToAdd = (int) ($blocks * 1000);         // كل بلوك = 1000 نقطة
+                $pointsToAdd = (int) ($total * 10);         // كل بلوك = 1000 نقطة
+                // if ($pointsToAdd > 0) {
+                $user->increment('points', $pointsToAdd);
+                // }
+            }
+
+
+            if ($user && $user->email) {
+                $user->notify(new PaymentSuccessNotification($order));
+            }
+            // Log::info('✅ Order already paid', ['order_id' => $order]);
+
+            SendCodeAfterPayment::dispatch($order);
+
+
+            // Log::info('💰 Payment confirmed', ['order_id' => $orderId, 'transaction_id' => $obj['id']]);
+
+            return BaseController::sendResponse(['order_id' => $orderId, 'transaction_id' => $obj['id']], __('messages.payment_confirmed'));
+            // return response()->json(['message' => 'Payment confirmed'], 200);
+        } catch (\Throwable $th) {
+            return BaseController::sendError(__('messages.something_went_wrong'), [$th->getMessage()], 500);
         }
-        $parts = explode('-', $merchantOrderId);
-        $orderId = isset($parts[1]) ? (int) $parts[1] : null;
-        // $orderId = (int) str_replace('order-', '', $merchantOrderId);
-        $order = Order::with('items.product')->find($orderId);
-
-        if (!$order) {
-            // Log::error('❌ Order not found', ['order_id' => $orderId]);
-            return BaseController::sendError(__('messages.item_not_found', ['item' => __('messages.order')]), [], 404);
-            // return response()->json(['error' => 'Order not found'], 404);
-        }
-
-        if ($order->status === OrderStatusEnum::PAID->value) {
-            // Log::info('✅ Order already paid', ['order_id' => $orderId]);
-            return BaseController::sendResponse(['order_id' => $orderId], __('messages.order_paid'));
-            // return response()->json(['message' => 'Already paid'], 200);
-        }
-
-        $order->payments()->create([
-            'order_id' => $order->id,
-            'user_id' => $order->user_id,
-            'payment_provider' => PaymentProviderEnum::PAYMOB->value,
-            'reference' => $obj['id'], // transaction ID
-            'payment_intention_id' => $obj['payment_key_claims']['next_payment_intention'] ?? null,
-            'currency' => $obj['currency'] ?? PaymentCurrencyEnum::SAR->value,
-            'amount_cents' => $obj['amount_cents'],
-            'status' => PaymentStatusEnum::PAID->value,
-            'paid_at' => now(),
-            'raw_response' => $obj,
-        ]);
-
-        $order->update(['status' => OrderStatusEnum::PAID->value]);
-        $user = $order->user;
-
-
-        $total = (float) $order->total_price;
-        $blocks = floor($total / 100);                   // كل 100$ = بلوك واحد
-        $pointsToAdd = (int) ($blocks * 1000);         // كل بلوك = 1000 نقطة
-
-        if ($pointsToAdd > 0) {
-            $user->increment('points', $pointsToAdd);
-        }
-
-
-
-        if ($user && $user->email) {
-            $user->notify(new PaymentSuccessNotification($order));
-        }
-        // Log::info('✅ Order already paid', ['order_id' => $order]);
-
-        SendCodeAfterPayment::dispatch($order);
-
-
-        // Log::info('💰 Payment confirmed', ['order_id' => $orderId, 'transaction_id' => $obj['id']]);
-
-        return BaseController::sendResponse(['order_id' => $orderId, 'transaction_id' => $obj['id']], __('messages.payment_confirmed'));
-        // return response()->json(['message' => 'Payment confirmed'], 200);
     }
 
     /**

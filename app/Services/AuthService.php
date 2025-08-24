@@ -90,8 +90,6 @@ class AuthService extends Controller
 
             Mail::to($data->email)->send(new OtpCodeMail($otp));
             DB::commit();
-            // $token = $user->createToken('api-token')->plainTextToken;
-            // $response = ['token' => $token];
 
             return BaseController::sendResponse([], __('messages.verification_code_sent'));
         } catch (\Throwable $th) {
@@ -105,12 +103,16 @@ class AuthService extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'password' => 'nullable|string|min:8|confirmed',
+            'date' => 'nullable|date|before:' . now()->subYears(2)->toDateString() . '|after:' . now()->subYears(90)->toDateString(),
+            'gender' => 'nullable|string|in:male,female',
         ]);
 
         try {
             $user = auth()->user();
             // return response()->json([Hash::check($request->password, $user->password)]);
             $user->name = $validated['name'];
+            $user->date = $validated['date'];
+            $user->gender = $validated['gender'];
             if ($validated['password']) {
                 $user->password = $validated['password'];
             }

@@ -69,6 +69,7 @@ Route::middleware(['should_auth', 'auth:sanctum'])->group(function () {
     Route::get('/users/paid/product-{product_id}', [OrderController::class, 'getUsersPaidProduct'])->middleware('custom_permission:permission:manage orders');
 
     Route::controller(MainController::class)->group(function () {
+        Route::get('/user/my-info', 'myInfo');
         Route::get('/user/my-referrals', 'myReferrals');
         Route::get('/user/my-points', 'getMyPoints');
         Route::get('/user/my-wallet', 'getMyWallet');
@@ -144,7 +145,7 @@ Route::middleware(['should_auth', 'auth:sanctum'])->group(function () {
         Route::get('/slider/{id}', 'delete');
     }));
 
-    Route::group(['prefix' => '/order', 'middleware' => 'custom_permission:permission:manage coupons', 'as' => 'order.', 'controller' => OrderController::class], function () {
+    Route::group(['prefix' => '/order', 'middleware' => 'custom_permission:permission:manage orders', 'as' => 'order.', 'controller' => OrderController::class], function () {
         Route::withoutMiddleware(['custom_permission:permission:manage orders'])->group(function () {
             Route::post('/create', 'store')->name('create');
             Route::post('/pay', 'pay')->name('pay');

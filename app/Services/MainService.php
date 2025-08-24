@@ -224,6 +224,15 @@ class MainService extends Controller
         }
     }
 
+    public static function myInfo(): JsonResponse
+    {
+        try {
+            return BaseController::sendResponse(auth()->user(), __('messages.sent_data'));
+        } catch (\Throwable $th) {
+            return BaseController::sendError(__('something wrong'), [], 500);
+        }
+    }
+
     public static function search($query): JsonResponse
     {
         try {

@@ -78,8 +78,30 @@ return [
     'invalid_payment_gateway' => 'لا يتم قبول الدفع باستخدام هذه البوابة.',
     'please_enter_a_word_to_search' => 'يرجى إدخال كلمة للبحث',
 
-    // 
+    'verification_code' => 'رمز التحقق',
+    'verification_code_is' => 'رمز التحقق الخاص بك هو:',
+    'verification_message' => 'هذا الكود صالح لفترة قصيرة، يرجى استخدامه على الفور.',
+    'project_name' => 'إنجوي جيمز',
+    'our_website' => 'موقعنا',
+    'technical_support' => 'الدعم الفني',
+    'payment_success' => '✅ تم تأكيد الدفع بنجاح',
+    'order_number' => 'رقم الطلب',
+    'order_date' => 'تاريخ الطلب',
+    'products_count' => 'عدد المنتجات',
+    'product_count' => 'عدد المنتجات',
+    'total_price' => 'إجمالي المبلغ',
+    'total_amount' => 'إجمالي المبلغ',
+    'thanks' => 'شكرًا لاختيارك لنا!',
+    'thank_you_order' => 'نشكرك على طلبك من موقعنا. إليك تفاصيل الطلب:',
+    'order_number' => 'رقم الطلب',
+    'order_processing' => 'سيتم الآن البدء في تنفيذ الطلب وشحن المنتجات حسب نوع الشحن المحدد.',
+    'contact_us_if_any' => 'إذا كان لديك أي استفسار، لا تتردد بالتواصل معنا.',
+    'visit_website' => 'زيارة الموقع',
+    'thank_you' => 'شكرًا لاختيارك لنا!',
+    'rights_reserved' => 'جميع الحقوق محفوظة.',
+    'keep_code_safe' => 'يرجى الاحتفاظ بالكود وعدم مشاركته.',
 
+    // 
     'error_subcategory_parent_id' => 'لا يمكنك تحديد فئة فرعية تحتوي على فئة فرعية أخرى.',
 
     'category' => 'التصنيف',

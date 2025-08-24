@@ -48,7 +48,7 @@ class SendSingleCode implements ShouldQueue
                 'order_item_id' => $this->item->id,
             ]);
         } catch (\Throwable $e) {
-            Log::error("Failed to send code {$this->code->code} to {$this->email}: " . $e->getMessage());
+            // Log::error("Failed to send code {$this->code->code} to {$this->email}: " . $e->getMessage());
 
             FailedEmailLog::create([
                 'order_id' => $this->item->order_id,

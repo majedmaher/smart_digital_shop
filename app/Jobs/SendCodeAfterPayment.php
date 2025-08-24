@@ -50,7 +50,7 @@ class SendCodeAfterPayment implements ShouldQueue
 
             // $email = $item->shipping_data['email'] ?? null;
             if (!$email) {
-                Log::warning("No email in shipping_data for item ID: {$item->id}");
+                // Log::warning("No email in shipping_data for item ID: {$item->id}");
                 continue;
             }
 
@@ -60,7 +60,7 @@ class SendCodeAfterPayment implements ShouldQueue
                 ->get();
 
             if ($codes->count() < $item->quantity) {
-                Log::error("Not enough codes for product ID {$item->product_id}, order #{$this->order->id}");
+                // Log::error("Not enough codes for product ID {$item->product_id}, order #{$this->order->id}");
                 continue;
             }
             // Log::info('zzz', ['order_id' => $codes]);

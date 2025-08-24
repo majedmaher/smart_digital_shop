@@ -12,6 +12,7 @@ use App\Http\Resources\ProductResource;
 use App\Http\Resources\RatingResource;
 use App\Http\Resources\SliderResource;
 use App\Http\Resources\SubCategoryResource;
+use App\Http\Resources\WalletTransactionResource;
 use App\Models\Category;
 use App\Models\Faq;
 use App\Models\Order;
@@ -19,6 +20,7 @@ use App\Models\Product;
 use App\Models\Rating;
 use App\Models\Slider;
 use App\Models\SubCategory;
+use App\Models\WalletTransaction;
 use Illuminate\Http\JsonResponse;
 
 use function PHPUnit\Framework\isEmpty;
@@ -213,14 +215,17 @@ class MainService extends Controller
     public static function getMyWallet($currency): JsonResponse
     {
         try {
+            $user = auth()->user();
+            // $walletTransactions = WalletTransaction::where('user_id', $user->id)->latest()->get();
             $response = [
-                'wallet_balance' => currencyConverter(auth()->user()->wallet_balance, $currency),
-                'points_balance' => auth()->user()->points,
-                'points_to_cash' => currencyConverter((auth()->user()->points / 1000 * 0.5), $currency),
+                'wallet_balance' => currencyConverter($user->wallet_balance, $currency),
+                'points_balance' => $user->points,
+                'points_to_cash' => currencyConverter(($user->points / 1000 * 0.5), $currency),
+                'wallet_transactions' => WalletTransactionResource::collection($user->walletTransactions)
             ];
             return BaseController::sendResponse($response, __('messages.sent_data'));
         } catch (\Throwable $th) {
-            return BaseController::sendError(__('something wrong'), [], 500);
+            return BaseController::sendError(__('something wrong'), [$th->getMessage()], 500);
         }
     }
 

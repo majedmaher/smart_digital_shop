@@ -76,4 +76,9 @@ class User extends Authenticatable
     {
         return $this->referralsMade()->whereNotNull('referred_id');
     }
+
+    public function walletTransactions()
+    {
+        return $this->hasMany(WalletTransaction::class);
+    }
 }

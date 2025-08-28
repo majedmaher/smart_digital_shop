@@ -16,15 +16,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $user = User::create([
-            'name' => 'Wassim',
-            'email' => 'wasimabdelhadi78@gmail.com',
-            // 'name' => 'Test User',
-            // 'email' => 'test@test.com',
-            'password' => 'asdasd123123',
-        ]);
+        // $user = User::factory()->create([
+        //     'name' => 'Wassim',
+        //     'email' => 'wasimabdelhadi78@gmail.com',
+        //     // 'name' => 'Test User',
+        //     // 'email' => 'test@test.com',
+        //     'password' => 'asdasd123123',
+        // ]);
 
-        // $user = User::first();
+        $user = User::first();
         $this->call([
             RolesAndPermissionsSeeder::class,
             CategorySeeder::class,

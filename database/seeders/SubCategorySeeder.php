@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\SubCategory;
+use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -15,7 +16,7 @@ class SubCategorySeeder extends Seeder
     {
         for ($i = 1; $i <= 5; $i++) {
             SubCategory::create([
-                'user_id' => 1,
+                'user_id' => User::first()->id,
                 'name' => [
                     'en' => 'test',
                     'ar' => 'تست'

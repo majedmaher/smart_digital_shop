@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Product;
+use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -15,7 +16,7 @@ class ProductSeeder extends Seeder
     {
         for ($i = 1; $i <= 5; $i++) {
             Product::create([
-                'user_id' => 1,
+                'user_id' => User::first()->id,
                 'title' => [
                     'en' => 'test',
                     'ar' => 'تست'

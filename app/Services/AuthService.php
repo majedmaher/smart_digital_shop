@@ -11,6 +11,7 @@ use App\RoleEnum;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Throwable;
 
@@ -106,7 +107,7 @@ class AuthService extends Controller
             'password' => 'nullable|string|min:8|confirmed',
             'date' => 'nullable|date|before:' . now()->subYears(2)->toDateString() . '|after:' . now()->subYears(90)->toDateString(),
             'gender' => 'nullable|string|in:male,female',
-            'gender' => 'nullable|string|in:male,female',
+            'photo' => 'nullable|file|mimes:png,jpg,jpeg,webp|max:2048',
         ]);
 
         try {
@@ -118,8 +119,8 @@ class AuthService extends Controller
             if ($validated['password']) {
                 $user->password = $validated['password'];
             }
-            if ($user['photo'] || $user->hasFile('photo')) {
-                $photo = saveImage($user['photo'], self::$image_folder) . '/photos';
+            if (isset($validated['photo']) && $request->hasFile('photo')) {
+                $photo = saveImage($validated['photo'], self::$image_folder . '/photos');
                 if ($user->photo) unlink(public_path($user->photo));
                 $user->photo = $photo;
             }

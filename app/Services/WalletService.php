@@ -105,6 +105,7 @@ class WalletService
                     'description' => 'Payment for order #' . $order->id,
                 ]);
 
+                $total = (float) $order->total_price;
                 $order->payments()->create([
                     'order_id' => $order->id,
                     'user_id' => $order->user_id,
@@ -112,11 +113,33 @@ class WalletService
                     'reference' => $walletTransaction->id, // transaction ID
                     'payment_intention_id' => $obj['payment_key_claims']['next_payment_intention'] ?? null,
                     'currency' => PaymentCurrencyEnum::SAR->value,
-                    'amount_cents' => $order->total_price * 100,
+                    'amount_cents' => $total * 100,
                     'status' => PaymentStatusEnum::PAID->value,
                     'paid_at' => now(),
                     'raw_response' => null,
                 ]);
+
+
+                $zohoItems = [];
+
+                foreach ($order->items as $item) {
+                    $zohoItems[] = [
+                        'sku'   => $item->product->code ?? 'SKU-' . $item->id, // SKU = كود المنتج عندك
+                        'name'  => $item->product->name,                       // اسم المنتج
+                        'price' => (float) $item->price,                       // السعر
+                        'qty'   => (int) $item->quantity,                      // الكمية
+                    ];
+                }
+
+                $orderPayload = [
+                    'customer' => ['name' => $user->name, 'email' => $user->email, 'phone' => $user->phone],
+                    'items' => $zohoItems,
+                    'total_amount' => $total,
+                    'payment_method' => 'wallet', // أو 'paymob'
+                    'transaction_id' => $walletTransaction->id,
+                ];
+
+                // app(\App\Actions\PushOrderToZoho::class)->handle($orderPayload);
 
 
                 // تحديث حالة الطلب
@@ -126,8 +149,9 @@ class WalletService
                 }
 
                 SendCodeAfterPayment::dispatch($order);
+                return BaseController::sendResponse(['order_id' => $order->id, 'transaction_id' => $walletTransaction->id], __('messages.payment_confirmed'));
             });
-            return BaseController::sendResponse(['order_id' => $order->id, 'transaction_id' => $walletTransaction->id], __('messages.payment_confirmed'));
+            return BaseController::sendResponse(['order_id' => $order->id], __('messages.payment_confirmed'));
         } catch (\Throwable $th) {
             return BaseController::sendError(__('messages.something_went_wrong'), [$th->getMessage()], 500);
         }

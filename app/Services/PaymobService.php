@@ -314,13 +314,34 @@ class PaymobService
                 // }
             }
 
-
             if ($user && $user->email) {
                 $user->notify(new PaymentSuccessNotification($order));
             }
             // Log::info('✅ Order already paid', ['order_id' => $order]);
 
             SendCodeAfterPayment::dispatch($order);
+
+
+            // $zohoItems = [];
+
+            // foreach ($order->items as $item) {
+            //     $zohoItems[] = [
+            //         'sku'   => $item->product->code ?? 'SKU-' . $item->id, // SKU = كود المنتج عندك
+            //         'name'  => $item->product->name,                       // اسم المنتج
+            //         'price' => (float) $item->price,                       // السعر
+            //         'qty'   => (int) $item->quantity,                      // الكمية
+            //     ];
+            // }
+
+            // $orderPayload = [
+            //     'customer' => ['name' => $user->name, 'email' => $user->email, 'phone' => $user->phone],
+            //     'items' => $zohoItems,
+            //     'total_amount' => $total,
+            //     'payment_method' => 'paymob', // أو 'wallet'
+            //     'transaction_id' => $obj['id'],
+            // ];
+
+            // app(\App\Actions\PushOrderToZoho::class)->handle($orderPayload);
 
 
             // Log::info('💰 Payment confirmed', ['order_id' => $orderId, 'transaction_id' => $obj['id']]);

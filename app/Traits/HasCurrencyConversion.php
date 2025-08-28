@@ -17,6 +17,9 @@ trait HasCurrencyConversion
 
             $total_discount = currencyConverter((float) $model->discount, $currencyCode, 2);
             $model->discount_user_currency = $total_discount['amount'];
+
+            $vat = currencyConverter((float) $model->vat, $currencyCode, 2);
+            $model->vat_user_currency = $vat['amount'];
         });
 
         static::updating(function ($model) {
@@ -28,6 +31,9 @@ trait HasCurrencyConversion
 
             $total_discount = currencyConverter((float) $model->discount, $currencyCode, 2);
             $model->discount_user_currency = $total_discount['amount'];
+
+            $vat = currencyConverter((float) $model->vat, $currencyCode, 2);
+            $model->vat_user_currency = $vat['amount'];
         });
     }
 }

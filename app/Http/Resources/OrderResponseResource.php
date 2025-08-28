@@ -18,8 +18,16 @@ class OrderResponseResource extends JsonResource
         return [
             'id' => $this->id,
             'status' => $this->status,
-            'total_price' => currencyConverter($this->total_price, $currency),
-            'discount' => currencyConverter($this->discount, $currency)
+            // 'vat' => currencyConverter($this->vat, $currency),
+            // 'total_price' => currencyConverter($this->total_price, $currency),
+            // 'discount' => currencyConverter($this->discount, $currency),
+            'vat' => $this->vat,
+            'total_price' => $this->total_price,
+            'discount' => $this->discount,
+            'user_total_price' => $this->total_price_user_currency,
+            'user_discount' => $this->discount_user_currency,
+            'user_vat' => $this->vat_user_currency,
+            'user_currency' => $this->currency_code,
             // 'coupon_id'=>$this->coupon_id,
         ];
     }

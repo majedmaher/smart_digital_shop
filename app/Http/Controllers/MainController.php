@@ -79,4 +79,8 @@ class MainController extends Controller
     {
         return MainService::myInfo();
     }
+    public function getPaymentMethods(): JsonResponse
+    {
+        return MainService::getPaymentMethods();
+    }
 }

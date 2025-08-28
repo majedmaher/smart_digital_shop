@@ -27,6 +27,11 @@ class Product extends Model
         return $query->select('id', 'title', 'slug', 'image', 'price', 'price_before', 'discount', 'shipping_payment');
     }
 
+    public function getPriceWithVatAttribute()
+    {
+        return $this->price + ($this->price * ($this->vat_rate / 100));
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);

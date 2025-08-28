@@ -34,9 +34,10 @@ class ProductRequest extends FormRequest
             'description.ar' => 'required|string',
             'description.en' => 'required|string',
             'price' => 'required',
-            'discount' => 'nullable|max:100',
+            'discount' => 'nullable|numeric|between:0,100',
+            'vat_rate' => 'required|numeric|between:0,100',
             'shipping_payment' => 'required|in:code,account_id,multi_id,access',
-            'image' => 'required|file|mimes:png,jpg,jpeg,webp|max:2048',
+            'image' => 'nullable|file|mimes:png,jpg,jpeg,webp|max:2048',
         ];
     }
 }

@@ -35,6 +35,9 @@ class PaymentSuccessNotification extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
+        // $subject = '✅' . __('messages.payment_confirmed') . '-' . __('messages.order_id') . '# ' . $this->order->id;
+        // return (new MailMessage)
+        //     ->subject($subject)
         return (new MailMessage)
             ->subject('✅ تم الدفع بنجاح - رقم الطلب #' . $this->order->id)
             ->view('emails.payment-success', [

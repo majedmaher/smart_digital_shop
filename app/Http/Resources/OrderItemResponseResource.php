@@ -24,6 +24,7 @@ class OrderItemResponseResource extends JsonResource
             'shipping_data' => $this->shipping_data,
             'total_price' => $this->total_price_user_currency,
             'discount' => $this->discount_user_currency,
+            'vat' => $this->vat_user_currency,
             'currency_code' => $this->currency_code
         ];
     }

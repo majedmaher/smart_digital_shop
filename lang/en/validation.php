@@ -18,6 +18,10 @@ return [
     'before_or_equal' => 'The start date must be a date before or equal to today and before or equal to end date.',
     'after_or_equal' => 'The end date must be a date before or equal to today and after or equal to start date.',
 
+    'between' => [
+        'numeric' => 'The :attribute must be between :min and :max.',
+    ],
+
     'attributes' => [
         'name' => 'name',
         'cart' => 'Cart',
@@ -26,5 +30,6 @@ return [
         'coupon_code' => 'Coupon Code',
         'email' => 'email address',
         'password' => 'password',
+        'vat_rate' => 'Vat Rate',
     ],
 ];

@@ -14,24 +14,16 @@ class Order extends Model
     protected $guarded = [];
 
 
-    // protected static function boot()
-    // {
-    //     parent::boot();
+    public function getTotalWithVatAttribute()
+    {
+        return $this->orderItems->sum(fn($item) => $item->total_price);
+    }
 
-    //     static::creating(function ($order) {
-    //         $currencyCode = Request::header('Currency', 'SAR');
-    //         $rate = currencyConverter($order->price_before, $currencyCode, 2);
-    //         $order->currency_code = $rate['currency'];
-    //         $order->total_price_user_currency = $rate['amount'];
-    //     });
+    public function getVatTotalAttribute()
+    {
+        return $this->orderItems->sum(fn($item) => $item->vat);
+    }
 
-    //     static::updating(function ($order) {
-    //         $currencyCode = Request::header('Currency', 'SAR');
-    //         $rate = currencyConverter($order->price_before, $currencyCode, 2);
-    //         $order->currency_code = $rate['currency'];
-    //         $order->total_price_user_currency = $rate['amount'];
-    //     });
-    // }
 
     public function items()
     {

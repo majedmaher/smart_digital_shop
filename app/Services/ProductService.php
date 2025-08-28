@@ -42,10 +42,14 @@ class ProductService extends Controller
         }
     }
 
-    static function store($data): JsonResponse
+    static function store($request): JsonResponse
     {
         DB::beginTransaction();
         try {
+            $request->validate([
+                'image' => 'required|file|mimes:png,jpg,jpeg,webp|max:2048',
+            ]);
+            $data = $request->validated();
             $data['user_id'] = auth()->id();
             $data['image'] = saveImage($data['image'], self::$image_folder);
             $product = Product::create($data);
@@ -53,7 +57,7 @@ class ProductService extends Controller
             return BaseController::sendResponse($product, __('messages.store_successfully', ['item' => __('messages.product')]));
         } catch (\Throwable $th) {
             DB::rollBack();
-            return BaseController::sendError(__('messages.store_failed', ['item' => __('messages.product')]), 500);
+            return BaseController::sendError(__('messages.store_failed', ['item' => __('messages.product')]), [$th->getMessage()], 500);
         }
     }
 
@@ -72,20 +76,24 @@ class ProductService extends Controller
 
     static function update($id, $data): JsonResponse
     {
-        $data['user_id'] = auth()->id();
-        $product = Product::find($id);
-        // return BaseController::sendResponse($product, __('messages.update_successfully', ['item' => __('messages.product')]));
-        if (!$product) {
-            return BaseController::sendError(__('messages.item_not_found', ['item' => __('messages.product')]), [], 404);
-        }
-        $product->fill($data->only(['name', 'category_id', 'sub_category_id', 'content', 'description', 'price_before', 'price', 'discount', 'shipping_payment', 'status']));
+        try {
+            $data['user_id'] = auth()->id();
+            $product = Product::find($id);
+            // return BaseController::sendResponse($product, __('messages.update_successfully', ['item' => __('messages.product')]));
+            if (!$product) {
+                return BaseController::sendError(__('messages.item_not_found', ['item' => __('messages.product')]), [], 404);
+            }
+            $product->fill($data->only(['name', 'category_id', 'sub_category_id', 'content', 'description', 'price_before', 'price', 'discount', 'vat_rate', 'shipping_payment', 'status']));
 
-        if ($data['image'] || $data->hasFile('image')) {
-            if ($product->image) unlink(public_path($product->image));
-            $product->image = saveImage($data['image'], self::$image_folder);
+            if ($data['image'] || $data->hasFile('image')) {
+                if ($product->image) unlink(public_path($product->image));
+                $product->image = saveImage($data['image'], self::$image_folder);
+            }
+            $product->update();
+            return BaseController::sendResponse($product, __('messages.update_successfully', ['item' => __('messages.product')]));
+        } catch (\Throwable $th) {
+            return BaseController::sendError(__('messages.store_failed', ['item' => __('messages.product')]), [$th->getMessage()], 500);
         }
-        $product->update();
-        return BaseController::sendResponse($product, __('messages.update_successfully', ['item' => __('messages.product')]));
     }
 
     static function delete($id): JsonResponse

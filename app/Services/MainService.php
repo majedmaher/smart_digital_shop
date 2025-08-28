@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enum\PaymentProviderEnum;
 use App\Http\Controllers\API\BaseController;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CategoryResource;
@@ -233,6 +234,23 @@ class MainService extends Controller
     {
         try {
             return BaseController::sendResponse(auth()->user(), __('messages.sent_data'));
+        } catch (\Throwable $th) {
+            return BaseController::sendError(__('something wrong'), [], 500);
+        }
+    }
+
+    public static function getPaymentMethods(): JsonResponse
+    {
+        try {
+            $paymentMethods = collect(PaymentProviderEnum::cases())
+                ->map(fn($method) => [
+                    'value' => $method->value,
+                    'label' => $method->label(),
+                    'image' => asset($method->image()), // تأكد من مسار الصورة
+                ])
+                ->toArray();
+
+            return BaseController::sendResponse($paymentMethods, __('messages.sent_data'));
         } catch (\Throwable $th) {
             return BaseController::sendError(__('something wrong'), [], 500);
         }

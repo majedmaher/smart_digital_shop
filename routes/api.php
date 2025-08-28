@@ -19,6 +19,7 @@ use App\Http\Controllers\SocialAuthController;
 use App\Http\Controllers\SubCategoryController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ZohoAuthController;
 use Illuminate\Support\Facades\Route;
 
 Route::controller(MainController::class)->group(function () {
@@ -31,6 +32,7 @@ Route::controller(MainController::class)->group(function () {
     Route::get('/ratings/product/{id}', 'getProductRatings')->name('getProductRatings');
     Route::get('/faqs', 'getFAQS');
     Route::get('/search', 'search');
+    Route::get('/payment-methods', 'getPaymentMethods');
 });
 
 Route::controller(SeoController::class)->group(function () {
@@ -50,6 +52,10 @@ Route::controller(PaymentController::class)->group(function () {
     Route::post('/payment/paymob/callback/processed', 'handlePaymobWebhook')->name('handlePaymobWebhook');
     Route::get('/payment/paymob/result', 'result')->name('result');
 });
+
+Route::get('/zoho/connect', [ZohoAuthController::class, 'connect'])->name('zoho.connect');
+Route::get('/zoho/callback', [ZohoAuthController::class, 'callback'])->name('zoho.callback');
+
 
 Route::controller(AuthController::class)->as('auth.')->group(function () {
     Route::post('/register', 'register')->name('register');

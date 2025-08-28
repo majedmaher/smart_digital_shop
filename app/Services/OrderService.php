@@ -290,13 +290,20 @@ class OrderService extends Controller
                         return BaseController::sendError(__('messages.shipping_method_unknown'), [], 400);
                 }
 
-                // ✅ إضافة مؤقتة لحساب السعر قبل الخصم
+                // ✅ حساب الضريبة
+                $vatAmount = $product->price * ($product->vat_rate / 100);
+                $priceWithVat = $product->price + $vatAmount;
                 $item['price'] = $product->price;
+                $item['vat'] = $vatAmount;
+
+                // ✅ إضافة مؤقتة لحساب السعر قبل الخصم
+                // $item['price'] = $product->price;
                 $item['product_id'] = $product->id;
+                $item['shipping_method'] = $method;
                 $item['shipping_data'] = $shipping;
                 $discountedItems[] = $item;
 
-                $totalPrice += $quantity * $product->price;
+                $totalPrice += $quantity * $priceWithVat;
             }
 
             // ✅ التحقق من الكوبون إن وُجد
@@ -329,18 +336,21 @@ class OrderService extends Controller
                     'product_id' => $item['product_id'],
                     'quantity' => $item['quantity'],
                     'price' => $item['price'],
+                    'vat' => $item['vat'] * $item['quantity'],
                     'discount' => $item['discount'] ?? 0,
-                    'total' => $item['final_price'] ?? ($item['price'] * $item['quantity']),
-                    'shipping_method' => $product->shipping_payment,
+                    'total' => ($item['final_price'] ?? ($item['price'] + $item['vat']) * $item['quantity']),
+                    'shipping_method' => $item['shipping_method'],
                     'shipping_data' => json_encode($item['shipping_data']),
                 ]);
             }
 
+            $vat_total = $order->items->sum('vat');
             // ✅ تحديث الطلب بالسعر النهائي
             $order->update([
-                'total_price' => $totalPrice,
+                'total_price' => $totalPrice + $vat_total,
                 'coupon_id' => $appliedCoupon?->id,
                 'discount' => $discount,
+                'vat' => $vat_total,
             ]);
 
             DB::commit();
@@ -349,6 +359,7 @@ class OrderService extends Controller
                 'order_id' => $order->id,
                 'total_price' => $totalPrice ? currencyConverter($totalPrice, $currency, 2) : null,
                 'discount' => $discount ? currencyConverter($discount, $currency, 2) : null,
+                'vat_total' => currencyConverter($order->vat, $currency, 2)
             ];
             return BaseController::sendResponse($responseData, __('messages.order_created_successfully'));
         } catch (\Throwable $th) {

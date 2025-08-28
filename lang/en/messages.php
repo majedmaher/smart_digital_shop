@@ -99,6 +99,14 @@ return [
     'thank_you' => 'Thank you for choosing us!',
     'rights_reserved' => 'All rights reserved.',
     'keep_code_safe' => 'Please keep the code and do not share it.',
+    'address' => 'Address: Al Khuwair South / Bousher / Muscat Governorate',
+    'contact_us' => 'Contact Us',
+    'phone' => 'Phone',
+    'website' => 'Website',
+    'code_expires_in' => 'This code expires in',
+    'how_to_use' => 'How to use the code',
+    'security_notice' => 'Do not share this code with anyone.',
+
 
     // 
     'error_subcategory_parent_id' => 'You cannot select a subcategory that contains another subcategory.',
@@ -116,5 +124,6 @@ return [
     'notification' => 'Notification',
     'user' => 'User',
     'interest' => 'Interest',
+    'minutes' => 'Minutes',
 
 ];

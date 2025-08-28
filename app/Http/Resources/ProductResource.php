@@ -31,6 +31,7 @@ class ProductResource extends JsonResource
             'price_before' => $this->price_before ? currencyConverter($this->price_before, $currency, 2) : null,
             'price' => $this->price ? currencyConverter($this->price, $currency, 2) : null,
             'discount' => $this->discount ? currencyConverter($this->discount, $currency, 2) : null,
+            'vat_rate' => $this->vat_rate,
             'points' => $this->price >= 100 ? $this->price * 10 : 0,
             'shipping_payment' => $this->shipping_payment,
             'ratings' => $this->ratings ? RatingResource::collection($this->ratings) : null

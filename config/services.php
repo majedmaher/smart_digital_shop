@@ -12,6 +12,16 @@ return [
         'redirect_url' => env('PAYMOB_REDIRECT_URL'),
     ],
 
+    'zoho' => [
+        'client_id'     => env('ZOHO_CLIENT_ID'),
+        'client_secret' => env('ZOHO_CLIENT_SECRET'),
+        'redirect_uri'  => env('ZOHO_REDIRECT_URI'),
+        'accounts_url'  => env('ZOHO_ACCOUNTS_URL', 'https://accounts.zoho.sa'),
+        'api_base'      => env('ZOHO_API_BASE', 'https://www.zohoapis.sa'),
+        'org_id'        => env('ZOHO_BOOKS_ORG_ID'),
+    ],
+
+
     'google' => [
         'client_id' => env('GOOGLE_CLIENT_ID'),
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),

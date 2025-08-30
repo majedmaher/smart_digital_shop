@@ -27,7 +27,7 @@ class OrderResponseResource extends JsonResource
             'user_total_price' => $this->total_price_user_currency,
             'user_discount' => $this->discount_user_currency,
             'user_vat' => $this->vat_user_currency,
-            'user_currency' => $this->currency_code,
+            'user_currency' => $this->currency_symbol,
             // 'coupon_id'=>$this->coupon_id,
         ];
     }

@@ -103,6 +103,7 @@ return [
     'contact_us' => 'Contact Us',
     'phone' => 'Phone',
     'website' => 'Website',
+    'email' => 'Email',
     'code_expires_in' => 'This code expires in',
     'how_to_use' => 'How to use the code',
     'security_notice' => 'Do not share this code with anyone.',

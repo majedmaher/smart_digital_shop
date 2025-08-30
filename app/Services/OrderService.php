@@ -13,6 +13,7 @@ use App\Models\Product;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class OrderService extends Controller
 {
@@ -220,7 +221,6 @@ class OrderService extends Controller
 
     public static function store($data, $currency): JsonResponse
     {
-
         $cart = $data['cart'];
         $couponCode = $data['coupon_code'] ?? null;
 
@@ -296,8 +296,6 @@ class OrderService extends Controller
                 $item['price'] = $product->price;
                 $item['vat'] = $vatAmount;
 
-                // ✅ إضافة مؤقتة لحساب السعر قبل الخصم
-                // $item['price'] = $product->price;
                 $item['product_id'] = $product->id;
                 $item['shipping_method'] = $method;
                 $item['shipping_data'] = $shipping;

@@ -455,7 +455,7 @@
                         <tr>
                             <td class="header">
                                 <div class="logo-container">
-                                    <img src="logo.png" alt="Enjoy Games" class="logo" width="200" />
+                                    <img src="{{asset('logo.png')}}" alt="Enjoy Games" class="logo" width="200" />
                                     <div class="header-title">Gaming Excellence</div>
                                 </div>
                             </td>

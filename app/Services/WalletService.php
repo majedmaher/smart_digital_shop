@@ -119,24 +119,60 @@ class WalletService
                     'raw_response' => null,
                 ]);
 
+                // $zohoItems = [];
+
+                // foreach ($order->items as $item) {
+                //     $zohoItems[] = [
+                //         'sku'   => $item->product->code ?? 'SKU-' . $item->id, // SKU = كود المنتج عندك
+                //         'name'  => $item->product->title,                       // اسم المنتج
+                //         'price' => (float) $item->price,                       // السعر
+                //         'qty'   => (int) $item->quantity,
+                //         'tax_rate'  => (float) $item->vat ?? 0, // 👈 مثل 15 أو 5 أو 0
+                //     ];
+                // }
+
+                // $orderPayload = [
+                //     'customer' => ['name' => $user->name, 'email' => $user->email, 'phone' => $user->phone],
+                //     'items' => $zohoItems,
+                //     'total_amount' => $total - $order->vat,
+                //     'discount'      => (float) $order->discount, // 👈 أضف الخصم هنا
+                //     'payment_method' => 'wallet', // أو 'paymob'
+                //     'transaction_id' => $walletTransaction->id,
+                // ];
+
+                // app(\App\Actions\PushOrderToZoho::class)->handle($orderPayload);
+                // tinker example (داخل laravel tinker)
+                $payload = [
+                    'customer' => ['name' => 'Test', 'email' => 'test@example.com', 'phone' => ''],
+                    'items' => [
+                        ['sku' => 'SKU-1', 'name' => 'Test Item', 'price' => 100.00, 'qty' => 1, 'tax_rate' => 15],
+                    ],
+                    'discount' => 0,
+                    'coupon' => null,
+                    'transaction_id' => 't-' . time(),
+                    'payment_method' => 'wallet',
+                ];
+                app(\App\Actions\PushOrderToZoho::class)->handle($payload);
 
                 $zohoItems = [];
-
                 foreach ($order->items as $item) {
                     $zohoItems[] = [
-                        'sku'   => $item->product->code ?? 'SKU-' . $item->id, // SKU = كود المنتج عندك
-                        'name'  => $item->product->name,                       // اسم المنتج
-                        'price' => (float) $item->price,                       // السعر
-                        'qty'   => (int) $item->quantity,                      // الكمية
+                        'sku'      => $item->product->code ?? 'SKU-' . $item->id,
+                        'name'     => $item->product->title,
+                        'price'    => (float) $item->price,
+                        'qty'      => (int) $item->quantity,
+                        'tax_rate' => (float) ($item->product->vat_rate ?? 0),   // مثال: 15
                     ];
                 }
 
                 $orderPayload = [
-                    'customer' => ['name' => $user->name, 'email' => $user->email, 'phone' => $user->phone],
-                    'items' => $zohoItems,
-                    'total_amount' => $total,
-                    'payment_method' => 'wallet', // أو 'paymob'
+                    'customer'       => ['name' => $user->name, 'email' => $user->email, 'phone' => $user->phone],
+                    'items'          => $zohoItems,
+                    'discount'       => (float) $order->discount,                    // مبلغ الخصم النهائي
+                    'coupon'         => $order->coupon->code ?? null, // إن وُجد
+                    'payment_method' => 'wallet',
                     'transaction_id' => $walletTransaction->id,
+                    // 'total_amount'  => (float) $order->total, // ممكن تستغني عنه لأننا بندفع balance من الفاتورة نفسها
                 ];
 
                 // app(\App\Actions\PushOrderToZoho::class)->handle($orderPayload);

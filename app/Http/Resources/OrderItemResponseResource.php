@@ -25,7 +25,7 @@ class OrderItemResponseResource extends JsonResource
             'total_price' => $this->total_price_user_currency,
             'discount' => $this->discount_user_currency,
             'vat' => $this->vat_user_currency,
-            'currency_code' => $this->currency_code
+            'currency_code' => $this->currency_symbol
         ];
     }
 }

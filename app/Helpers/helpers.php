@@ -34,13 +34,10 @@ if (!function_exists('saveImageInStorage')) {
 if (!function_exists('currencyConverter')) {
     function currencyConverter($amount, $to, $decimals = 2): array
     {
-        $formatted_string = '';
+        // التحويل من SAR إلى العملة المطلوبة
         $converted_amount = 0;
 
-        // الخطوة 1: تحويل المبلغ والحصول على السلسلة المنسقة
-        if (is_null($amount) || $amount == 0) {
-            $converted_amount = 0;
-        } else {
+        if ($amount !== null && $amount != 0) {
             $converted_amount = round(
                 CurrencyConverter::convert($amount)
                     ->from('SAR')
@@ -50,48 +47,64 @@ if (!function_exists('currencyConverter')) {
             );
         }
 
-        // تنسيق المبلغ مع رمز العملة حسب اللغة
-        if (app()->getLocale() == 'ar') {
-            $formatted_string = Number::currency($converted_amount, in: $to, locale: 'ar');
-        } else {
-            $formatted_string = Number::currency($converted_amount, in: $to);
-        }
+        // قائمة رموز جميع العملات (عربي + إنجليزي)
+        $symbols = [
+            'SAR' => ['ar' => 'ر.س',  'en' => 'SR'],
+            'USD' => ['ar' => '$',    'en' => '$'],
+            'EUR' => ['ar' => '€',    'en' => '€'],
+            'AED' => ['ar' => 'د.إ',  'en' => 'AED'],
+            'EGP' => ['ar' => 'ج.م',  'en' => 'EGP'],
+            'QAR' => ['ar' => 'ر.ق',  'en' => 'QAR'],
+            'KWD' => ['ar' => 'د.ك',  'en' => 'KWD'],
+            'OMR' => ['ar' => 'ر.ع',  'en' => 'OMR'],
+            'JOD' => ['ar' => 'د.أ',  'en' => 'JOD'],
+            'GBP' => ['ar' => '£',    'en' => '£'],
+            'CAD' => ['ar' => '$',    'en' => '$'],
+            'AUD' => ['ar' => '$',    'en' => '$'],
+            'CHF' => ['ar' => 'Fr',   'en' => 'CHF'],
+            'SEK' => ['ar' => 'kr',   'en' => 'SEK'],
+            'NOK' => ['ar' => 'kr',   'en' => 'NOK'],
+            'DKK' => ['ar' => 'kr',   'en' => 'DKK'],
+            'PLN' => ['ar' => 'zł',   'en' => 'PLN'],
+            'CZK' => ['ar' => 'Kč',   'en' => 'CZK'],
+            'HUF' => ['ar' => 'Ft',   'en' => 'HUF'],
+            'RON' => ['ar' => 'lei',  'en' => 'RON'],
+            'BGN' => ['ar' => 'лв',   'en' => 'BGN'],
+            'TRY' => ['ar' => '₺',    'en' => 'TRY'],
+            'RUB' => ['ar' => '₽',    'en' => 'RUB'],
+            'INR' => ['ar' => '₹',    'en' => 'INR'],
+            'PKR' => ['ar' => '₨',    'en' => 'PKR'],
+            'JPY' => ['ar' => '¥',    'en' => '¥'],
+            'CNY' => ['ar' => '¥',    'en' => 'CN¥'],
+            'MXN' => ['ar' => '$',    'en' => '$'],
+            'BRL' => ['ar' => 'R$',   'en' => 'R$'],
+            'ZAR' => ['ar' => 'R',    'en' => 'R'],
+            'SGD' => ['ar' => 'S$',   'en' => 'S$'],
+            'HKD' => ['ar' => 'HK$',  'en' => 'HK$'],
+            'MYR' => ['ar' => 'RM',   'en' => 'RM'],
+            'THB' => ['ar' => '฿',    'en' => '฿'],
+            'IDR' => ['ar' => 'Rp',   'en' => 'Rp'],
+            'PHP' => ['ar' => '₱',    'en' => '₱'],
+            'VND' => ['ar' => '₫',    'en' => '₫'],
+            'KES' => ['ar' => 'KSh',  'en' => 'KSh'],
+            'NGN' => ['ar' => '₦',    'en' => 'NGN'],
+            'GHS' => ['ar' => '₵',    'en' => 'GHS'],
+            'UAH' => ['ar' => '₴',    'en' => 'UAH'],
+            'ILS' => ['ar' => '₪',    'en' => '₪'],
+            // أضف أي عملة أخرى تحتاجها
+        ];
 
-        // تنظيف السلسلة من أي رموز تحكم غير مرئية قد تؤثر على المعالجة
-        $clean_string = str_replace(["\u{200f}", "\u{200e}", "\u{00a0}"], ' ', $formatted_string);
-        $clean_string = trim($clean_string);
+        $locale = app()->getLocale(); // 'ar' أو 'en'
+        $currency_symbol = $symbols[$to][$locale] ?? $to;
 
-        // الخطوة 2: استخراج الرقم والعملة
-        $numeric_part = '';
-        $currency_part = '';
-
-        // استخراج الجزء الرقمي أولاً
-        preg_match('/[\d.,٬٫]+/', $clean_string, $amount_match);
-        if (isset($amount_match[0])) {
-            $numeric_part = $amount_match[0];
-            // إزالة الجزء الرقمي من السلسلة الأصلية للحصول على العملة
-            $currency_part = str_replace($numeric_part, '', $clean_string);
-        }
-
-        // الخطوة 3: تنظيف النتائج وتحويلها
-        $numeric_value = 0;
-        if (!empty($numeric_part)) {
-            // توحيد الفواصل العشرية إلى نقطة للتحويل الصحيح
-            $number_for_conversion = str_replace(['٬', '٫', ','], ['.', '.', '.'], $numeric_part);
-            $numeric_value = (float) $number_for_conversion;
-        }
-
-        // تنظيف رمز العملة من أي مسافات زائدة
-        $currency_symbol = trim($currency_part);
-
-        // حل بديل إذا لم يتم استخراج الرمز
-        if (empty($currency_symbol)) {
-            $currency_symbol = $to;
-        }
+        $formatted_number = number_format($converted_amount, $decimals, '.', ',');
 
         return [
-            'amount' => $numeric_value,
-            'currency' => $currency_symbol
+            'amount'    => (float) $converted_amount,
+            'currency'  => $currency_symbol,
+            'formatted' => $locale === 'ar'
+                ? "$formatted_number $currency_symbol"
+                : "$currency_symbol $formatted_number"
         ];
     }
 }

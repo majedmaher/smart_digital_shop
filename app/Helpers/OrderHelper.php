@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use App\Enum\PaymentCurrencyEnum;
 use App\Models\Order;
 use Illuminate\Support\Facades\Log;
 
@@ -23,7 +24,7 @@ class OrderHelper
             $grossTotalCents = max(1, $grossTotalCents); // لا يقل عن 1 سنت
 
             // السعر لكل وحدة (مقرب)
-            $amountPerUnit = (int) round($grossTotalCents / $item->quantity);
+            $amountPerUnit = (int) round(currencyConverter($grossTotalCents / $item->quantity, 'SAR')['amount']);
             $amountPerUnit = max(1, $amountPerUnit);
 
             // أدخل كل وحدة بشكل منفصل
@@ -39,7 +40,7 @@ class OrderHelper
 
         // ✅ التأكد من أن المجموع مطابق
         $calculatedTotal = collect($items)->sum('amount');
-        $expectedTotal = (int) round($order->total_price * 100);
+        $expectedTotal = (int) currencyConverter(round($order->total_price * 100), PaymentCurrencyEnum::SAR->value)['amount'];
         $difference = $expectedTotal - $calculatedTotal;
 
         if (abs($difference) > 0 && count($items) > 0) {

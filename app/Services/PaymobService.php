@@ -35,7 +35,7 @@ class PaymobService
             $billingData = self::buildBillingData();
 
             $integrationId = config('services.paymob.integration_id');
-            $amount = (int) round($order->total_price * 100);
+            $amount = (int) currencyConverter(round($order->total_price * 100), PaymentCurrencyEnum::SAR->value)['amount'];
             $paymobPayload = [
                 'amount' => $amount,
                 'currency' => 'SAR',

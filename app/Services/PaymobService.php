@@ -35,9 +35,10 @@ class PaymobService
             $billingData = self::buildBillingData();
 
             $integrationId = config('services.paymob.integration_id');
+            $amount = (int) round($order->total_price * 100);
             $paymobPayload = [
-                'amount' => (int) round($order->total_price * 100),
-                'currency' => PaymentCurrencyEnum::DEFAULT_CURRENCY->value,
+                'amount' => $amount,
+                'currency' => 'SAR',
                 'payment_methods' => [intval($integrationId)],
                 'items' => OrderHelper::buildItems($order),
                 'billing_data' => $billingData,
@@ -71,7 +72,7 @@ class PaymobService
             return BaseController::sendResponse($result, __('messages.payment_request_created_successfully'));
         } catch (\Throwable $th) {
             // Log::error('PaymobService Error', ['error' => $th->getMessage()]);
-            return BaseController::sendError(__('messages.something_went_wrong'), [], 500);
+            return BaseController::sendError(__('messages.something_went_wrong'), [$th->getMessage()], 500);
         }
     }
 
@@ -306,13 +307,16 @@ class PaymobService
 
 
             $total = (float) $order->total_price;
-            if ($total >= 100) {
-                // $blocks = floor($total / 100);                   // كل 100$ = بلوك واحد
-                // $pointsToAdd = (int) ($blocks * 1000);         // كل بلوك = 1000 نقطة
-                $pointsToAdd = (int) ($total * 10);         // كل بلوك = 1000 نقطة
-                // if ($pointsToAdd > 0) {
-                $user->increment('points', $pointsToAdd);
-                // }
+            if ($total >= 20) {
+                // 0.5% من المبلغ
+                $rewardInRial = $total * 0.005;
+
+                // تحويل القيمة إلى نقاط (كل 0.1 ريال = 1000 نقطة -> كل 1 ريال = 10000 نقطة)
+                $pointsToAdd = (int) ($rewardInRial * 10000);
+
+                if ($pointsToAdd > 0) {
+                    $user->increment('points', $pointsToAdd);
+                }
             }
 
 

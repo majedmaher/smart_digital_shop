@@ -4,5 +4,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('emails.ticket-notification');
+    return 'Go Out';
+    // return view('emails.ticket-notification');
 });

@@ -24,25 +24,20 @@ class WalletService
         try {
             $user = auth()->user();
 
-            // نتحقق عنده على الأقل 1000 نقطة
             if ($user->points < 1000) {
                 return BaseController::sendError(__('messages.your_balance_less_than_the_minimum_transfer_amount'), [], 422);
             }
 
             return DB::transaction(function () use ($user, $currency) {
-                // نحسب كم بلوك من 1000 نقطة عنده
-                $blocks = floor($user->points / 1000);
+                // نحسب كم ريال يستحق من النقاط (كل 10000 نقطة = 1 ريال)
+                $totalAmount = $user->points / 10000;
 
-                // النقاط اللي رح تتحول
-                $pointsToRedeem = $blocks * 1000;
-
-                $totalAmount = $blocks * 0.5;
-
-                // نخصم النقاط
+                // نخصم كل النقاط
+                $pointsToRedeem = $user->points;
                 $user->decrement('points', $pointsToRedeem);
-                // إضافة الرصيد للمحفظة
-                $user->increment('wallet_balance', $totalAmount);
 
+                // نضيف الرصيد للمحفظة
+                $user->increment('wallet_balance', $totalAmount);
 
                 // نوثق العملية
                 PointsRedemption::create([

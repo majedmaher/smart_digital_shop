@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enum\PaymentCurrencyEnum;
 use App\Enum\PaymentProviderEnum;
 use App\Http\Controllers\API\BaseController;
 use App\Http\Requests\OrderRequest;
@@ -45,7 +46,7 @@ class OrderController extends Controller
 
     public function store(OrderRequest $request): JsonResponse
     {
-        $currency = strtoupper($request->header('Currency', 'SAR'));
+        $currency = strtoupper($request->header('Currency', PaymentCurrencyEnum::DEFAULT_CURRENCY->value));
         return OrderService::store($request->validated(), $currency);
     }
 

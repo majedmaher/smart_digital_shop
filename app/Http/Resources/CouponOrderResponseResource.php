@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Enum\PaymentCurrencyEnum;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -14,7 +15,7 @@ class CouponOrderResponseResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $currency = strtoupper($request->header('Currency', 'SAR'));
+        $currency = strtoupper($request->header('Currency', PaymentCurrencyEnum::DEFAULT_CURRENCY->value));
         return [
             "product_id" => $this['product_id'],
             "quantity" => $this['quantity'],

@@ -8,6 +8,7 @@ use App\Enum\PaymentProviderEnum;
 use App\Enum\PaymentStatusEnum;
 use App\Helpers\OrderHelper;
 use App\Http\Controllers\API\BaseController;
+use App\Jobs\PushOrderToZohoJob;
 use App\Jobs\SendCodeAfterPayment;
 use App\Models\Order;
 use App\Models\Payment;
@@ -36,7 +37,7 @@ class PaymobService
             $integrationId = config('services.paymob.integration_id');
             $paymobPayload = [
                 'amount' => (int) round($order->total_price * 100),
-                'currency' => PaymentCurrencyEnum::SAR->value,
+                'currency' => PaymentCurrencyEnum::DEFAULT_CURRENCY->value,
                 'payment_methods' => [intval($integrationId)],
                 'items' => OrderHelper::buildItems($order),
                 'billing_data' => $billingData,
@@ -140,7 +141,7 @@ class PaymobService
                 'payment_provider' => PaymentProviderEnum::PAYMOB->value,
                 'reference' => $refundData['id'],
                 'payment_intention_id' => null,
-                'currency' => $refundData['currency'] ?? PaymentCurrencyEnum::SAR->value,
+                'currency' => $refundData['currency'] ?? PaymentCurrencyEnum::DEFAULT_CURRENCY->value,
                 'amount_cents' => -$amountToRefund, // استخدام المبلغ الصحيح بعد التأكد من نوع العمود
                 'status' =>  PaymentStatusEnum::REFUNDED->value,
                 'paid_at' => now(),
@@ -293,7 +294,7 @@ class PaymobService
                 'payment_provider' => PaymentProviderEnum::PAYMOB->value,
                 'reference' => $obj['id'], // transaction ID
                 'payment_intention_id' => $obj['payment_key_claims']['next_payment_intention'] ?? null,
-                'currency' => $obj['currency'] ?? PaymentCurrencyEnum::SAR->value,
+                'currency' => $obj['currency'] ?? PaymentCurrencyEnum::DEFAULT_CURRENCY->value,
                 'amount_cents' => $obj['amount_cents'],
                 'status' => PaymentStatusEnum::PAID->value,
                 'paid_at' => now(),
@@ -313,6 +314,28 @@ class PaymobService
                 $user->increment('points', $pointsToAdd);
                 // }
             }
+
+
+            $zohoItems = [];
+            foreach ($order->items as $item) {
+                $zohoItems[] = [
+                    'sku'      => $item->product->code ?? 'SKU-' . $item->id,
+                    'name'     => $item->product->title,
+                    'price'    => (float) $item->price, // السعر الأصلي
+                    'discount' => (float) $item->discount / $item->quantity, // الخصم على هذا العنصر
+                    'qty'      => (int) $item->quantity,
+                    'tax_rate' => (float) ($item->product->vat_rate ?? 0), // مثال: 15
+                ];
+            }
+
+            $orderPayload = [
+                'customer'       => ['name' => $user->name, 'email' => $user->email, 'phone' => $user->phone],
+                'items'          => $zohoItems,
+                'payment_method' => 'wallet',
+                'transaction_id' => $obj['id'],
+            ];
+            PushOrderToZohoJob::dispatch($orderPayload, $order->id);
+
 
             if ($user && $user->email) {
                 $user->notify(new PaymentSuccessNotification($order));
@@ -359,7 +382,7 @@ class PaymobService
             'payment_provider' => PaymentProviderEnum::PAYMOB->value,
             'reference' => $obj['id'],
             'payment_intention_id' => null,
-            'currency' => $obj['currency'] ?? PaymentCurrencyEnum::SAR->value,
+            'currency' => $obj['currency'] ?? PaymentCurrencyEnum::DEFAULT_CURRENCY->value,
             'amount_cents' => -$obj['amount_cents'], // مبلغ سالب
             'status' => PaymentStatusEnum::REFUNDED->value,
             'paid_at' => now(),

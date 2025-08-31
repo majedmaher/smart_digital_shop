@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Enum\PaymentCurrencyEnum;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -16,7 +17,7 @@ class ProductResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $currency = strtoupper($request->header('Currency', 'SAR'));
+        $currency = strtoupper($request->header('Currency', PaymentCurrencyEnum::DEFAULT_CURRENCY->value));
         // $currency = Number::defaultCurrency();
 
         return [

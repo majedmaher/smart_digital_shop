@@ -148,7 +148,7 @@ class MainService extends Controller
     public static function getFAQS(): JsonResponse
     {
         try {
-            $faqs = Faq::latest()->get();
+            $faqs = Faq::where('is_ai_generated', 1)->latest()->get();
             return BaseController::sendResponse(FaqResource::collection($faqs), __('messages.sent_data'));
         } catch (\Throwable $th) {
             return BaseController::sendError(__('something wrong'), [], 500);

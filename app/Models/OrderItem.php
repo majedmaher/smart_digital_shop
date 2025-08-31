@@ -19,14 +19,14 @@ class OrderItem extends Model
     //     parent::boot();
 
     //     static::creating(function ($order) {
-    //         $currencyCode = Request::header('Currency', 'SAR');
+    //         $currencyCode = Request::header('Currency', PaymentCurrencyEnum::DEFAULT_CURRENCY->value);
     //         $rate = currencyConverter($order->total, $currencyCode, 2);
     //         $order->currency_code = $rate['currency'];
     //         $order->total_price_user_currency = $rate['amount'];
     //     });
 
     //     static::updating(function ($order) {
-    //         $currencyCode = Request::header('Currency', 'SAR');
+    //         $currencyCode = Request::header('Currency', PaymentCurrencyEnum::DEFAULT_CURRENCY->value);
     //         $rate = currencyConverter($order->total, $currencyCode, 2);
     //         $order->currency_code = $rate['currency'];
     //         $order->total_price_user_currency = $rate['amount'];

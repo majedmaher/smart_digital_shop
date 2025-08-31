@@ -14,7 +14,7 @@ class OrderItemResponseResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        // $currency = strtoupper($request->header('Currency', 'SAR'));
+        // $currency = strtoupper($request->header('Currency', PaymentCurrencyEnum::DEFAULT_CURRENCY->value));
         return [
             'id' => $this->id,
             'product_title' => $this->product->title,

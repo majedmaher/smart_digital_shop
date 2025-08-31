@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Enum\PaymentCurrencyEnum;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Request;
 
@@ -10,7 +11,7 @@ trait HasCurrencyConversion
     protected static function bootHasCurrencyConversion()
     {
         static::creating(function ($model) {
-            $currencyCode = Request::header('Currency', 'SAR');
+            $currencyCode = Request::header('Currency', PaymentCurrencyEnum::DEFAULT_CURRENCY->value);
             $total = isset($model->total_price) ? $model->total_price : $model->total;
             $total_price = currencyConverter($total, $currencyCode, 2);
             $model->currency_code = $currencyCode;

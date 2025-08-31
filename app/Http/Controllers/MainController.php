@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enum\PaymentCurrencyEnum;
 use App\Services\MainService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -61,7 +62,7 @@ class MainController extends Controller
     }
     public function getTotalPaid(Request $request): JsonResponse
     {
-        return MainService::getTotalPaid($request->header('Currency', 'SAR'));
+        return MainService::getTotalPaid($request->header('Currency', PaymentCurrencyEnum::DEFAULT_CURRENCY->value));
     }
     public function myReferrals(): JsonResponse
     {
@@ -73,7 +74,7 @@ class MainController extends Controller
     }
     public function getMyWallet(Request $request): JsonResponse
     {
-        return MainService::getMyWallet($request->header('Currency', 'SAR'));
+        return MainService::getMyWallet($request->header('Currency', PaymentCurrencyEnum::DEFAULT_CURRENCY->value));
     }
     public function myInfo(): JsonResponse
     {

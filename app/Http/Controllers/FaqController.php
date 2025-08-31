@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enum\PaymentCurrencyEnum;
 use App\Http\Controllers\API\BaseController;
 use App\Http\Requests\AssistantAIRequest;
 use App\Http\Requests\FaqRequest;
@@ -50,7 +51,7 @@ class FaqController extends Controller
         $locale   = app()->getLocale(); // 'ar' أو 'en'
         $baseUrl  = 'https://enjoy-games.vercel.app';
         $uniqueId = $request->unique_id;
-        $currency = strtoupper($request->header('Currency', 'SAR'));
+        $currency = strtoupper($request->header('Currency', PaymentCurrencyEnum::DEFAULT_CURRENCY->value));
 
         $emptyLinks = [
             'orders' => [],

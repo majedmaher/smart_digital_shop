@@ -40,7 +40,7 @@ if (!function_exists('currencyConverter')) {
         if ($amount !== null && $amount != 0) {
             $converted_amount = round(
                 CurrencyConverter::convert($amount)
-                    ->from('SAR')
+                    ->from('OMR')
                     ->to($to)
                     ->get(),
                 $decimals

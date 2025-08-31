@@ -108,6 +108,15 @@ return [
     'code_expires_in' => 'ينتهي هذا الرمز خلال',
     'how_to_use' => 'كيفية استخدام الرمز',
     'security_notice' => 'تأكد من عدم مشاركة هذا الرمز مع أي شخص.',
+    'your_code' => 'الكود الخاص بك',
+    'for_product' => 'للمنتج',
+    'new_reply_your_ticket' => 'رد جديد على تذكرتك',
+    'ticket_reply_notification' => 'رد جديد على التذكرة',
+    'new_reply_on_ticket' => 'تم إضافة رد جديد على تذكرتك.',
+    'ticket_reply_received' => 'إليك أحدث رسالة من فريق الدعم:',
+    'view_ticket' => 'عرض التذكرة',
+    'thank_you_contacting_us' => 'شكرًا لاتصالك بفريق الدعم.',
+    'payment_successful_subject' => '✅ تم الدفع بنجاح - رقم الطلب #:id',
 
     // 
     'error_subcategory_parent_id' => 'لا يمكنك تحديد فئة فرعية تحتوي على فئة فرعية أخرى.',

@@ -107,7 +107,15 @@ return [
     'code_expires_in' => 'This code expires in',
     'how_to_use' => 'How to use the code',
     'security_notice' => 'Do not share this code with anyone.',
-
+    'your_code' => 'Your code',
+    'for_product' => 'For the product',
+    'new_reply_your_ticket' => 'New reply to your ticket',
+    'ticket_reply_notification' => 'New Reply on Your Ticket',
+    'new_reply_on_ticket' => 'A new reply has been added to your support ticket.',
+    'ticket_reply_received' => 'Here is the latest message from our team:',
+    'view_ticket' => 'View Ticket',
+    'thank_you_contacting_us' => 'Thank you for contacting our support team.',
+    'payment_successful_subject' => '✅ Payment Successful - Order #:id',
 
     // 
     'error_subcategory_parent_id' => 'You cannot select a subcategory that contains another subcategory.',

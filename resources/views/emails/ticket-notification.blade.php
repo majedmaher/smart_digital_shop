@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8" />
-    <title>{{ __('messages.code_delivery_subject') }}</title>
+    <title>{{ __('messages.ticket_reply_notification') }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
@@ -15,7 +15,7 @@
 
     <style>
         * {
-            font-family: 'Inter', 'IBM Plex Sans Arabic', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
             box-sizing: border-box;
             margin: 0;
             padding: 0;
@@ -160,109 +160,34 @@
             margin-bottom: 32px;
         }
 
-        /* Code Delivery Section */
-        .code-section {
+        /* Ticket Info Card */
+        .ticket-card {
             background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 40px 32px;
-            margin: 40px 0;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
+            border-radius: 16px;
+            padding: 24px;
+            margin: 32px 0;
         }
 
-        .code-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, #10b981, #3b82f6, #8b5cf6, #10b981);
-            background-size: 200% 100%;
-            animation: shimmer 3s linear infinite;
-        }
-
-        @keyframes shimmer {
-            0% {
-                background-position: -200% 0;
-            }
-
-            100% {
-                background-position: 200% 0;
-            }
-        }
-
-        .code-label {
-            display: block;
-            font-size: 14px;
+        .ticket-subject {
+            font-size: 18px;
             font-weight: 600;
-            color: #9ca3af;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            color: #fbbf24;
             margin-bottom: 16px;
         }
 
-        .delivered-code {
-            display: inline-block;
-            font-size: 32px;
-            font-weight: 800;
-            color: #ffffff;
-            letter-spacing: 10px;
-            padding: 20px 36px;
-            background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
-            border: 2px solid #10b981;
-            border-radius: 12px;
-            box-shadow:
-                0 0 0 1px rgba(16, 185, 129, 0.2),
-                0 8px 32px rgba(16, 185, 129, 0.15),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1);
-            font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Courier New', monospace !important;
-            transition: all 0.3s ease;
-        }
-
-        .product-info {
-            margin-top: 24px;
+        .ticket-message {
             font-size: 15px;
+            line-height: 1.7;
             color: #d1d5db;
-            font-weight: 500;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 16px;
+            border-radius: 10px;
+            border-left: 3px solid #3b82f6;
+            margin-top: 16px;
         }
 
-        /* Security Notice */
-        .security-notice {
-            background: linear-gradient(135deg, #451a03 0%, #7c2d12 100%);
-            border: 1px solid rgba(251, 146, 60, 0.3);
-            border-radius: 12px;
-            padding: 24px;
-            margin: 32px 0;
-            display: flex;
-            align-items: flex-start;
-        }
-
-        .security-icon {
-            width: 24px;
-            height: 24px;
-            margin-right: 16px;
-            margin-top: 2px;
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            flex-shrink: 0;
-        }
-
-        .security-text {
-            font-size: 14px;
-            line-height: 1.6;
-            color: #fed7aa;
-            margin: 0;
-            font-weight: 500;
-        }
-
-        /* CTA Button */
+        /* Action Button */
         .cta-button {
             display: inline-block;
             margin: 32px 0;
@@ -358,27 +283,18 @@
                 font-size: 28px;
             }
 
-            .delivered-code {
-                font-size: 26px;
-                letter-spacing: 8px;
-                padding: 18px 30px;
+            .ticket-card {
+                padding: 20px;
             }
 
-            .code-section {
-                margin: 32px 0;
-                padding: 32px 20px;
+            .ticket-message {
+                font-size: 14px;
             }
         }
 
         @media only screen and (max-width: 480px) {
             .content-title {
                 font-size: 24px;
-            }
-
-            .delivered-code {
-                font-size: 22px;
-                letter-spacing: 6px;
-                padding: 16px 24px;
             }
 
             .greeting,
@@ -417,38 +333,36 @@
                         <!-- Main Content -->
                         <tr>
                             <td class="content">
-                                <h1 class="content-title">📦 {{ __('messages.code_delivery_subject') }}</h1>
+                                <h1 class="content-title">📬 {{ __('messages.ticket_reply_notification') }}</h1>
 
                                 <p class="greeting">{{ __('messages.hello') }},</p>
 
-                                <p class="description">{{ __('messages.thank_you_for_your_purchase') }}</p>
+                                <p class="description">{{ __('messages.new_reply_on_ticket') }}</p>
 
-                                <p class="description">
-                                    {{ __('messages.code_delivery_line') }}
-                                    <strong style="color: #fbbf24;">{{ $product_title }}</strong>
-                                </p>
-
-                                <!-- Delivered Code -->
-                                <div class="code-section">
-                                    <span class="code-label">{{ __('messages.your_code') }}</span>
-                                    <div class="delivered-code">{{ $code }}</div>
-                                    <p class="product-info">
-                                        {{ __('messages.for_product') }}: <strong>{{ $product_title }}</strong>
+                                <!-- Ticket Info -->
+                                <div class="ticket-card">
+                                    <div class="ticket-subject">
+                                        "{{ $ticket->subject }}"
+                                    </div>
+                                    <p class="description">
+                                        {{ __('messages.ticket_reply_received') }}
                                     </p>
-                                </div>
-
-                                <!-- Security Notice -->
-                                <div class="security-notice">
-                                    <div class="security-icon">⚠️</div>
-                                    <p class="security-text">{{ __('messages.keep_code_safe') }}</p>
+                                    <div class="ticket-message">
+                                        {{ $reply_message }}
+                                    </div>
                                 </div>
 
                                 <!-- CTA Button -->
                                 <div style="text-align: center;">
-                                    <a href="{{ env('WEBSITE_URL') }}" target="_blank" class="cta-button">
-                                        {{ __('messages.visit_website') }}
+                                    <a href="https://enjoy-games.vercel.app/tickets/{{ $ticket->id }}" target="_blank"
+                                        class="cta-button">
+                                        {{ __('messages.view_ticket') }}
                                     </a>
                                 </div>
+
+                                <p class="description" style="margin-top: 24px;">
+                                    {{ __('messages.thank_you_contacting_us') }}
+                                </p>
                             </td>
                         </tr>
 

@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class PaymentSuccessNotification extends Notification
+class PaymentSuccessNotification extends Notification implements ShouldQueue
 {
     use Queueable;
     protected $order;
@@ -39,7 +39,7 @@ class PaymentSuccessNotification extends Notification
         // return (new MailMessage)
         //     ->subject($subject)
         return (new MailMessage)
-            ->subject('✅ تم الدفع بنجاح - رقم الطلب #' . $this->order->id)
+            ->subject(__('messages.payment_successful_subject', ['id' => $this->order->id]))
             ->view('emails.payment-success', [
                 'user' => $notifiable,
                 'order' => $this->order,

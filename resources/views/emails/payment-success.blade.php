@@ -1,189 +1,468 @@
 <!DOCTYPE html>
-<html lang="{{ app()->getLocale() }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}">
+<html dir="{{ app()->getLocale() == 'ar' ? 'rtl' : 'ltr' }}" lang="{{ app()->getLocale() }}">
 
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>{{ __('messages.payment_confirmed') }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
-    <!DOCTYPE html>
-    <html lang="{{ app()->getLocale() }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}">
+    <!-- Inter Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet" />
 
-    <head>
-        <meta charset="UTF-8">
-        <title>{{ __('messages.payment_confirmed') }}</title>
-    </head>
+    <style>
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-<body style="margin:0; padding:0; background-color:#f7f7f7; font-family:Arial, sans-serif;">
-    <table align="center" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f7f7f7; padding:20px;">
-        <tr>
-            <td align="center">
-                <table width="600" cellpadding="0" cellspacing="0"
-                    style="background:#ffffff; border-radius:10px; overflow:hidden; box-shadow:0 2px 10px rgba(0,0,0,0.05);">
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #0a0a0a;
+            color: #ffffff;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
 
-                    <!-- Header with logo -->
-                    <tr>
-                        <td align="center" style="background-color:#fff; padding:20px;">
-                            <img src="{{ asset('logo.webp') }}" alt="Logo" style="max-height:50px;">
-                        </td>
-                    </tr>
+        table {
+            border-collapse: collapse;
+            mso-table-lspace: 0pt;
+            mso-table-rspace: 0pt;
+            width: 100%;
+        }
 
-                    <!-- Body -->
-                    <tr>
-                        <td
-                            style="padding:30px; text-align:{{ app()->getLocale() === 'ar' ? 'right' : 'left' }}; color:#333;">
-                            <h1 style="color:#7338f0; margin-top:0;">✅ {{ __('messages.payment_confirmed') }}</h1>
-                            <h2 style="margin:10px 0;">{{ __('messages.hello') }} {{ $user->name }},</h2>
-                            <p style="font-size:15px; line-height:1.6; margin:15px 0;">
-                                {{ __('messages.thank_you_order') }}
-                            </p>
+        img {
+            border: 0;
+            height: auto;
+            line-height: 100%;
+            outline: none;
+            text-decoration: none;
+            -ms-interpolation-mode: bicubic;
+        }
 
-                            <table width="100%" cellpadding="5" cellspacing="0"
-                                style="margin:20px 0; font-size:14px; color:#333;">
-                                <tr>
-                                    <td><strong>{{ __('messages.order_number') }}:</strong></td>
-                                    <td>#{{ $order->id }}</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>{{ __('messages.order_date') }}:</strong></td>
-                                    <td>{{ $order->created_at->format('Y-m-d H:i') }}</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>{{ __('messages.product_count') }}:</strong></td>
-                                    <td>{{ $order->items->count() }}</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>{{ __('messages.total_amount') }}:</strong></td>
-                                    <td>{{ number_format($order->total_price_user_currency, 2) .
-                                        $order->currency_code}}</td>
-                                </tr>
-                            </table>
+        .email-wrapper {
+            width: 100%;
+            background-color: #0a0a0a;
+            padding: 40px 0;
+        }
 
-                            <p style="font-size:14px; line-height:1.6; color:#555;">
-                                📢 {{ __('messages.order_processing') }}
-                            </p>
+        .container {
+            width: 100%;
+            max-width: 640px;
+            margin: 0 auto;
+            background-color: #111111;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow:
+                0 25px 50px -12px rgba(255, 255, 255, 0.05),
+                0 0 0 1px rgba(255, 255, 255, 0.05);
+        }
 
-                            <p style="font-size:14px; line-height:1.6; color:#555;">
-                                {{ __('messages.contact_us_if_any') }}
-                            </p>
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 25%, #1e40af 50%, #1e3a8a 75%, #1e1b4b 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 8s ease infinite;
+            padding: 48px 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
 
-                            <div style="text-align:center; margin:30px 0;">
-                                <a href="{{ env('WEBSITE_URL') }}" target="_blank" rel="noopener noreferrer"
-                                    style="display:inline-block; padding:12px 25px; background:#7338f0; color:#fff; text-decoration:none; border-radius:6px; font-weight:bold;">
-                                    {{ __('messages.visit_website') }}
-                                </a>
-                            </div>
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 30% 20%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 70% 80%, rgba(147, 51, 234, 0.15) 0%, transparent 50%);
+            pointer-events: none;
+        }
 
-                            <p style="margin-top:30px; font-size:13px; color:#555;">{{ __('messages.thank_you') }}</p>
-                            <p style="font-size:13px; font-weight:bold; color:#333;">{{ __(env('WEBSITE_URL')) }}</p>
-                        </td>
-                    </tr>
+        @keyframes gradientShift {
 
-                    <!-- Footer -->
-                    <tr>
-                        <td style="background:#090f30; color:#fff; text-align:center; padding:15px; font-size:12px;">
-                            <p style="margin:5px 0;">© {{ date('Y') }} {{ __('messages.project_name') }}. {{
-                                __('messages.rights_reserved') }}
-                            </p>
-                            <p style="margin:5px 0;">
-                                <a href="{{ env('WEBSITE_URL') }}" style="color:#fff; text-decoration:none;">{{
-                                    __('messages.project_name') }}</a>
-                            </p>
-                            <p style="margin:5px 0;">📧 info@enjoygames.com | 📞 93809093</p>
-                        </td>
-                    </tr>
+            0%,
+            100% {
+                background-position: 0% 50%;
+            }
 
-                </table>
-            </td>
-        </tr>
-    </table>
-</body>
+            50% {
+                background-position: 100% 50%;
+            }
+        }
 
-</html>
+        .logo-container {
+            position: relative;
+            z-index: 2;
+        }
+
+        .logo {
+            max-width: 200px;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+            filter: brightness(1.1) contrast(1.1);
+        }
+
+        .header-title {
+            margin-top: 24px;
+            font-size: 18px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.9);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        /* Content */
+        .content {
+            padding: 56px 40px;
+            background-color: #111111;
+
+            text-align: {
+                    {
+                    app()->getLocale()=='ar' ? 'right': 'left'
+                }
+            }
+
+            ;
+        }
+
+        .content-title {
+            margin: 0 0 32px 0;
+            font-size: 32px;
+            font-weight: 700;
+            color: #ffffff;
+            line-height: 1.2;
+            letter-spacing: -0.5px;
+        }
+
+        .greeting {
+            font-size: 18px;
+            font-weight: 500;
+            color: #e5e7eb;
+            margin-bottom: 24px;
+            line-height: 1.5;
+        }
+
+        .description {
+            font-size: 16px;
+            line-height: 1.7;
+            color: #d1d5db;
+            margin-bottom: 40px;
+        }
+
+        /* Order Details */
+        .order-card {
+            background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 28px;
+            margin: 32px 0;
+        }
+
+        .order-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            font-size: 15px;
+            color: #d1d5db;
+        }
+
+        .order-row:last-child {
+            margin-bottom: 0;
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .order-label {
+            font-weight: 500;
+            color: #9ca3af;
+        }
+
+        .order-value {
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        /* Success Message */
+        .success-box {
+            background: linear-gradient(135deg, #052e16 0%, #047857 100%);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            border-radius: 12px;
+            padding: 24px;
+            margin: 32px 0;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .success-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 16px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .success-text {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #a7f3d0;
+            margin: 0;
+            font-weight: 500;
+        }
+
+        /* Call to Action Button */
+        .cta-button {
+            display: inline-block;
+            margin: 32px 0;
+            padding: 14px 32px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 16px;
+            box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+        }
+
+        /* Footer */
+        .footer {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            padding: 48px 40px;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .company-name {
+            font-size: 24px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 24px;
+            letter-spacing: -0.5px;
+        }
+
+        .contact-grid {
+            display: grid;
+            gap: 16px;
+            margin-bottom: 32px;
+            text-align: center;
+        }
+
+        .contact-item {
+            font-size: 14px;
+            color: #94a3b8;
+            line-height: 1.5;
+        }
+
+        .contact-label {
+            font-weight: 600;
+            color: #e2e8f0;
+            margin-right: 8px;
+        }
+
+        .contact-link {
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .contact-link:hover {
+            color: #60a5fa;
+        }
+
+        .divider {
+            margin: 0 12px;
+            color: #475569;
+        }
+
+        .copyright {
+            padding-top: 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 12px;
+            color: #64748b;
+            font-weight: 400;
+        }
+
+        /* Responsive */
+        @media only screen and (max-width: 640px) {
+            .container {
+                margin: 0 16px;
+                border-radius: 12px;
+            }
+
+            .header,
+            .content,
+            .footer {
+                padding: 32px 24px;
+            }
+
+            .content-title {
+                font-size: 28px;
+            }
+
+            .order-card,
+            .success-box {
+                padding: 24px;
+            }
+
+            .cta-button {
+                padding: 12px 28px;
+                font-size: 15px;
+            }
+        }
+
+        @media only screen and (max-width: 480px) {
+            .content-title {
+                font-size: 24px;
+            }
+
+            .greeting,
+            .description {
+                font-size: 16px;
+            }
+        }
+
+        @media (prefers-color-scheme: dark) {
+
+            .container,
+            .content {
+                background-color: #111111 !important;
+            }
+        }
+    </style>
 </head>
 
-<body style="margin:0; padding:0; background-color:#f7f7f7; font-family:Arial, sans-serif;">
-    <table align="center" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f7f7f7; padding:20px;">
-        <tr>
-            <td align="center">
-                <table width="600" cellpadding="0" cellspacing="0"
-                    style="background:#ffffff; border-radius:10px; overflow:hidden; box-shadow:0 2px 10px rgba(0,0,0,0.05);">
+<body>
+    <div class="email-wrapper">
+        <table role="presentation" cellpadding="0" cellspacing="0">
+            <tr>
+                <td align="center">
+                    <table role="presentation" class="container" cellpadding="0" cellspacing="0">
+                        <!-- Header -->
+                        <tr>
+                            <td class="header">
+                                <div class="logo-container">
+                                    <img src="{{ asset('enjoy-logo.PNG') }}" alt="Enjoy Games" class="logo"
+                                        width="200" />
+                                    <div class="header-title">Gaming Excellence</div>
+                                </div>
+                            </td>
+                        </tr>
 
-                    <!-- Header with logo -->
-                    <tr>
-                        <td align="center" style="background-color:#fff; padding:20px;">
-                            <img src="{{ asset('logo.webp') }}" alt="Logo" style="max-height:50px;">
-                        </td>
-                    </tr>
+                        <!-- Content -->
+                        <tr>
+                            <td class="content">
+                                <h1 class="content-title">✅ {{ __('messages.payment_confirmed') }}</h1>
 
-                    <!-- Body -->
-                    <tr>
-                        <td
-                            style="padding:30px; text-align:{{ app()->getLocale() === 'ar' ? 'right' : 'left' }}; color:#333;">
-                            <h1 style="color:#7338f0; margin-top:0;">✅ {{ __('messages.payment_confirmed') }}</h1>
-                            <h2 style="margin:10px 0;">{{ __('messages.hello') }} {{ $user->name }},</h2>
-                            <p style="font-size:15px; line-height:1.6; margin:15px 0;">
-                                {{ __('messages.thank_you_order') }}
-                            </p>
+                                <p class="greeting">{{ __('messages.hello') }} {{ $user->name }},</p>
 
-                            <table width="100%" cellpadding="5" cellspacing="0"
-                                style="margin:20px 0; font-size:14px; color:#333;">
-                                <tr>
-                                    <td><strong>{{ __('messages.order_number') }}:</strong></td>
-                                    <td>#{{ $order->id }}</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>{{ __('messages.order_date') }}:</strong></td>
-                                    <td>{{ $order->created_at->format('Y-m-d H:i') }}</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>{{ __('messages.product_count') }}:</strong></td>
-                                    <td>{{ $order->items->count() }}</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>{{ __('messages.total_amount') }}:</strong></td>
-                                    <td>{{ number_format($order->total_price_user_currency, 2) .
-                                        $order->currency_code}}</td>
-                                </tr>
-                            </table>
+                                <p class="description">{{ __('messages.thank_you_order') }}</p>
 
-                            <p style="font-size:14px; line-height:1.6; color:#555;">
-                                📢 {{ __('messages.order_processing') }}
-                            </p>
+                                <!-- Order Details -->
+                                <div class="order-card">
+                                    <div class="order-row">
+                                        <span class="order-label">{{ __('messages.order_number') }}</span>
+                                        <span class="order-value">#{{ $order->id }}</span>
+                                    </div>
+                                    <div class="order-row">
+                                        <span class="order-label">{{ __('messages.order_date') }}</span>
+                                        <span class="order-value">{{ $order->created_at->format('Y-m-d H:i') }}</span>
+                                    </div>
+                                    <div class="order-row">
+                                        <span class="order-label">{{ __('messages.product_count') }}</span>
+                                        <span class="order-value">{{ $order->items->count() }}</span>
+                                    </div>
+                                    <div class="order-row">
+                                        <span class="order-label">{{ __('messages.total_amount') }}</span>
+                                        <span class="order-value">
+                                            {{ number_format($order->total_price_user_currency, 2) . ' ' .
+                                            $order->currency_code }}
+                                        </span>
+                                    </div>
+                                </div>
 
-                            <p style="font-size:14px; line-height:1.6; color:#555;">
-                                {{ __('messages.contact_us_if_any') }}
-                            </p>
+                                <!-- Success Message -->
+                                <div class="success-box">
+                                    <div class="success-icon">✔️</div>
+                                    <p class="success-text">{{ __('messages.order_processing') }}</p>
+                                </div>
 
-                            <div style="text-align:center; margin:30px 0;">
-                                <a href="{{ env('WEBSITE_URL') }}" target="_blank" rel="noopener noreferrer"
-                                    style="display:inline-block; padding:12px 25px; background:#7338f0; color:#fff; text-decoration:none; border-radius:6px; font-weight:bold;">
-                                    {{ __('messages.visit_website') }}
-                                </a>
-                            </div>
+                                <p class="description">{{ __('messages.contact_us_if_any') }}</p>
 
-                            <p style="margin-top:30px; font-size:13px; color:#555;">{{ __('messages.thank_you') }}</p>
-                            <p style="font-size:13px; font-weight:bold; color:#333;">{{ __(env('WEBSITE_URL')) }}</p>
-                        </td>
-                    </tr>
+                                <!-- CTA Button -->
+                                <div style="text-align: center;">
+                                    <a href="{{ env('WEBSITE_URL') }}" target="_blank" class="cta-button">
+                                        {{ __('messages.visit_website') }}
+                                    </a>
+                                </div>
 
-                    <!-- Footer -->
-                    <tr>
-                        <td style="background:#090f30; color:#fff; text-align:center; padding:15px; font-size:12px;">
-                            <p style="margin:5px 0;">© {{ date('Y') }} {{ __('messages.project_name') }}. {{
-                                __('messages.rights_reserved') }}
-                            </p>
-                            <p style="margin:5px 0;">
-                                <a href="{{ env('WEBSITE_URL') }}" style="color:#fff; text-decoration:none;">{{
-                                    __('messages.project_name') }}</a>
-                            </p>
-                            <p style="margin:5px 0;">📧 info@enjoygames.com | 📞 93809093</p>
-                        </td>
-                    </tr>
+                                <p class="description" style="margin-top: 24px;">
+                                    {{ __('messages.thank_you') }}
+                                </p>
+                            </td>
+                        </tr>
 
-                </table>
-            </td>
-        </tr>
-    </table>
+                        <!-- Footer -->
+                        <tr>
+                            <td class="footer">
+                                <div class="company-name">Enjoy Games</div>
+
+                                <div class="contact-grid">
+                                    <div class="contact-item">
+                                        <span class="contact-label">{{ __('messages.email') }}:</span>
+                                        <a href="mailto:Info@enjoygames.shop"
+                                            class="contact-link">Info@enjoygames.shop</a>
+                                        <span class="divider">|</span>
+                                        <a href="mailto:Support@chargerspeed.online"
+                                            class="contact-link">Support@chargerspeed.online</a>
+                                    </div>
+                                    <div class="contact-item">
+                                        <span class="contact-label">{{ __('messages.phone') }}:</span>
+                                        <a href="tel:+96893809093" class="contact-link">+968 9380 9093</a>
+                                    </div>
+                                    <div class="contact-item">
+                                        <span class="contact-label">{{ __('messages.website') }}:</span>
+                                        <a href="https://enjoy-games.vercel.app" target="_blank"
+                                            class="contact-link">enjoy-games.vercel.app</a>
+                                    </div>
+                                    <div class="contact-item">
+                                        <span class="contact-label">{{ __('messages.address') }}</span>
+                                    </div>
+                                </div>
+
+                                <div class="copyright">
+                                    &copy; {{ date('Y') }} Enjoy Games. {{ __('messages.rights_reserved') }}
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </div>
 </body>
 
 </html>

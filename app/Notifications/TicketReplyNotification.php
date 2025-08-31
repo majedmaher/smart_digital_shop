@@ -39,10 +39,11 @@ class TicketReplyNotification extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject(__('رد جديد على تذكرتك'))
-            ->line(__('تم إضافة رد جديد على التذكرة: :subject', ['subject' => $this->ticket->subject]))
-            ->line($this->message->message)
-            ->action(__('عرض التذكرة'), url("/tickets/{$this->ticket->id}"));
+            ->subject(__('messages.new_reply_your_ticket'))
+            ->view('emails.ticket-notification', [
+                'ticket' => $this->ticket,
+                'reply_message' => $this->message->message, // ✅ تم تغيير الاسم
+            ]);
     }
 
     /**

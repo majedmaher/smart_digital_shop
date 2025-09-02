@@ -16,8 +16,8 @@ class CodeResource extends JsonResource
     {
         return [
             "id" => $this->id,
-            "product_title" => $this->product->title,
-            "user_name" => $this->user->name,
+            "product_title" => $this->product->title ?? null,
+            "user_name" => $this->user->name ?? null,
             "code" => $this->code,
             "is_used" => $this->is_used,
             "used_at" => $this->used_at,

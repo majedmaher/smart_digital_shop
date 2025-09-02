@@ -15,7 +15,7 @@ class CodeService extends Controller
     static function index(): JsonResponse
     {
         try {
-            $codes = Code::latest()->get();
+            $codes = Code::with('product')->latest()->get();
             return BaseController::sendResponse(CodeResource::collection($codes), __('messages.sent_data'));
         } catch (\Throwable $th) {
             return BaseController::sendError(__('something wrong'), [$th->getMessage()], 500);

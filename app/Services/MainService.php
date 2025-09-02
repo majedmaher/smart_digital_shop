@@ -21,10 +21,7 @@ use App\Models\Product;
 use App\Models\Rating;
 use App\Models\Slider;
 use App\Models\SubCategory;
-use App\Models\WalletTransaction;
 use Illuminate\Http\JsonResponse;
-
-use function PHPUnit\Framework\isEmpty;
 
 class MainService extends Controller
 {
@@ -39,10 +36,28 @@ class MainService extends Controller
                 ->get();
 
             $sliders = Slider::latest()->get();
-            $products = Product::where('is_active', 1)->latest()->take(4)->get();
+            $products = Product::getNecessaryData()->where('is_active', 1)->latest()->take(4)->get();
+            $bestSeller = Product::getNecessaryData()
+                ->where('is_active', 1)
+                ->withCount('orderItems') // لازم تكون عامل علاقة orderItems في المودل
+                ->orderBy('order_items_count', 'desc')
+                ->take(4)
+                ->get();
 
 
-            $data = ['categories' => CategoryResource::collection($categories), 'sliders' => SliderResource::collection($sliders), 'best_seller' => ProductResource::collection($products), 'newly_arrived' => ProductResource::collection($products), 'suggested_products' => ProductResource::collection($products)];
+            $suggested = Product::getNecessaryData()
+                ->where('is_active', 1)
+                ->inRandomOrder()
+                ->take(4)
+                ->get();
+
+            $data = [
+                'categories' => CategoryResource::collection($categories),
+                'sliders' => SliderResource::collection($sliders),
+                'best_seller' => ProductResource::collection($bestSeller),
+                'newly_arrived' => ProductResource::collection($products),
+                'suggested_products' => ProductResource::collection($suggested)
+            ];
 
             return BaseController::sendResponse($data, __('messages.sent_data'));
         } catch (\Throwable $th) {
@@ -71,10 +86,27 @@ class MainService extends Controller
         try {
 
             $sliders = Slider::latest()->get();
-            $products = Product::where('is_active', 1)->latest()->take(4)->get();
+            $products = Product::getNecessaryData()->where('is_active', 1)->latest()->take(4)->get();
+            $bestSeller = Product::getNecessaryData()
+                ->where('is_active', 1)
+                ->withCount('orderItems') // لازم تكون عامل علاقة orderItems في المودل
+                ->orderBy('order_items_count', 'desc')
+                ->take(4)
+                ->get();
 
 
-            $data = ['sliders' => SliderResource::collection($sliders), 'best_seller' => ProductResource::collection($products), 'newly_arrived' => ProductResource::collection($products), 'suggested_products' => ProductResource::collection($products)];
+            $suggested = Product::getNecessaryData()
+                ->where('is_active', 1)
+                ->inRandomOrder()
+                ->take(4)
+                ->get();
+
+            $data = [
+                'sliders' => SliderResource::collection($sliders),
+                'best_seller' => ProductResource::collection($bestSeller),
+                'newly_arrived' => ProductResource::collection($products),
+                'suggested_products' => ProductResource::collection($suggested)
+            ];
 
             return BaseController::sendResponse($data, __('messages.sent_data'));
         } catch (\Throwable $th) {
@@ -129,7 +161,20 @@ class MainService extends Controller
         try {
             $product = Product::with('ratings')->whereJsonContainsLocales('slug', ['en', 'ar'], $slug)->first();
             if ($product === null) return BaseController::sendError(__('messages.search_item_not_found'), [], 422);
-            return BaseController::sendResponse(ProductResource::make($product), __('messages.sent_data'));
+            $similarProducts = Product::getNecessaryData()->where('is_active', 1)->where(function ($q) use ($product) {
+                $q->where('sub_category_id', $product->sub_category_id)
+                    ->orWhere('category_id', $product->category_id);
+            })
+                ->where('id', '!=', $product->id)
+                ->limit(4)
+                ->get();
+
+            $data = [
+                'product' => ProductResource::make($product),
+                'similar_products' => ProductResource::collection($similarProducts),
+            ];
+
+            return BaseController::sendResponse($data, __('messages.sent_data'));
         } catch (\Throwable $th) {
             return BaseController::sendError(__('something wrong'), [], 500);
         }
@@ -148,7 +193,7 @@ class MainService extends Controller
     public static function getFAQS(): JsonResponse
     {
         try {
-            $faqs = Faq::where('is_ai_generated', 1)->latest()->get();
+            $faqs = Faq::where('is_ai_generated', 0)->latest()->get();
             return BaseController::sendResponse(FaqResource::collection($faqs), __('messages.sent_data'));
         } catch (\Throwable $th) {
             return BaseController::sendError(__('something wrong'), [], 500);

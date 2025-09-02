@@ -19,6 +19,15 @@ use OpenAI\Laravel\Facades\OpenAI;
 
 class FaqController extends Controller
 {
+    public function getAdminFAQS(): JsonResponse
+    {
+        try {
+            $faq = Faq::latest()->get();
+            return BaseController::sendResponse($faq, __('messages.store_successfully', ['item' => __('messages.faq')]));
+        } catch (\Throwable $th) {
+            return BaseController::sendError(__('messages.store_failed', ['item' => __('messages.faq')]), [], 500);
+        }
+    }
     public function store(FaqRequest $request): JsonResponse
     {
         try {

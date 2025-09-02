@@ -86,6 +86,7 @@ Route::middleware(['should_auth', 'auth:sanctum'])->group(function () {
     Route::get('/user/increase-my-redeem', [PointsRedemptionController::class, 'redeem']);
     Route::post('/rating/create', [RatingController::class, 'store']);
     Route::middleware(['custom_permission:permission:manage settings'])->group(function () {
+        Route::get('/faq/all', [FaqController::class, 'getAdminFAQS']);
         Route::post('/faq/create', [FaqController::class, 'store']);
         Route::get('/faq/delete/{id}', [FaqController::class, 'delete']);
     });

@@ -18,7 +18,7 @@ class CodeService extends Controller
             $codes = Code::latest()->get();
             return BaseController::sendResponse(CodeResource::collection($codes), __('messages.sent_data'));
         } catch (\Throwable $th) {
-            return BaseController::sendError(__('something wrong'), [], 500);
+            return BaseController::sendError(__('something wrong'), [$th->getMessage()], 500);
         }
     }
 

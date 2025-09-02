@@ -83,7 +83,7 @@ class ProductService extends Controller
             if (!$product) {
                 return BaseController::sendError(__('messages.item_not_found', ['item' => __('messages.product')]), [], 404);
             }
-            $product->fill($data->only(['name', 'category_id', 'sub_category_id', 'content', 'description', 'price_before', 'price', 'discount', 'vat_rate', 'shipping_payment', 'status']));
+            $product->fill($data->only(['title', 'category_id', 'sub_category_id', 'content', 'description', 'price_before', 'price', 'discount', 'vat_rate', 'shipping_payment', 'status']));
 
             if ($data['image'] || $data->hasFile('image')) {
                 if ($product->image) unlink(public_path($product->image));

@@ -13,6 +13,7 @@ return [
     'do_not_have_permission' => 'Sorry, you do not have permission to access this page.',
     'invalid_permission_type' => 'Invalid permission type.',
     'require_login' => 'Sorry, accessing this page requires you to log in first.',
+    'invalid_phone_number' => 'The number entered is incorrect.',
     // 
 
     'search_item_not_found' => 'Sorry, no results were found for your search',
@@ -79,6 +80,7 @@ return [
 
     'verification_code' => 'Verification code',
     'verification_code_is' => 'Your verification code is:',
+    'otp_message' => 'Hello :name, your verification code is: :otp',
     'verification_message' => 'This code is valid for a short time, please use it immediately.',
     'project_name' => 'Enjoy Games',
     'our_website' => 'Our website',
@@ -119,6 +121,8 @@ return [
 
     // 
     'error_subcategory_parent_id' => 'You cannot select a subcategory that contains another subcategory.',
+    'access_blocked' => 'Access is blocked from your country due to fraud risk.',
+    'too_many_attempts' => 'The number of attempts allowed has been exceeded. Please try again later.',
 
     'category' => 'Category',
     'sub_category' => 'Sub Category',

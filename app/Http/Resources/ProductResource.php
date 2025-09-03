@@ -28,6 +28,7 @@ class ProductResource extends JsonResource
             'slug' => $this->slug,
             'content' => $this->content,
             'description' => $this->description,
+            'terms_and_conditions' => $this->terms_and_conditions,
             'image' => $this->image,
             'price_before' => $this->price_before ? currencyConverter($this->price_before, $currency, 2) : null,
             'price' => $this->price ? currencyConverter($this->price, $currency, 2) : null,

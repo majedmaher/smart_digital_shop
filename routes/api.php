@@ -21,54 +21,71 @@ use App\Http\Controllers\TicketController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ZohoAuthController;
 use Illuminate\Support\Facades\Route;
+// routes/web.php
+use Torann\GeoIP\Facades\GeoIP;
 
-Route::controller(MainController::class)->group(function () {
-    Route::get('/mobile-main-content', 'getMobileMainScreen');
-    Route::get('/categories-subcategories', 'getCategoriesWithSubCategories');
-    Route::get('/main-content', 'getMainContent');
-    Route::get('/category/{slug}', 'getCategory')->name('getCategory');
-    Route::get('/sub-category/{slug}', 'getSubCategory')->name('getSubCategory');
-    Route::get('/product/{slug}', 'getProduct')->name('getProduct');
-    Route::get('/ratings/product/{id}', 'getProductRatings')->name('getProductRatings');
-    Route::get('/faqs', 'getFAQS');
-    Route::get('/search', 'search');
-    Route::get('/payment-methods', 'getPaymentMethods');
+Route::get('/test-geoip', function () {
+    $ip = request()->ip();
+    $location = GeoIP::get($ip);
+
+    return response()->json([
+        'ip' => $ip,
+        'country' => $location['country'] ?? null,
+        'iso_code' => $location['iso_code'] ?? null,
+    ]);
 });
+Route::middleware(['not_blocked_country', 'throttle.by-route:5,1'])->group(function () {
 
-Route::controller(SeoController::class)->group(function () {
-    Route::get('/get/seo', 'get');
-    Route::post('/update/seo', 'update')->middleware(['should_auth', 'auth:sanctum', 'custom_permission:permission:manage settings']);
-});
+    Route::controller(MainController::class)->group(function () {
+        Route::get('/mobile-main-content', 'getMobileMainScreen');
+        Route::get('/categories-subcategories', 'getCategoriesWithSubCategories');
+        Route::get('/main-content', 'getMainContent');
+        Route::get('/category/{slug}', 'getCategory')->name('getCategory');
+        Route::get('/sub-category/{slug}', 'getSubCategory')->name('getSubCategory');
+        Route::get('/product/{slug}', 'getProduct')->name('getProduct');
+        Route::get('/ratings/product/{id}', 'getProductRatings')->name('getProductRatings');
+        Route::get('/faqs', 'getFAQS');
+        Route::get('/search', 'search');
+        Route::get('/payment-methods', 'getPaymentMethods');
+    });
 
-Route::group(['middleware' => ['should_auth', 'auth:sanctum'], 'controller' => InterestController::class], function () {
-    Route::get('/get/interests', 'myInterests');
-    Route::post('/create/interest', 'store');
-    Route::get('/delete/interest/{id}', 'delete');
-});
+    Route::controller(SeoController::class)->group(function () {
+        Route::get('/get/seo', 'get');
+        Route::post('/update/seo', 'update')->middleware(['should_auth', 'auth:sanctum', 'custom_permission:permission:manage settings']);
+    });
 
-Route::post('/assistant/ask', [FaqController::class, 'ask']);
+    Route::group(['middleware' => ['should_auth', 'auth:sanctum'], 'controller' => InterestController::class], function () {
+        Route::get('/get/interests', 'myInterests');
+        Route::post('/create/interest', 'store');
+        Route::get('/delete/interest/{id}', 'delete');
+    });
 
-Route::controller(PaymentController::class)->group(function () {
-    Route::post('/payment/paymob/callback/processed', 'handlePaymobWebhook')->name('handlePaymobWebhook');
-    Route::get('/payment/paymob/result', 'result')->name('result');
-});
+    Route::post('/assistant/ask', [FaqController::class, 'ask']);
 
-Route::get('/zoho/connect', [ZohoAuthController::class, 'connect'])->name('zoho.connect');
-Route::get('/zoho/callback', [ZohoAuthController::class, 'callback'])->name('zoho.callback');
+    Route::controller(PaymentController::class)->group(function () {
+        Route::post('/payment/paymob/callback/processed', 'handlePaymobWebhook')->name('handlePaymobWebhook');
+        Route::get('/payment/paymob/result', 'result')->name('result');
+    });
+
+    Route::get('/zoho/connect', [ZohoAuthController::class, 'connect'])->name('zoho.connect');
+    Route::get('/zoho/callback', [ZohoAuthController::class, 'callback'])->name('zoho.callback');
 
 
-Route::controller(AuthController::class)->as('auth.')->group(function () {
-    Route::post('/register', 'register')->name('register');
-    Route::post('/login', 'login')->name('login');
-    Route::post('/update-user', 'updateUser')->name('updateUser')->middleware(['should_auth', 'auth:sanctum']);
-    Route::post('confirm-otp', 'confirmOtp')->name('confirmOtp');
-    Route::post('/logout', 'logout')->middleware(['should_auth', 'auth:sanctum'])->name('logout');
-});
-Route::post('social-login', [SocialAuthController::class, 'socialLogin']);
+    Route::controller(AuthController::class)->as('auth.')->group(function () {
+        Route::post('/register', 'register')->name('register');
+        Route::post('/login', 'login')->name('login');
+        Route::post('/register-phone', 'registerWithPhone');
+        Route::post('/login-phone', 'loginWithPhone')->name('loginWithPhone');
+        Route::post('/update-user', 'updateUser')->name('updateUser')->middleware(['should_auth', 'auth:sanctum']);
+        Route::post('confirm-otp', 'confirmOtp')->name('confirmOtp');
+        Route::post('/logout', 'logout')->middleware(['should_auth', 'auth:sanctum'])->name('logout');
+    });
+    Route::post('social-login', [SocialAuthController::class, 'socialLogin']);
 
-Route::prefix('social')->group(function () {
-    Route::get('redirect/{provider}', [SocialAuthController::class, 'redirect']);
-    Route::get('callback/{provider}', [SocialAuthController::class, 'callback']);
+    Route::prefix('social')->group(function () {
+        Route::get('redirect/{provider}', [SocialAuthController::class, 'redirect']);
+        Route::get('callback/{provider}', [SocialAuthController::class, 'callback']);
+    });
 });
 
 Route::middleware(['should_auth', 'auth:sanctum'])->group(function () {

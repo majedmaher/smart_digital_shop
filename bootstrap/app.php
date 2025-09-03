@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\AuthMiddleware;
+use App\Http\Middleware\BlockedCountries;
 use App\Http\Middleware\CustomDynamicPermissionMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -26,6 +27,9 @@ return Application::configure(basePath: dirname(__DIR__))
             'role_or_permission' => RoleOrPermissionMiddleware::class,
             'custom_permission' => CustomDynamicPermissionMiddleware::class,
             'should_auth' => AuthMiddleware::class,
+            'not_blocked_country' => BlockedCountries::class,
+            'throttle.by-route' => \App\Http\Middleware\RateLimitByRoute::class,
+
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

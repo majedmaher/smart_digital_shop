@@ -13,6 +13,7 @@ return [
     'do_not_have_permission' => 'عذراً، ليس لديك الصلاحية للوصول إلى هذه الصفحة.',
     'invalid_permission_type' => 'نوع الإذن غير صالح.',
     'require_login' => 'نعتذر، يتطلب الوصول إلى هذه الصفحة تسجيل الدخول أولاً.',
+    'invalid_phone_number' => 'الرقم المدخل غير صحيح.',
 
     // Category Messages
     'search_item_not_found' => 'عذراً، لم يتم العثور على نتائج لبحثك',
@@ -80,6 +81,7 @@ return [
 
     'verification_code' => 'رمز التحقق',
     'verification_code_is' => 'رمز التحقق الخاص بك هو:',
+    'otp_message' => 'مرحبًا :name، كود التحقق الخاص بك هو: :otp',
     'verification_message' => 'هذا الكود صالح لفترة قصيرة، يرجى استخدامه على الفور.',
     'project_name' => 'إنجوي جيمز',
     'our_website' => 'موقعنا',
@@ -120,6 +122,8 @@ return [
 
     // 
     'error_subcategory_parent_id' => 'لا يمكنك تحديد فئة فرعية تحتوي على فئة فرعية أخرى.',
+    'access_blocked' => 'تم حظر الوصول من بلدك بسبب خطر الاحتيال.',
+    'too_many_attempts' => 'تم تجاوز الحد المسموح من المحاولات. يرجى المحاولة لاحقًا.',
 
     'category' => 'التصنيف',
     'sub_category' => 'التصنيف الفرعي',

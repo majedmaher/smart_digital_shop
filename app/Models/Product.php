@@ -20,7 +20,7 @@ class Product extends Model
 
     protected $guarded = [];
 
-    public array $translatable = ['title', 'content', 'description', 'slug'];
+    public array $translatable = ['title', 'content', 'description', 'slug', 'terms_and_conditions'];
 
     public function scopeGetNecessaryData($query)
     {

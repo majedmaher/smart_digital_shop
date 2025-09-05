@@ -25,13 +25,13 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // $user = User::first();
-        // $this->call([
-        //     RolesAndPermissionsSeeder::class,
-        // CategorySeeder::class,
-        // SubCategorySeeder::class,
-        // ProductSeeder::class,
-        // CodeSeeder::class,
-        // ]);
+        $this->call([
+            RolesAndPermissionsSeeder::class,
+            // CategorySeeder::class,
+            // SubCategorySeeder::class,
+            // ProductSeeder::class,
+            // CodeSeeder::class,
+        ]);
         $user->assignRole(RoleEnum::ADMIN);
         // User::factory(10)->create();
 

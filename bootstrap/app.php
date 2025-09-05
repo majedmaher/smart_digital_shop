@@ -20,7 +20,6 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->use([
             \App\Http\Middleware\SetLocale::class,
-            \App\Http\Middleware\TrustProxies::class,
         ]);
         $middleware->alias([
             'role' => RoleMiddleware::class,

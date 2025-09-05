@@ -16,13 +16,13 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // $user = User::factory()->create([
-        //     'name' => 'Wassim',
-        //     'email' => 'wasimabdelhadi78@gmail.com',
-        //     // 'name' => 'Test User',
-        //     // 'email' => 'test@test.com',
-        //     'password' => 'asdasd123123',
-        // ]);
+        $user = User::factory()->create([
+            'name' => 'Admin',
+            'email' => 'support@chargerspeed.online',
+            // 'name' => 'Test User',
+            // 'email' => 'test@test.com',
+            'password' => 'As$#708090',
+        ]);
 
         // $user = User::first();
         // $this->call([
@@ -32,22 +32,22 @@ class DatabaseSeeder extends Seeder
         // ProductSeeder::class,
         // CodeSeeder::class,
         // ]);
-        // $user->assignRole(RoleEnum::ADMIN);
+        $user->assignRole(RoleEnum::ADMIN);
         // User::factory(10)->create();
 
-        Seo::create([
-            'title' => [
-                'ar' => 'إنجوي قيمز',
-                'en' => 'EnjoyGames'
-            ],
-            'description' => [
-                'ar' => 'وصف',
-                'en' => 'description'
-            ],
-            'keywords' => [
-                'ar' => 'موقع,اكواد',
-                'en' => 'website,code'
-            ]
-        ]);
+        // Seo::create([
+        //     'title' => [
+        //         'ar' => 'إنجوي قيمز',
+        //         'en' => 'EnjoyGames'
+        //     ],
+        //     'description' => [
+        //         'ar' => 'وصف',
+        //         'en' => 'description'
+        //     ],
+        //     'keywords' => [
+        //         'ar' => 'موقع,اكواد',
+        //         'en' => 'website,code'
+        //     ]
+        // ]);
     }
 }

@@ -28,9 +28,9 @@ class RateLimitByRoute
             $decayMinutes * 60
         );
 
-        if (! $results) {
-            return BaseController::sendError(__('messages.too_many_attempts'), [], 429);
-        }
+        // if (! $results) {
+        //     return BaseController::sendError(__('messages.too_many_attempts'), [], 429);
+        // }
 
         return $next($request);
     }

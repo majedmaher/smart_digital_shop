@@ -22,13 +22,13 @@ class BlockedCountries
         $ip = $request->ip(); // أو استخدم $ip = '213.6.144.81'; للتجربة
 
         // إضافة الكاش: احتفظ بنتيجة الموقع لمدة 24 ساعة
-        $position = Cache::remember("location.{$ip}", 3600, function () use ($ip) {
-            return Location::get($ip);
-        });
+        // $position = Cache::remember("location.{$ip}", 3600, function () use ($ip) {
+        //     return Location::get($ip);
+        // });
 
-        if ($position && in_array($position->countryCode, $blockedCountries)) {
-            return BaseController::sendError(__('messages.access_blocked'), [$ip, $position->countryCode], 403);
-        }
+        // if ($position && in_array($position->countryCode, $blockedCountries)) {
+        //     return BaseController::sendError(__('messages.access_blocked'), [$ip, $position->countryCode], 403);
+        // }
 
         return $next($request);
     }

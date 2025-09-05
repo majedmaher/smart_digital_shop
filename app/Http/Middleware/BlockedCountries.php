@@ -27,7 +27,7 @@ class BlockedCountries
         });
 
         if ($position && in_array($position->countryCode, $blockedCountries)) {
-            return BaseController::sendError(__('messages.access_blocked'), [], 403);
+            return BaseController::sendError(__('messages.access_blocked'), [$ip, $position->countryCode], 403);
         }
 
         return $next($request);

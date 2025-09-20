@@ -43,4 +43,20 @@ class ProductController extends Controller
     {
         return ProductService::delete($id);
     }
+
+    /**
+     * Ensure all products have a subcategory
+     */
+    public function ensureAllProductsHaveSubCategory(): JsonResponse
+    {
+        return ProductService::ensureAllProductsHaveSubCategory();
+    }
+
+    /**
+     * Get products statistics
+     */
+    public function getProductsStats(): JsonResponse
+    {
+        return ProductService::getProductsStats();
+    }
 }

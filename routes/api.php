@@ -145,6 +145,8 @@ Route::middleware(['should_auth', 'auth:sanctum'])->group(function () {
         Route::get('/categories/{category_id}/sub-categories/products', 'categorySubcategoryProducts');
         Route::get('/sub-categories/{sub_category_id}/products', 'subcategoryProducts');
         Route::get('/products', 'index');
+        Route::get('/products/stats', 'getProductsStats');
+        Route::get('/products/ensure-subcategories', 'ensureAllProductsHaveSubCategory');
         Route::group(['prefix' => '/product', 'as' => 'product.'], function () {
             Route::post('/create', 'store')->name('create');
             Route::get('/show/{id}', 'show')->name('show');

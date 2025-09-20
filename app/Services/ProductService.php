@@ -50,8 +50,14 @@ class ProductService extends Controller
                 'image' => 'required|file|mimes:png,jpg,jpeg,webp|max:2048',
             ]);
             $data = $request->validated();
-            $data['user_id'] = auth()->id();
+            $data['user_id'] = auth()->id() ?? 1; // Default to admin user if not authenticated
             $data['image'] = saveImage($data['image'], self::$image_folder);
+            
+            // Ensure subcategory is set
+            if (empty($data['sub_category_id'])) {
+                $data['sub_category_id'] = Product::getDefaultSubCategoryId();
+            }
+            
             $product = Product::create($data);
             DB::commit();
             return BaseController::sendResponse($product, __('messages.store_successfully', ['item' => __('messages.product')]));
@@ -77,7 +83,7 @@ class ProductService extends Controller
     static function update($id, $data): JsonResponse
     {
         try {
-            $data['user_id'] = auth()->id();
+            $data['user_id'] = auth()->id() ?? 1; // Default to admin user if not authenticated
             $product = Product::find($id);
             // return BaseController::sendResponse($product, __('messages.update_successfully', ['item' => __('messages.product')]));
             if (!$product) {
@@ -105,5 +111,60 @@ class ProductService extends Controller
         $product->delete();
 
         return BaseController::sendResponse($product, __('messages.delete_successfully', ['item' => __('messages.product')]));
+    }
+
+    /**
+     * Ensure all products have a subcategory
+     */
+    static function ensureAllProductsHaveSubCategory(): JsonResponse
+    {
+        try {
+            $productsWithoutSubCategory = Product::withoutSubCategory()->get();
+            $defaultSubCategoryId = Product::getDefaultSubCategoryId();
+            
+            $updatedCount = 0;
+            foreach ($productsWithoutSubCategory as $product) {
+                $product->sub_category_id = $defaultSubCategoryId;
+                $product->save();
+                $updatedCount++;
+            }
+
+            return BaseController::sendResponse([
+                'updated_count' => $updatedCount,
+                'default_subcategory_id' => $defaultSubCategoryId,
+                'message' => "تم تحديث {$updatedCount} منتج لاستخدام الفئة الفرعية الافتراضية"
+            ], __('messages.success'));
+        } catch (\Throwable $th) {
+            return BaseController::sendError(__('messages.error_occurred'), [$th->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Get products statistics including subcategory distribution
+     */
+    static function getProductsStats(): JsonResponse
+    {
+        try {
+            $totalProducts = Product::count();
+            $productsWithSubCategory = Product::whereNotNull('sub_category_id')->count();
+            $productsWithoutSubCategory = Product::whereNull('sub_category_id')->count();
+            $productsWithDefaultSubCategory = Product::withDefaultSubCategory()->count();
+
+            $subcategoryDistribution = Product::select('sub_category_id')
+                ->with('subCategory:id,name')
+                ->selectRaw('COUNT(*) as count')
+                ->groupBy('sub_category_id')
+                ->get();
+
+            return BaseController::sendResponse([
+                'total_products' => $totalProducts,
+                'products_with_subcategory' => $productsWithSubCategory,
+                'products_without_subcategory' => $productsWithoutSubCategory,
+                'products_with_default_subcategory' => $productsWithDefaultSubCategory,
+                'subcategory_distribution' => $subcategoryDistribution,
+            ], __('messages.success'));
+        } catch (\Throwable $th) {
+            return BaseController::sendError(__('messages.error_occurred'), [$th->getMessage()], 500);
+        }
     }
 }

@@ -213,4 +213,10 @@ return [
     'social_provider_facebook' => 'Facebook',
     'social_provider_apple' => 'Apple',
 
+    // Product Subcategory Messages
+    'default_subcategory_created' => 'Default subcategory created successfully',
+    'products_updated_with_default_subcategory' => 'Products updated with default subcategory',
+    'subcategory_required' => 'Subcategory is required for products',
+    'general_subcategory' => 'General',
+
 ];

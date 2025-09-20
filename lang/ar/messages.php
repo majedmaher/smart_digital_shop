@@ -214,4 +214,10 @@ return [
     'social_provider_facebook' => 'فيسبوك',
     'social_provider_apple' => 'آبل',
 
+    // Product Subcategory Messages
+    'default_subcategory_created' => 'تم إنشاء الفئة الفرعية الافتراضية بنجاح',
+    'products_updated_with_default_subcategory' => 'تم تحديث المنتجات بالفئة الفرعية الافتراضية',
+    'subcategory_required' => 'الفئة الفرعية مطلوبة للمنتجات',
+    'general_subcategory' => 'عام',
+
 ];

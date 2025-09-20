@@ -14,7 +14,7 @@ return [
     'invalid_permission_type' => 'Invalid permission type.',
     'require_login' => 'Sorry, accessing this page requires you to log in first.',
     'invalid_phone_number' => 'The number entered is incorrect.',
-    // 
+    //
 
     'search_item_not_found' => 'Sorry, no results were found for your search',
     'empty_question' => 'The question is empty',
@@ -119,7 +119,7 @@ return [
     'thank_you_contacting_us' => 'Thank you for contacting our support team.',
     'payment_successful_subject' => '✅ Payment Successful - Order #:id',
 
-    // 
+    //
     'error_subcategory_parent_id' => 'You cannot select a subcategory that contains another subcategory.',
     'access_blocked' => 'Access is blocked from your country due to fraud risk.',
     'too_many_attempts' => 'The number of attempts allowed has been exceeded. Please try again later.',
@@ -138,5 +138,79 @@ return [
     'user' => 'User',
     'interest' => 'Interest',
     'minutes' => 'Minutes',
+
+    // Site Status Messages
+    'site_status_updated' => 'Site status has been updated to :status',
+    'invalid_status' => 'Invalid site status provided',
+    'error_occurred' => 'An error occurred while processing your request',
+    'success' => 'Operation completed successfully',
+
+    // Session Timeout Messages
+    'session_timeout_updated' => 'Session timeout updated for :status to :timeout minutes',
+    'session_timeout_set' => 'Session timeout has been set successfully',
+    'session_extended' => 'Session has been extended successfully',
+    'session_expired' => 'Your session has expired. Please login again.',
+    'session_cleared' => 'Session has been cleared successfully',
+    'no_active_session' => 'No active session found',
+    'timeout_range_invalid' => 'Timeout must be between 30 and 480 minutes',
+
+    // Abandoned Cart Messages
+    'abandoned_cart_notification_sent' => 'Abandoned cart notification sent successfully',
+    'bulk_notifications_sent' => 'Bulk notifications sent successfully',
+    'order_not_pending' => 'Order is not in pending status',
+    'order_not_abandoned' => 'Order has not been abandoned yet',
+    'order_marked_as_recovered' => 'Order marked as recovered successfully',
+    'abandoned_cart_processing_triggered' => 'Abandoned cart processing job has been triggered',
+    'abandoned_cart_reminder_subject' => 'Complete Your Order - Special Discount Inside!',
+    'abandoned_cart_urgent_subject' => 'Last Chance! Complete Your Order Now',
+    'abandoned_cart_final_subject' => 'Final Reminder - Don\'t Miss Out!',
+    'abandoned_cart_reminder_message' => 'You have items waiting in your cart. Complete your order now and get a special discount!',
+    'abandoned_cart_urgent_message' => 'Your cart is about to expire! Complete your order now to secure your items.',
+    'abandoned_cart_final_message' => 'This is your final chance to complete your order. Don\'t miss out on these great deals!',
+    'special_discount_offer' => 'Special Discount Offer',
+    'discount_code' => 'Discount Code',
+    'discount_value' => 'Discount Value',
+    'discount_expires' => 'Expires At',
+    'complete_your_order' => 'Complete Your Order',
+    'abandoned_cart_coupon_description' => 'Special discount for abandoned cart recovery - :type notification for order #:order_id',
+
+    // Suspicious Transaction Messages
+    'transaction_analysis_completed' => 'Transaction analysis completed successfully',
+    'transaction_not_found' => 'Transaction not found',
+    'transaction_reviewed' => 'Transaction reviewed successfully',
+    'payment_not_found' => 'Payment not found',
+    'country_mismatch_detected' => 'Country mismatch detected between user IP and card country',
+    'high_amount_detected' => 'High amount transaction detected',
+    'multiple_attempts_detected' => 'Multiple payment attempts detected',
+    'unusual_time_detected' => 'Unusual transaction time detected',
+    'suspicious_transaction_alert_subject' => '🚨 Suspicious Transaction Alert',
+    'suspicious_transaction_detected' => 'A suspicious transaction has been detected and requires your review',
+    'transaction_details' => 'Transaction Details',
+    'transaction_id' => 'Transaction ID',
+    'payment_id' => 'Payment ID',
+    'risk_score' => 'Risk Score',
+    'risk_level' => 'Risk Level',
+    'user_ip' => 'User IP',
+    'user_country' => 'User Country',
+    'card_country' => 'Card Country',
+    'analyzed_at' => 'Analyzed At',
+    'country_mismatch_warning' => '⚠️ Country Mismatch Warning',
+    'mismatch_details' => 'Mismatch Details',
+    'risk_factors' => 'Risk Factors',
+    'review_transaction' => 'Review Transaction',
+    'urgent_review_required' => 'This transaction requires urgent review',
+    'thank_you' => 'Thank you for your attention',
+    'bulk_review_completed' => 'Bulk review completed successfully',
+    'export_completed' => 'Export completed successfully',
+
+    // Social Authentication Messages
+    'social_login_failed' => 'Social login failed. Please try again.',
+    'invalid_access_token' => 'Invalid access token provided',
+    'redirect_url_generated' => 'Redirect URL generated successfully',
+    'social_account_linked' => 'Social account linked successfully',
+    'social_account_unlinked' => 'Social account unlinked successfully',
+    'social_provider_google' => 'Google',
+    'social_provider_facebook' => 'Facebook',
+    'social_provider_apple' => 'Apple',
 
 ];

@@ -20,6 +20,10 @@ use App\Http\Controllers\SubCategoryController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ZohoAuthController;
+use App\Http\Controllers\SiteStatusController;
+use App\Http\Controllers\SessionTimeoutController;
+use App\Http\Controllers\AbandonedCartController;
+use App\Http\Controllers\SuspiciousTransactionController;
 use Illuminate\Support\Facades\Route;
 // routes/web.php
 use Torann\GeoIP\Facades\GeoIP;
@@ -80,11 +84,19 @@ Route::middleware(['not_blocked_country', 'throttle.by-route:5,1'])->group(funct
         Route::post('confirm-otp', 'confirmOtp')->name('confirmOtp');
         Route::post('/logout', 'logout')->middleware(['should_auth', 'auth:sanctum'])->name('logout');
     });
-    Route::post('social-login', [SocialAuthController::class, 'socialLogin']);
-
+    // Social Authentication Routes
     Route::prefix('social')->group(function () {
-        Route::get('redirect/{provider}', [SocialAuthController::class, 'redirect']);
-        Route::get('callback/{provider}', [SocialAuthController::class, 'callback']);
+        Route::get('/providers', [SocialAuthController::class, 'getProviders']);
+        Route::post('/login', [SocialAuthController::class, 'socialLogin']);
+        Route::get('/redirect/{provider}', [SocialAuthController::class, 'redirect']);
+        Route::get('/callback/{provider}', [SocialAuthController::class, 'callback']);
+        Route::get('/stats', [SocialAuthController::class, 'getStats']);
+
+        // Authenticated routes
+        Route::middleware(['should_auth', 'auth:sanctum'])->group(function () {
+            Route::post('/link-account', [SocialAuthController::class, 'linkAccount']);
+            Route::post('/unlink-account', [SocialAuthController::class, 'unlinkAccount']);
+        });
     });
 });
 
@@ -220,5 +232,53 @@ Route::middleware(['should_auth', 'auth:sanctum'])->group(function () {
         Route::get('/{id}/read', [NotificationController::class, 'markAsRead']);
         Route::post('/read-multiple', [NotificationController::class, 'markMultipleAsRead']);
         Route::get('/read-all', [NotificationController::class, 'markAllAsRead']);
+    });
+
+    // Site Status Management Routes
+    Route::group(['prefix' => '/site-status', 'middleware' => 'custom_permission:permission:manage site status', 'controller' => SiteStatusController::class], function () {
+        Route::get('/current', 'getCurrentStatus');
+        Route::post('/update', 'updateStatus');
+        Route::get('/available', 'getAvailableStatuses');
+        Route::post('/toggle', 'toggleStatus');
+    });
+
+    // Session Timeout Management Routes
+    Route::group(['prefix' => '/session-timeout', 'controller' => SessionTimeoutController::class], function () {
+        // Public routes (for authenticated users)
+        Route::middleware(['should_auth', 'auth:sanctum'])->group(function () {
+            Route::get('/info', 'getUserSessionInfo');
+            Route::post('/extend', 'extendUserSession');
+            Route::post('/clear', 'clearUserSession');
+            Route::post('/set', 'setUserSession');
+        });
+
+        // Admin routes (for managing timeout settings)
+        Route::middleware(['should_auth', 'auth:sanctum', 'custom_permission:permission:manage site status'])->group(function () {
+            Route::get('/settings', 'getTimeoutSettings');
+            Route::post('/update', 'updateTimeout');
+        });
+    });
+
+    // Abandoned Cart Management Routes
+    Route::group(['prefix' => '/abandoned-carts', 'middleware' => ['should_auth', 'auth:sanctum', 'custom_permission:permission:manage abandoned carts'], 'controller' => AbandonedCartController::class], function () {
+        Route::get('/', 'getAbandonedCarts');
+        Route::get('/stats', 'getStats');
+        Route::get('/settings', 'getSettings');
+        Route::post('/send-notification', 'sendNotification');
+        Route::post('/send-bulk-notifications', 'sendBulkNotifications');
+        Route::post('/mark-recovered', 'markAsRecovered');
+        Route::post('/trigger-processing', 'triggerProcessing');
+    });
+
+    // Suspicious Transaction Management Routes
+    Route::group(['prefix' => '/suspicious-transactions', 'middleware' => ['should_auth', 'auth:sanctum', 'custom_permission:permission:manage orders'], 'controller' => SuspiciousTransactionController::class], function () {
+        Route::get('/', 'getSuspiciousTransactions');
+        Route::get('/stats', 'getStats');
+        Route::get('/settings', 'getSettings');
+        Route::get('/{id}', 'getSuspiciousTransaction');
+        Route::post('/analyze', 'analyzeTransaction');
+        Route::post('/review', 'reviewTransaction');
+        Route::post('/bulk-review', 'bulkReview');
+        Route::post('/export', 'export');
     });
 });

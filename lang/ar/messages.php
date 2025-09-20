@@ -120,7 +120,7 @@ return [
     'thank_you_contacting_us' => 'شكرًا لاتصالك بفريق الدعم.',
     'payment_successful_subject' => '✅ تم الدفع بنجاح - رقم الطلب #:id',
 
-    // 
+    //
     'error_subcategory_parent_id' => 'لا يمكنك تحديد فئة فرعية تحتوي على فئة فرعية أخرى.',
     'access_blocked' => 'تم حظر الوصول من بلدك بسبب خطر الاحتيال.',
     'too_many_attempts' => 'تم تجاوز الحد المسموح من المحاولات. يرجى المحاولة لاحقًا.',
@@ -139,5 +139,79 @@ return [
     'user' => 'المستخدم',
     'interest' => 'الاهتمام',
     'minutes' => 'دقائق',
+
+    // Site Status Messages
+    'site_status_updated' => 'تم تحديث حالة الموقع إلى :status',
+    'invalid_status' => 'حالة الموقع المقدمة غير صالحة',
+    'error_occurred' => 'حدث خطأ أثناء معالجة طلبك',
+    'success' => 'تمت العملية بنجاح',
+
+    // Session Timeout Messages
+    'session_timeout_updated' => 'تم تحديث مدة الجلسة للوضع :status إلى :timeout دقيقة',
+    'session_timeout_set' => 'تم تعيين مدة الجلسة بنجاح',
+    'session_extended' => 'تم تمديد الجلسة بنجاح',
+    'session_expired' => 'انتهت صلاحية جلستك. يرجى تسجيل الدخول مرة أخرى.',
+    'session_cleared' => 'تم مسح الجلسة بنجاح',
+    'no_active_session' => 'لا توجد جلسة نشطة',
+    'timeout_range_invalid' => 'يجب أن تكون مدة الجلسة بين 30 و 480 دقيقة',
+
+    // Abandoned Cart Messages
+    'abandoned_cart_notification_sent' => 'تم إرسال إشعار السلة المتروكة بنجاح',
+    'bulk_notifications_sent' => 'تم إرسال الإشعارات المجمعة بنجاح',
+    'order_not_pending' => 'الطلب ليس في حالة معلق',
+    'order_not_abandoned' => 'الطلب لم يتم تركه بعد',
+    'order_marked_as_recovered' => 'تم تحديد الطلب كمسترد بنجاح',
+    'abandoned_cart_processing_triggered' => 'تم تشغيل مهمة معالجة السلات المتروكة',
+    'abandoned_cart_reminder_subject' => 'أكمل طلبك - خصم خاص في الداخل!',
+    'abandoned_cart_urgent_subject' => 'الفرصة الأخيرة! أكمل طلبك الآن',
+    'abandoned_cart_final_subject' => 'تذكير أخير - لا تفوت الفرصة!',
+    'abandoned_cart_reminder_message' => 'لديك منتجات في سلة التسوق الخاصة بك. أكمل طلبك الآن واحصل على خصم خاص!',
+    'abandoned_cart_urgent_message' => 'سلة التسوق الخاصة بك على وشك الانتهاء! أكمل طلبك الآن لتأمين منتجاتك.',
+    'abandoned_cart_final_message' => 'هذه فرصتك الأخيرة لإكمال طلبك. لا تفوت هذه العروض الرائعة!',
+    'special_discount_offer' => 'عرض خصم خاص',
+    'discount_code' => 'كود الخصم',
+    'discount_value' => 'قيمة الخصم',
+    'discount_expires' => 'ينتهي في',
+    'complete_your_order' => 'أكمل طلبك',
+    'abandoned_cart_coupon_description' => 'خصم خاص لاسترداد السلة المتروكة - إشعار :type للطلب رقم #:order_id',
+
+    // Suspicious Transaction Messages
+    'transaction_analysis_completed' => 'تم تحليل المعاملة بنجاح',
+    'transaction_not_found' => 'المعاملة غير موجودة',
+    'transaction_reviewed' => 'تم مراجعة المعاملة بنجاح',
+    'payment_not_found' => 'الدفع غير موجود',
+    'country_mismatch_detected' => 'تم اكتشاف اختلاف في الدولة بين IP المستخدم ودولة البطاقة',
+    'high_amount_detected' => 'تم اكتشاف معاملة بمبلغ مرتفع',
+    'multiple_attempts_detected' => 'تم اكتشاف محاولات دفع متعددة',
+    'unusual_time_detected' => 'تم اكتشاف وقت معاملة غير معتاد',
+    'suspicious_transaction_alert_subject' => '🚨 تنبيه معاملة مشبوهة',
+    'suspicious_transaction_detected' => 'تم اكتشاف معاملة مشبوهة وتتطلب مراجعتك',
+    'transaction_details' => 'تفاصيل المعاملة',
+    'transaction_id' => 'رقم المعاملة',
+    'payment_id' => 'رقم الدفع',
+    'risk_score' => 'نقاط المخاطر',
+    'risk_level' => 'مستوى المخاطر',
+    'user_ip' => 'IP المستخدم',
+    'user_country' => 'دولة المستخدم',
+    'card_country' => 'دولة البطاقة',
+    'analyzed_at' => 'تاريخ التحليل',
+    'country_mismatch_warning' => '⚠️ تحذير اختلاف الدولة',
+    'mismatch_details' => 'تفاصيل الاختلاف',
+    'risk_factors' => 'عوامل المخاطر',
+    'review_transaction' => 'مراجعة المعاملة',
+    'urgent_review_required' => 'هذه المعاملة تتطلب مراجعة عاجلة',
+    'thank_you' => 'شكراً لاهتمامك',
+    'bulk_review_completed' => 'تمت المراجعة المجمعة بنجاح',
+    'export_completed' => 'تم التصدير بنجاح',
+
+    // Social Authentication Messages
+    'social_login_failed' => 'فشل تسجيل الدخول الاجتماعي. يرجى المحاولة مرة أخرى.',
+    'invalid_access_token' => 'رمز الوصول المقدم غير صالح',
+    'redirect_url_generated' => 'تم إنشاء رابط التوجيه بنجاح',
+    'social_account_linked' => 'تم ربط الحساب الاجتماعي بنجاح',
+    'social_account_unlinked' => 'تم إلغاء ربط الحساب الاجتماعي بنجاح',
+    'social_provider_google' => 'جوجل',
+    'social_provider_facebook' => 'فيسبوك',
+    'social_provider_apple' => 'آبل',
 
 ];

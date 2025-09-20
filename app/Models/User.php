@@ -27,7 +27,12 @@ class User extends Authenticatable
         'password',
         'otp_code',
         'otp_expires_at',
-
+        'phone',
+        'points',
+        'wallet_balance',
+        'social_provider',
+        'social_id',
+        'social_linked_at',
     ];
 
     /**
@@ -80,5 +85,46 @@ class User extends Authenticatable
     public function walletTransactions()
     {
         return $this->hasMany(WalletTransaction::class);
+    }
+
+    /**
+     * Check if user has social account linked
+     */
+    public function hasSocialAccount(): bool
+    {
+        return !is_null($this->social_provider) && !is_null($this->social_id);
+    }
+
+    /**
+     * Get social provider name
+     */
+    public function getSocialProviderName(): ?string
+    {
+        if (!$this->hasSocialAccount()) {
+            return null;
+        }
+
+        return match($this->social_provider) {
+            'google' => 'جوجل',
+            'facebook' => 'فيسبوك',
+            'apple' => 'آبل',
+            default => $this->social_provider,
+        };
+    }
+
+    /**
+     * Scope for users with social accounts
+     */
+    public function scopeWithSocialAccount($query)
+    {
+        return $query->whereNotNull('social_provider')->whereNotNull('social_id');
+    }
+
+    /**
+     * Scope for users by social provider
+     */
+    public function scopeBySocialProvider($query, string $provider)
+    {
+        return $query->where('social_provider', $provider);
     }
 }

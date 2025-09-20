@@ -15,6 +15,8 @@ enum PermissionEnum: string
     case MANAGE_ORDERS = 'manage orders';
     case MANAGE_RATINGS = 'manage ratings';
     case REPLY_TO_TICKETS = 'reply tickets';
+    case MANAGE_SITE_STATUS = 'manage site status';
+    case MANAGE_ABANDONED_CARTS = 'manage abandoned carts';
 
     public static function all(): array
     {

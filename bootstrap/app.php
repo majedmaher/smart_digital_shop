@@ -3,6 +3,8 @@
 use App\Http\Middleware\AuthMiddleware;
 use App\Http\Middleware\BlockedCountries;
 use App\Http\Middleware\CustomDynamicPermissionMiddleware;
+use App\Http\Middleware\SessionTimeoutMiddleware;
+use App\Http\Middleware\SuspiciousTransactionMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -29,6 +31,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'should_auth' => AuthMiddleware::class,
             'not_blocked_country' => BlockedCountries::class,
             'throttle.by-route' => \App\Http\Middleware\RateLimitByRoute::class,
+            'session_timeout' => SessionTimeoutMiddleware::class,
+            'suspicious_transaction' => SuspiciousTransactionMiddleware::class,
 
         ]);
     })

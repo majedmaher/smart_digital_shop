@@ -12,24 +12,36 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // First, create a default subcategory
-        $defaultSubCategoryId = DB::table('sub_categories')->insertGetId([
-            'user_id' => 1, // Assuming admin user ID is 1
-            'category_id' => 1, // Assuming first category ID is 1
-            'parent_id' => null,
-            'name' => json_encode([
-                'en' => 'General',
-                'ar' => 'عام'
-            ]),
-            'icon' => 'fas fa-box',
-            'image' => 'default-subcategory.png',
-            'slug' => json_encode([
-                'en' => 'general',
-                'ar' => 'عام'
-            ]),
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+        // Ensure we have a default subcategory
+        $defaultSubCategoryId = DB::table('sub_categories')
+            ->where('name->en', 'General')
+            ->value('id');
+
+        if (!$defaultSubCategoryId) {
+            $categoryId = DB::table('categories')->value('id');
+
+            if (!$categoryId) {
+                throw new \RuntimeException('No categories found to attach the default subcategory.');
+            }
+
+            $defaultSubCategoryId = DB::table('sub_categories')->insertGetId([
+                'user_id' => DB::table('users')->value('id'),
+                'category_id' => $categoryId,
+                'parent_id' => null,
+                'name' => json_encode([
+                    'en' => 'General',
+                    'ar' => 'عام'
+                ]),
+                'icon' => 'fas fa-box',
+                'image' => 'default-subcategory.png',
+                'slug' => json_encode([
+                    'en' => 'general',
+                    'ar' => 'عام'
+                ]),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
 
         // Update products that don't have a subcategory
         DB::table('products')
@@ -42,7 +54,7 @@ return new class extends Migration
         });
 
         // Add a default value constraint
-        Schema::table('products', function (Blueprint $table) {
+        Schema::table('products', function (Blueprint $table) use ($defaultSubCategoryId) {
             $table->foreignId('sub_category_id')->default($defaultSubCategoryId)->change();
         });
     }

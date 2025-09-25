@@ -66,8 +66,6 @@ class SocialAuthService extends Controller
                     'phone' => $user->phone,
                     'points' => $user->points,
                     'wallet_balance' => $user->wallet_balance,
-                    'roles' => $user->getRoleNames(),
-                    'is_admin' => $user->hasRole(\App\RoleEnum::ADMIN),
                 ],
                 'provider' => $provider->value,
                 'login_method' => 'social',
@@ -100,7 +98,7 @@ class SocialAuthService extends Controller
                 case SocialProviderEnum::FACEBOOK:
                     $driver = Socialite::driver($provider->value);
                     if (method_exists($driver, 'userFromToken')) {
-                        return \call_user_func([$driver, 'userFromToken'], $accessToken);
+                        return $driver->userFromToken($accessToken);
                     }
                     // Fallback for providers that don't support userFromToken
                     return null;
@@ -239,8 +237,6 @@ class SocialAuthService extends Controller
                     'phone' => $user->phone,
                     'points' => $user->points,
                     'wallet_balance' => $user->wallet_balance,
-                    'roles' => $user->getRoleNames(),
-                    'is_admin' => $user->hasRole(\App\RoleEnum::ADMIN),
                 ],
                 'provider' => $provider,
                 'login_method' => 'oauth',

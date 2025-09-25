@@ -111,7 +111,7 @@ class AuthService extends Controller
         ]);
 
         try {
-            $user = auth()->user();
+            $user = $request->user();
             // return response()->json([Hash::check($request->password, $user->password)]);
             $user->name = $validated['name'];
             $user->date = $validated['date'];
@@ -153,7 +153,13 @@ class AuthService extends Controller
         $token = $user->createToken('auth_token')->plainTextToken;
         $response = [
             'token' => $token,
-            'user' => $user->only(['id', 'name', 'email'])
+            'user' => array_merge(
+                $user->only(['id', 'name', 'email']),
+                [
+                    'roles' => $user->getRoleNames(),
+                    'is_admin' => $user->hasRole(RoleEnum::ADMIN),
+                ]
+            )
         ];
         return BaseController::sendResponse($response, __('messages.login_successfully'));
     }

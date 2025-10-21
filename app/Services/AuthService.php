@@ -105,7 +105,8 @@ class AuthService extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'password' => 'nullable|string|min:8|confirmed',
-            'date' => 'nullable|date|before:' . now()->subYears(2)->toDateString() . '|after:' . now()->subYears(90)->toDateString(),
+            'date' => 'nullable|date',
+            'phone' => 'nullable|string|max:20|unique:users,phone,' . $request->user()->id,
             'gender' => 'nullable|string|in:male,female',
             'photo' => 'nullable|file|mimes:png,jpg,jpeg,webp|max:2048',
         ]);
@@ -114,11 +115,23 @@ class AuthService extends Controller
             $user = $request->user();
             // return response()->json([Hash::check($request->password, $user->password)]);
             $user->name = $validated['name'];
-            $user->date = $validated['date'];
-            $user->gender = $validated['gender'];
-            if ($validated['password']) {
+
+            if (isset($validated['date'])) {
+                $user->date = $validated['date'];
+            }
+
+            if (isset($validated['phone'])) {
+                $user->phone = $validated['phone'];
+            }
+
+            if (isset($validated['gender'])) {
+                $user->gender = $validated['gender'];
+            }
+
+            if (isset($validated['password']) && $validated['password']) {
                 $user->password = $validated['password'];
             }
+
             if (isset($validated['photo']) && $request->hasFile('photo')) {
                 $photo = saveImage($validated['photo'], self::$image_folder . '/photos');
                 if ($user->photo) unlink(public_path($user->photo));

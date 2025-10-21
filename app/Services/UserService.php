@@ -24,8 +24,20 @@ class UserService
     public static function getAllCustomerUsers(): JsonResponse
     {
         try {
-            $users = User::role('custom')->where('id', '!=', auth()->id())->get();
+            $users = User::role(RoleEnum::USER)->where('id', '!=', auth()->id())->get();
             return BaseController::sendResponse($users, __('messages.sent_data'));
+        } catch (\Throwable $th) {
+            return BaseController::sendError(__('messages.something_went_wrong'), [], 500);
+        }
+    }
+
+    public static function getAllEmployees(): JsonResponse
+    {
+        try {
+            $employees = User::whereHas('roles', function($query) {
+                $query->whereIn('name', [RoleEnum::ADMIN->value, RoleEnum::MODERATOR->value, RoleEnum::CUSTOM->value]);
+            })->where('id', '!=', auth()->id())->get();
+            return BaseController::sendResponse($employees, __('messages.sent_data'));
         } catch (\Throwable $th) {
             return BaseController::sendError(__('messages.something_went_wrong'), [], 500);
         }
@@ -56,6 +68,17 @@ class UserService
     }
 
     public static function createCustomerUser($data): JsonResponse
+    {
+        try {
+            $user = User::create($data);
+            $user->assignRole(RoleEnum::USER);
+            return BaseController::sendResponse($user, __('messages.store_successfully', ['item' => __('messages.user')]));
+        } catch (\Throwable $e) {
+            return BaseController::sendError(__('messages.register_failed'), [$e->getMessage()], 500);
+        }
+    }
+
+    public static function createEmployee($data): JsonResponse
     {
         try {
             $user = User::create($data);

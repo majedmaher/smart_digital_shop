@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CodeController;
 use App\Http\Controllers\CouponController;
+use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\FaqController;
 use App\Http\Controllers\InterestController;
 use App\Http\Controllers\MainController;
@@ -207,6 +208,12 @@ Route::middleware(['should_auth', 'auth:sanctum'])->group(function () {
         Route::post('/update/{user}/permissions', 'updateUserPermissions');
     });
 
+    Route::group(['prefix' => '/employees', 'middleware' => 'custom_permission:permission:manage users', 'controller' => EmployeeController::class], function () {
+        Route::get('/', 'getAllEmployees');
+        Route::post('/create', 'createEmployee');
+        Route::get('/delete/{user_id}', 'deleteEmployee');
+    });
+
     Route::get('/rating', [RatingController::class, 'all'])->middleware('custom_permission:permission:manage ratings');
 
 
@@ -255,7 +262,7 @@ Route::middleware(['should_auth', 'auth:sanctum'])->group(function () {
         });
 
         // Admin routes (for managing timeout settings)
-        Route::middleware(['should_auth', 'auth:sanctum', 'custom_permission:permission:manage site status'])->group(function () {
+        Route::middleware(['should_auth', 'auth:sanctum', 'custom_permission:permission:manage settings'])->group(function () {
             Route::get('/settings', 'getTimeoutSettings');
             Route::post('/update', 'updateTimeout');
         });

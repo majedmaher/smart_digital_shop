@@ -278,7 +278,16 @@ class MainService extends Controller
     public static function myInfo(): JsonResponse
     {
         try {
-            return BaseController::sendResponse(auth()->user(), __('messages.sent_data'));
+            $user = auth()->user();
+            $userData = array_merge(
+                $user->only(['id', 'name', 'email', 'phone', 'photo', 'date', 'gender', 'points', 'wallet_balance', 'referral_code']),
+                [
+                    'roles' => $user->getRoleNames(),
+                    'permissions' => $user->getPermissionNames(),
+                    'is_admin' => $user->hasRole(\App\RoleEnum::ADMIN),
+                ]
+            );
+            return BaseController::sendResponse($userData, __('messages.sent_data'));
         } catch (\Throwable $th) {
             return BaseController::sendError(__('something wrong'), [], 500);
         }

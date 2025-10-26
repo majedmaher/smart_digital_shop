@@ -97,8 +97,17 @@ class UserService
     public static function createCustomerUser($data): JsonResponse
     {
         try {
+            // Extract permissions from data
+            $permissions = $data['permissions'] ?? null;
+            unset($data['permissions']);
+
             $user = User::create($data);
             $user->assignRole(RoleEnum::USER);
+
+            // إذا تم إرسال صلاحيات محددة، قم بتعيينها للعميل
+            if ($permissions && is_array($permissions)) {
+                $user->syncPermissions($permissions);
+            }
 
             // Format user data with roles and permissions
             $userData = array_merge(
@@ -119,8 +128,17 @@ class UserService
     public static function createEmployee($data): JsonResponse
     {
         try {
+            // Extract permissions from data
+            $permissions = $data['permissions'] ?? null;
+            unset($data['permissions']);
+
             $user = User::create($data);
             $user->assignRole(RoleEnum::CUSTOM);
+
+            // إذا تم إرسال صلاحيات محددة، قم بتعيينها للموظف
+            if ($permissions && is_array($permissions)) {
+                $user->syncPermissions($permissions);
+            }
 
             // Format user data with roles and permissions
             $userData = array_merge(

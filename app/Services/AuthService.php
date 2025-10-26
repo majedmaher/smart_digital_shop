@@ -105,7 +105,7 @@ class AuthService extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'password' => 'nullable|string|min:8|confirmed',
-            'date' => 'nullable|date',
+            'date' => 'nullable|date_format:Y-m-d',
             'phone' => 'nullable|string|max:20|unique:users,phone,' . $request->user()->id,
             'gender' => 'nullable|string|in:male,female',
             'photo' => 'nullable|file|mimes:png,jpg,jpeg,webp|max:2048',
@@ -170,7 +170,7 @@ class AuthService extends Controller
                 $user->only(['id', 'name', 'email']),
                 [
                     'roles' => $user->getRoleNames(),
-                    'permissions' => $user->getPermissionNames(),
+                    'permissions' => $user->getRoleNames(),
                     'is_admin' => $user->hasRole(RoleEnum::ADMIN),
                 ]
             )

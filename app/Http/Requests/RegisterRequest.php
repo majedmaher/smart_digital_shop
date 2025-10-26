@@ -26,10 +26,12 @@ class RegisterRequest extends FormRequest
             'email' => 'required|string|email|unique:users',
             'password' => 'required|string|min:8|confirmed',
             'phone' => 'nullable|string|max:20|unique:users,phone',
-            'date' => 'nullable|date',
+            'date' => 'nullable|date_format:Y-m-d',
             'gender' => 'nullable|string|in:male,female',
             'photo' => 'nullable|string|max:500',
             'referral_code' => 'nullable|string|max:255|exists:users,referral_code',
+            'permissions' => 'nullable|array',
+            'permissions.*' => 'string|exists:permissions,name',
         ];
     }
 }

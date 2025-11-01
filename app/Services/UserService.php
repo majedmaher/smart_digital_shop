@@ -163,7 +163,9 @@ class UserService
             'permissions.*' => 'string|exists:permissions,name|in:manage users,manage settings,manage categories,manage subcategories,manage products,manage codes,manage coupons,manage sliders,manage orders,manage ratings,reply tickets',
         ]);
         try {
-            $user->syncPermissions($validated['permissions']);
+            // Allow empty array to remove all permissions
+            $permissions = $validated['permissions'] ?? [];
+            $user->syncPermissions($permissions);
 
             // Refresh user to get updated permissions
             $user->refresh();

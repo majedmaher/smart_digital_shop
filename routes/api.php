@@ -248,7 +248,7 @@ Route::middleware(['should_auth', 'auth:sanctum'])->group(function () {
         Route::get('/current', 'getCurrentStatus');
         Route::post('/update', 'updateStatus');
         Route::get('/available', 'getAvailableStatuses');
-        Route::post('/toggle', 'toggleStatus');
+        Route::get('/toggle', 'toggleStatus');
     });
 
     // Session Timeout Management Routes

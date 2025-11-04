@@ -159,7 +159,7 @@ class UserService
     public static function updateUserPermissions($request, $user): JsonResponse
     {
         $validated = $request->validate([
-            'permissions' => 'required|array',
+            'permissions' => 'present|array',
             'permissions.*' => 'string|exists:permissions,name|in:manage users,manage settings,manage categories,manage subcategories,manage products,manage codes,manage coupons,manage sliders,manage orders,manage ratings,reply tickets',
         ]);
         try {

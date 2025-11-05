@@ -25,6 +25,7 @@ use App\Http\Controllers\SiteStatusController;
 use App\Http\Controllers\SessionTimeoutController;
 use App\Http\Controllers\AbandonedCartController;
 use App\Http\Controllers\SuspiciousTransactionController;
+use App\Http\Controllers\MaintenanceController;
 use Illuminate\Support\Facades\Route;
 // routes/web.php
 use Torann\GeoIP\Facades\GeoIP;
@@ -39,7 +40,14 @@ Route::get('/test-geoip', function () {
         'iso_code' => $location['iso_code'] ?? null,
     ]);
 });
-Route::middleware(['not_blocked_country', 'throttle.by-route:5,1'])->group(function () {
+
+// Maintenance Mode Management Routes (outside maintenance check middleware)
+Route::group(['prefix' => '/maintenance', 'middleware' => ['should_auth', 'auth:sanctum', 'custom_permission:permission:manage settings'], 'controller' => MaintenanceController::class], function () {
+    Route::get('/status', 'getStatus');
+    Route::get('/toggle', 'toggle');
+});
+
+Route::middleware(['not_blocked_country', 'throttle.by-route:5,1', 'check_maintenance'])->group(function () {
 
     Route::controller(MainController::class)->group(function () {
         Route::get('/mobile-main-content', 'getMobileMainScreen');

@@ -315,7 +315,22 @@ class MainService extends Controller
         try {
             if (!$query) return BaseController::sendError(__('messages.please_enter_a_word_to_search'), [], 422);
 
-            $products = Product::select('id', 'title', 'slug', 'image')->where('title->en', 'like', "%{$query}%")
+            $products = Product::select(
+                'id',
+                'category_id',
+                'sub_category_id',
+                'title',
+                'slug',
+                'content',
+                'description',
+                'terms_and_conditions',
+                'image',
+                'price_before',
+                'price',
+                'discount',
+                'vat_rate',
+                'shipping_payment'
+            )->where('title->en', 'like', "%{$query}%")
                 ->orWhere('title->ar', 'like', "%{$query}%")
                 ->orWhere('description->ar', 'like', "%{$query}%")
                 ->orWhere('description->en', 'like', "%{$query}%")

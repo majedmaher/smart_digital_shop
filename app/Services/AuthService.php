@@ -170,7 +170,7 @@ class AuthService extends Controller
                 $user->only(['id', 'name', 'email']),
                 [
                     'roles' => $user->getRoleNames(),
-                    'permissions' => $user->getRoleNames(),
+                    'permissions' => $user->getPermissionNames(),
                     'is_admin' => $user->hasRole(RoleEnum::ADMIN),
                 ]
             )

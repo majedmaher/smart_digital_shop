@@ -1,0 +1,2198 @@
+{
+	"info": {
+		"_postman_id": "smart-digital-shop-api",
+		"name": "Smart Digital Shop API",
+		"description": "Complete API collection for Smart Digital Shop",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Ahmed Ali\",\n    \"email\": \"ahmed@example.com\",\n    \"password\": \"password123\",\n    \"password_confirmation\": \"password123\",\n    \"phone\": \"01234567890\",\n    \"date\": \"1990-01-01\",\n    \"gender\": \"male\",\n    \"referral_code\": \"ABC123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/register",
+							"host": ["{{base_url}}"],
+							"path": ["api", "register"]
+						}
+					}
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"ahmed@example.com\",\n    \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/login",
+							"host": ["{{base_url}}"],
+							"path": ["api", "login"]
+						}
+					}
+				},
+				{
+					"name": "Confirm OTP",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"ahmed@example.com\",\n    \"otp\": \"123456\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/confirm-otp",
+							"host": ["{{base_url}}"],
+							"path": ["api", "confirm-otp"]
+						}
+					}
+				},
+				{
+					"name": "Register with Phone",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Ahmed Ali\",\n    \"phone\": \"01234567890\",\n    \"password\": \"password123\",\n    \"password_confirmation\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/register-phone",
+							"host": ["{{base_url}}"],
+							"path": ["api", "register-phone"]
+						}
+					}
+				},
+				{
+					"name": "Login with Phone",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"phone\": \"01234567890\",\n    \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/login-phone",
+							"host": ["{{base_url}}"],
+							"path": ["api", "login-phone"]
+						}
+					}
+				},
+				{
+					"name": "Update User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Ahmed Ali Updated\",\n    \"phone\": \"01234567891\",\n    \"date\": \"1990-01-01\",\n    \"gender\": \"male\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/update-user",
+							"host": ["{{base_url}}"],
+							"path": ["api", "update-user"]
+						}
+					}
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/logout",
+							"host": ["{{base_url}}"],
+							"path": ["api", "logout"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Main",
+			"item": [
+				{
+					"name": "Mobile Main Screen",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/mobile-main-content",
+							"host": ["{{base_url}}"],
+							"path": ["api", "mobile-main-content"]
+						}
+					}
+				},
+				{
+					"name": "Main Content",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/main-content",
+							"host": ["{{base_url}}"],
+							"path": ["api", "main-content"]
+						}
+					}
+				},
+				{
+					"name": "Categories with SubCategories",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/categories-subcategories",
+							"host": ["{{base_url}}"],
+							"path": ["api", "categories-subcategories"]
+						}
+					}
+				},
+				{
+					"name": "Get Category",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/category/:slug",
+							"host": ["{{base_url}}"],
+							"path": ["api", "category", ":slug"],
+							"variable": [
+								{
+									"key": "slug",
+									"value": "electronics"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get SubCategory",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/sub-category/:slug",
+							"host": ["{{base_url}}"],
+							"path": ["api", "sub-category", ":slug"],
+							"variable": [
+								{
+									"key": "slug",
+									"value": "smartphones"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Product",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Currency",
+								"value": "EGP"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/product/:slug",
+							"host": ["{{base_url}}"],
+							"path": ["api", "product", ":slug"],
+							"variable": [
+								{
+									"key": "slug",
+									"value": "iphone-15"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Product Ratings",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/ratings/product/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "ratings", "product", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Search",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/search?query=phone",
+							"host": ["{{base_url}}"],
+							"path": ["api", "search"],
+							"query": [
+								{
+									"key": "query",
+									"value": "phone"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "FAQs",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/faqs",
+							"host": ["{{base_url}}"],
+							"path": ["api", "faqs"]
+						}
+					}
+				},
+				{
+					"name": "Payment Methods",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/payment-methods",
+							"host": ["{{base_url}}"],
+							"path": ["api", "payment-methods"]
+						}
+					}
+				},
+				{
+					"name": "Assistant Ask",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"question\": \"What is the return policy?\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/assistant/ask",
+							"host": ["{{base_url}}"],
+							"path": ["api", "assistant", "ask"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "My Info",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/user/my-info",
+							"host": ["{{base_url}}"],
+							"path": ["api", "user", "my-info"]
+						}
+					}
+				},
+				{
+					"name": "My Referrals",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/user/my-referrals",
+							"host": ["{{base_url}}"],
+							"path": ["api", "user", "my-referrals"]
+						}
+					}
+				},
+				{
+					"name": "My Points",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/user/my-points",
+							"host": ["{{base_url}}"],
+							"path": ["api", "user", "my-points"]
+						}
+					}
+				},
+				{
+					"name": "My Wallet",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Currency",
+								"value": "EGP"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/user/my-wallet",
+							"host": ["{{base_url}}"],
+							"path": ["api", "user", "my-wallet"]
+						}
+					}
+				},
+				{
+					"name": "Total Paid",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Currency",
+								"value": "EGP"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/user/total-paid",
+							"host": ["{{base_url}}"],
+							"path": ["api", "user", "total-paid"]
+						}
+					}
+				},
+				{
+					"name": "Increase My Redeem",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/user/increase-my-redeem",
+							"host": ["{{base_url}}"],
+							"path": ["api", "user", "increase-my-redeem"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Orders",
+			"item": [
+				{
+					"name": "Get My Orders",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/orders",
+							"host": ["{{base_url}}"],
+							"path": ["api", "orders"]
+						}
+					}
+				},
+				{
+					"name": "Get Order Items",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/order/:id/items",
+							"host": ["{{base_url}}"],
+							"path": ["api", "order", ":id", "items"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Create Order",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"items\": [\n        {\n            \"product_id\": 1,\n            \"quantity\": 2\n        }\n    ],\n    \"coupon_code\": \"DISCOUNT10\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/order/create",
+							"host": ["{{base_url}}"],
+							"path": ["api", "order", "create"]
+						}
+					}
+				},
+				{
+					"name": "Pay Order",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"order_id\": 1,\n    \"payment_method\": \"paymob\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/order/pay",
+							"host": ["{{base_url}}"],
+							"path": ["api", "order", "pay"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Interests",
+			"item": [
+				{
+					"name": "Get My Interests",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/get/interests",
+							"host": ["{{base_url}}"],
+							"path": ["api", "get", "interests"]
+						}
+					}
+				},
+				{
+					"name": "Create Interest",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"product_id\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/create/interest",
+							"host": ["{{base_url}}"],
+							"path": ["api", "create", "interest"]
+						}
+					}
+				},
+				{
+					"name": "Delete Interest",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/delete/interest/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "delete", "interest", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Ratings",
+			"item": [
+				{
+					"name": "Create Rating",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"product_id\": 1,\n    \"rating\": 5,\n    \"comment\": \"Great product!\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/rating/create",
+							"host": ["{{base_url}}"],
+							"path": ["api", "rating", "create"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Tickets",
+			"item": [
+				{
+					"name": "Get My Tickets",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/tickets",
+							"host": ["{{base_url}}"],
+							"path": ["api", "tickets"]
+						}
+					}
+				},
+				{
+					"name": "Create Ticket",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"subject\": \"Product Issue\",\n    \"message\": \"I have a problem with my order\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/tickets/create",
+							"host": ["{{base_url}}"],
+							"path": ["api", "tickets", "create"]
+						}
+					}
+				},
+				{
+					"name": "Get Ticket",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/tickets/:ticket",
+							"host": ["{{base_url}}"],
+							"path": ["api", "tickets", ":ticket"],
+							"variable": [
+								{
+									"key": "ticket",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Reply to Ticket",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"message\": \"Thank you for your inquiry\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/tickets/:ticket/reply",
+							"host": ["{{base_url}}"],
+							"path": ["api", "tickets", ":ticket", "reply"],
+							"variable": [
+								{
+									"key": "ticket",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Ticket Replies",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/tickets/:ticket/all-replies",
+							"host": ["{{base_url}}"],
+							"path": ["api", "tickets", ":ticket", "all-replies"],
+							"variable": [
+								{
+									"key": "ticket",
+									"value": "1"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Notifications",
+			"item": [
+				{
+					"name": "Get Notifications",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/notifications",
+							"host": ["{{base_url}}"],
+							"path": ["api", "notifications"]
+						}
+					}
+				},
+				{
+					"name": "Mark as Read",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/notifications/:id/read",
+							"host": ["{{base_url}}"],
+							"path": ["api", "notifications", ":id", "read"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Mark Multiple as Read",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"ids\": [1, 2, 3]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/notifications/read-multiple",
+							"host": ["{{base_url}}"],
+							"path": ["api", "notifications", "read-multiple"]
+						}
+					}
+				},
+				{
+					"name": "Mark All as Read",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/notifications/read-all",
+							"host": ["{{base_url}}"],
+							"path": ["api", "notifications", "read-all"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Admin - Categories",
+			"item": [
+				{
+					"name": "Get All Categories",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/categories",
+							"host": ["{{base_url}}"],
+							"path": ["api", "categories"]
+						}
+					}
+				},
+				{
+					"name": "Create Category",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": {\n        \"ar\": \"إلكترونيات\",\n        \"en\": \"Electronics\"\n    },\n    \"icon\": \"fas fa-laptop\",\n    \"image\": \"electronics.jpg\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/category/create",
+							"host": ["{{base_url}}"],
+							"path": ["api", "category", "create"]
+						}
+					}
+				},
+				{
+					"name": "Get Category",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/category/show/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "category", "show", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Update Category",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": {\n        \"ar\": \"إلكترونيات محدثة\",\n        \"en\": \"Electronics Updated\"\n    },\n    \"icon\": \"fas fa-mobile\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/category/update/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "category", "update", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Delete Category",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/category/delete/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "category", "delete", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Admin - SubCategories",
+			"item": [
+				{
+					"name": "Get All SubCategories",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/sub-categories",
+							"host": ["{{base_url}}"],
+							"path": ["api", "sub-categories"]
+						}
+					}
+				},
+				{
+					"name": "Get Categories",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/get/categories",
+							"host": ["{{base_url}}"],
+							"path": ["api", "get", "categories"]
+						}
+					}
+				},
+				{
+					"name": "Get SubCategories by Category",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/get/category/:categoryId/sub-categories",
+							"host": ["{{base_url}}"],
+							"path": ["api", "get", "category", ":categoryId", "sub-categories"],
+							"variable": [
+								{
+									"key": "categoryId",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Create SubCategory",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"category_id\": 1,\n    \"name\": {\n        \"ar\": \"هواتف ذكية\",\n        \"en\": \"Smartphones\"\n    },\n    \"icon\": \"fas fa-mobile-alt\",\n    \"image\": \"smartphones.jpg\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/sub-category/create",
+							"host": ["{{base_url}}"],
+							"path": ["api", "sub-category", "create"]
+						}
+					}
+				},
+				{
+					"name": "Get SubCategory",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/sub-category/show/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "sub-category", "show", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Update SubCategory",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": {\n        \"ar\": \"هواتف ذكية محدثة\",\n        \"en\": \"Smartphones Updated\"\n    }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/sub-category/update/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "sub-category", "update", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Delete SubCategory",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/sub-category/delete/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "sub-category", "delete", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Admin - Products",
+			"item": [
+				{
+					"name": "Get All Products",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/products",
+							"host": ["{{base_url}}"],
+							"path": ["api", "products"]
+						}
+					}
+				},
+				{
+					"name": "Get Products Stats",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/products/stats",
+							"host": ["{{base_url}}"],
+							"path": ["api", "products", "stats"]
+						}
+					}
+				},
+				{
+					"name": "Create Product",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "category_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "sub_category_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "title[ar]",
+									"value": "منتج جديد",
+									"type": "text"
+								},
+								{
+									"key": "title[en]",
+									"value": "New Product",
+									"type": "text"
+								},
+								{
+									"key": "description[ar]",
+									"value": "وصف المنتج",
+									"type": "text"
+								},
+								{
+									"key": "description[en]",
+									"value": "Product Description",
+									"type": "text"
+								},
+								{
+									"key": "price",
+									"value": "100",
+									"type": "text"
+								},
+								{
+									"key": "discount",
+									"value": "10",
+									"type": "text"
+								},
+								{
+									"key": "vat_rate",
+									"value": "14",
+									"type": "text"
+								},
+								{
+									"key": "shipping_payment",
+									"value": "code",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/api/product/create",
+							"host": ["{{base_url}}"],
+							"path": ["api", "product", "create"]
+						}
+					}
+				},
+				{
+					"name": "Get Product",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/product/show/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "product", "show", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Update Product",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title[ar]",
+									"value": "منتج محدث",
+									"type": "text"
+								},
+								{
+									"key": "title[en]",
+									"value": "Updated Product",
+									"type": "text"
+								},
+								{
+									"key": "price",
+									"value": "120",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/api/product/update/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "product", "update", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Delete Product",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/product/delete/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "product", "delete", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Admin - Users",
+			"item": [
+				{
+					"name": "Get All Customer Users",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/users",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users"]
+						}
+					}
+				},
+				{
+					"name": "Get All Users",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/users/all",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "all"]
+						}
+					}
+				},
+				{
+					"name": "Get Permissions",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/users/get/permissions",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "get", "permissions"]
+						}
+					}
+				},
+				{
+					"name": "Create Customer User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"New Customer\",\n    \"email\": \"customer@example.com\",\n    \"password\": \"password123\",\n    \"password_confirmation\": \"password123\",\n    \"phone\": \"01234567890\",\n    \"permissions\": []\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/create",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "create"]
+						}
+					}
+				},
+				{
+					"name": "Update User Permissions",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"permissions\": [\n        \"manage products\",\n        \"manage categories\"\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/update/:user/permissions",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "update", ":user", "permissions"],
+							"variable": [
+								{
+									"key": "user",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/users/delete/:user_id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "delete", ":user_id"],
+							"variable": [
+								{
+									"key": "user_id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Admin - Maintenance",
+			"item": [
+				{
+					"name": "Get Maintenance Status",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/maintenance/status",
+							"host": ["{{base_url}}"],
+							"path": ["api", "maintenance", "status"]
+						}
+					}
+				},
+				{
+					"name": "Toggle Maintenance",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/maintenance/toggle",
+							"host": ["{{base_url}}"],
+							"path": ["api", "maintenance", "toggle"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Admin - Site Status",
+			"item": [
+				{
+					"name": "Get Current Status",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/site-status/current",
+							"host": ["{{base_url}}"],
+							"path": ["api", "site-status", "current"]
+						}
+					}
+				},
+				{
+					"name": "Toggle Site Status",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/site-status/toggle",
+							"host": ["{{base_url}}"],
+							"path": ["api", "site-status", "toggle"]
+						}
+					}
+				},
+				{
+					"name": "Update Site Status",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"status\": \"live\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/site-status/update",
+							"host": ["{{base_url}}"],
+							"path": ["api", "site-status", "update"]
+						}
+					}
+				},
+				{
+					"name": "Get Available Statuses",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/site-status/available",
+							"host": ["{{base_url}}"],
+							"path": ["api", "site-status", "available"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Admin - Session Timeout",
+			"item": [
+				{
+					"name": "Get Timeout Settings",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/session-timeout/settings",
+							"host": ["{{base_url}}"],
+							"path": ["api", "session-timeout", "settings"]
+						}
+					}
+				},
+				{
+					"name": "Update Timeout",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"site_status\": \"demo\",\n    \"timeout_minutes\": 180\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/session-timeout/update",
+							"host": ["{{base_url}}"],
+							"path": ["api", "session-timeout", "update"]
+						}
+					}
+				},
+				{
+					"name": "Get User Session Info",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/session-timeout/info",
+							"host": ["{{base_url}}"],
+							"path": ["api", "session-timeout", "info"]
+						}
+					}
+				},
+				{
+					"name": "Extend Session",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/session-timeout/extend",
+							"host": ["{{base_url}}"],
+							"path": ["api", "session-timeout", "extend"]
+						}
+					}
+				},
+				{
+					"name": "Clear Session",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/session-timeout/clear",
+							"host": ["{{base_url}}"],
+							"path": ["api", "session-timeout", "clear"]
+						}
+					}
+				},
+				{
+					"name": "Set Session",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/session-timeout/set",
+							"host": ["{{base_url}}"],
+							"path": ["api", "session-timeout", "set"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Admin - SEO",
+			"item": [
+				{
+					"name": "Get SEO",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/get/seo",
+							"host": ["{{base_url}}"],
+							"path": ["api", "get", "seo"]
+						}
+					}
+				},
+				{
+					"name": "Update SEO",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Shop Title\",\n    \"description\": \"Shop Description\",\n    \"keywords\": \"shop, products, online\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/update/seo",
+							"host": ["{{base_url}}"],
+							"path": ["api", "update", "seo"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Admin - FAQs",
+			"item": [
+				{
+					"name": "Get All FAQs (Admin)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/faq/all",
+							"host": ["{{base_url}}"],
+							"path": ["api", "faq", "all"]
+						}
+					}
+				},
+				{
+					"name": "Create FAQ",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"question\": \"What is the return policy?\",\n    \"answer\": \"You can return products within 30 days\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/faq/create",
+							"host": ["{{base_url}}"],
+							"path": ["api", "faq", "create"]
+						}
+					}
+				},
+				{
+					"name": "Delete FAQ",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/faq/delete/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "faq", "delete", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
+

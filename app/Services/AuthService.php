@@ -56,12 +56,34 @@ class AuthService extends Controller
             }
 
 
-            $otp = OtpService::generate();
-            $user->otp_code = $otp;
-            $user->otp_expires_at = OtpService::expiresAt();
-            $user->save();
-
-            Mail::to($user->email)->send(new OtpCodeMail($otp));
+            // OTP Verification - تعطيل مؤقتاً للتسجيل بالهاتف حتى اختيار مزود SMS مناسب
+            // TODO: تفعيل OTP عند اختيار مزود SMS مناسب
+            // if (isset($data['phone']) && !isset($data['email'])) {
+            //     // التسجيل بالهاتف - سيتم تفعيل OTP لاحقاً
+            //     $otp = OtpService::generate();
+            //     $user->otp_code = $otp;
+            //     $user->otp_expires_at = OtpService::expiresAt();
+            //     $user->save();
+            //     // إرسال OTP عبر SMS (سيتم تفعيله لاحقاً)
+            // } else {
+            //     // التسجيل بالبريد الإلكتروني
+            //     $otp = OtpService::generate();
+            //     $user->otp_code = $otp;
+            //     $user->otp_expires_at = OtpService::expiresAt();
+            //     $user->save();
+            //     Mail::to($user->email)->send(new OtpCodeMail($otp));
+            // }
+            
+            // تعطيل OTP مؤقتاً للتسجيل بالهاتف
+            if (isset($data['email']) && $data['email']) {
+                // التسجيل بالبريد الإلكتروني - OTP يعمل
+                $otp = OtpService::generate();
+                $user->otp_code = $otp;
+                $user->otp_expires_at = OtpService::expiresAt();
+                $user->save();
+                Mail::to($user->email)->send(new OtpCodeMail($otp));
+            }
+            // التسجيل بالهاتف - OTP معطل مؤقتاً
 
 
             DB::commit();
@@ -147,7 +169,18 @@ class AuthService extends Controller
     }
     static function confirmOtp($data)
     {
-        $user = User::where('email', $data['email'])->first();
+        // Find user by email or phone
+        if (isset($data['email']) && $data['email']) {
+            $user = User::where('email', $data['email'])->first();
+        } elseif (isset($data['phone']) && $data['phone']) {
+            $user = User::where('phone', $data['phone'])->first();
+        } else {
+            return BaseController::sendError(__('messages.validation_error'), ['email or phone is required'], 422);
+        }
+
+        if (!$user) {
+            return BaseController::sendError(__('messages.user_not_found'), [], 404);
+        }
 
         // if (
         //     !$user ||

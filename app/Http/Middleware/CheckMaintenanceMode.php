@@ -43,6 +43,8 @@ class CheckMaintenanceMode
             'api/maintenance/status',
             'api/maintenance/toggle',
             'api/auth/login',
+            'api/auth/logout',
+            'api/auth/login-phone',
         ];
 
         $currentRoute = $request->route()?->uri();

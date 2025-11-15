@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Http\Controllers\API\BaseController;
+use App\RoleEnum;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,16 +17,23 @@ class CustomDynamicPermissionMiddleware
      */
     public function handle(Request $request, Closure $next, $permission): Response
     {
+        $user = auth()->user();
+
+        // إذا كان المستخدم لديه دور admin، يمنحه جميع الصلاحيات تلقائياً
+        if ($user->hasRole(RoleEnum::ADMIN)) {
+            return $next($request);
+        }
+
         // إذا كانت الكلمة تحتوي على "role:" أو "permission:"
         if (strpos($permission, 'role:') === 0) {
             $roleName = substr($permission, 5); // نزيل "role:" للحصول على اسم الدور
-            if (! auth()->user()->hasRole($roleName)) {
+            if (! $user->hasRole($roleName)) {
                 // إذا لم يكن لدى المستخدم هذا الدور
                 return BaseController::sendError(__('messages.do_not_have_permission'), [], 403);
             }
         } elseif (strpos($permission, 'permission:') === 0) {
             $permissionName = substr($permission, 11); // نزيل "permission:" للحصول على اسم الصلاحية
-            if (! auth()->user()->hasPermissionTo($permissionName)) {
+            if (! $user->hasPermissionTo($permissionName)) {
                 // إذا لم يكن لدى المستخدم هذه الصلاحية
                 return BaseController::sendError(__('messages.do_not_have_permission'), [], 403);
             }

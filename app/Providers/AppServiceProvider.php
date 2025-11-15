@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\RoleEnum;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,6 +21,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // منح دور admin جميع الصلاحيات تلقائياً
+        Gate::before(function ($user, $ability) {
+            if ($user->hasRole(RoleEnum::ADMIN)) {
+                return true;
+            }
+        });
     }
 }

@@ -39,18 +39,41 @@ class CheckMaintenanceMode
      */
     private function shouldSkipMiddleware(Request $request): bool
     {
-        $skipRoutes = [
-            'api/maintenance/status',
-            'api/maintenance/toggle',
+        // Get route name (e.g., "auth.login", "auth.logout")
+        $routeName = $request->route()?->getName();
+        
+        // List of route names to skip
+        $skipRouteNames = [
+            'auth.login',
+            'auth.logout',
+            'auth.loginWithPhone',
+            'auth.register',
+            'auth.confirmOtp',
+        ];
+        
+        // List of path patterns to skip (using Laravel's is() method)
+        $skipPathPatterns = [
+            'api/maintenance/*',
             'api/auth/login',
             'api/auth/logout',
             'api/auth/login-phone',
+            'api/auth/register',
+            'api/auth/register-phone',
+            'api/auth/confirm-otp',
         ];
 
-        $currentRoute = $request->route()?->uri();
-
-        foreach ($skipRoutes as $skipRoute) {
-            if (str_contains($currentRoute, $skipRoute)) {
+        // Check route name first (most reliable)
+        if ($routeName) {
+            foreach ($skipRouteNames as $skipRoute) {
+                if ($routeName === $skipRoute || str_contains($routeName, $skipRoute)) {
+                    return true;
+                }
+            }
+        }
+        
+        // Check path patterns using Laravel's is() method
+        foreach ($skipPathPatterns as $pattern) {
+            if ($request->is($pattern)) {
                 return true;
             }
         }

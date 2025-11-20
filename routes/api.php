@@ -92,6 +92,8 @@ Route::middleware(['not_blocked_country', 'throttle.by-route:5,1', 'check_mainte
         Route::post('/update-user', 'updateUser')->name('updateUser')->middleware(['should_auth', 'auth:sanctum']);
         Route::post('confirm-otp', 'confirmOtp')->name('confirmOtp');
         Route::post('/logout', 'logout')->middleware(['should_auth', 'auth:sanctum'])->name('logout');
+        Route::post('/forgot-password', 'forgotPassword')->name('forgotPassword');
+        Route::post('/reset-password', 'resetPassword')->name('resetPassword');
     });
     // Social Authentication Routes
     Route::prefix('social')->group(function () {

@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Http\Controllers\API\BaseController;
 use App\Http\Controllers\Controller;
 use App\Mail\OtpCodeMail;
+use App\Mail\PasswordResetMail;
 use App\Models\Referral;
 use App\Models\User;
 use App\RoleEnum;
@@ -13,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 use Throwable;
 
 class AuthService extends Controller
@@ -209,5 +211,97 @@ class AuthService extends Controller
             )
         ];
         return BaseController::sendResponse($response, __('messages.login_successfully'));
+    }
+
+    /**
+     * Send password reset link to user's email
+     */
+    static function forgotPassword($email)
+    {
+        try {
+            $user = User::where('email', $email)->first();
+
+            if (!$user) {
+                return BaseController::sendError(__('messages.email_not_found'), [], 404);
+            }
+
+            // Generate password reset token
+            $token = Str::random(64);
+            
+            // Store token in password_reset_tokens table
+            DB::table('password_reset_tokens')->updateOrInsert(
+                ['email' => $email],
+                [
+                    'token' => Hash::make($token),
+                    'created_at' => now()
+                ]
+            );
+
+            // Generate reset URL (frontend URL + token)
+            // You should replace this with your actual frontend URL
+            $frontendUrl = env('FRONTEND_URL', 'http://localhost:3000');
+            $resetUrl = $frontendUrl . '/reset-password?email=' . urlencode($email) . '&token=' . urlencode($token);
+
+            // Send password reset email
+            Mail::to($user->email)->send(new PasswordResetMail($resetUrl, $user->name));
+
+            return BaseController::sendResponse([], __('messages.password_reset_link_sent'));
+        } catch (\Throwable $th) {
+            Log::error('Forgot password error: ' . $th->getMessage());
+            return BaseController::sendError(__('messages.password_reset_failed'), [$th->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Reset user password using token
+     */
+    static function resetPassword($email, $token, $password)
+    {
+        try {
+            DB::beginTransaction();
+
+            // Get password reset record
+            $passwordReset = DB::table('password_reset_tokens')
+                ->where('email', $email)
+                ->first();
+
+            if (!$passwordReset) {
+                return BaseController::sendError(__('messages.invalid_reset_token'), [], 404);
+            }
+
+            // Check if token is expired (60 minutes)
+            $createdAt = \Carbon\Carbon::parse($passwordReset->created_at);
+            if (now()->diffInMinutes($createdAt) > 60) {
+                // Delete expired token
+                DB::table('password_reset_tokens')->where('email', $email)->delete();
+                return BaseController::sendError(__('messages.reset_token_expired'), [], 422);
+            }
+
+            // Verify token
+            if (!Hash::check($token, $passwordReset->token)) {
+                return BaseController::sendError(__('messages.invalid_reset_token'), [], 422);
+            }
+
+            // Find user
+            $user = User::where('email', $email)->first();
+            if (!$user) {
+                return BaseController::sendError(__('messages.user_not_found'), [], 404);
+            }
+
+            // Update password
+            $user->password = Hash::make($password);
+            $user->save();
+
+            // Delete used token
+            DB::table('password_reset_tokens')->where('email', $email)->delete();
+
+            DB::commit();
+
+            return BaseController::sendResponse([], __('messages.password_reset_success'));
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            Log::error('Reset password error: ' . $th->getMessage());
+            return BaseController::sendError(__('messages.password_reset_failed'), [$th->getMessage()], 500);
+        }
     }
 }

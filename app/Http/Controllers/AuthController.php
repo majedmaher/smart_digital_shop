@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\API\BaseController;
+use App\Http\Requests\ForgotPasswordRequest;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\ResetPasswordRequest;
 use App\Services\AuthService;
 use App\Services\OtpService;
 use App\Models\User;
@@ -139,5 +141,25 @@ class AuthController extends BaseController
         $request->user()->currentAccessToken()->delete();
 
         return $this->sendResponse(null, __('messages.Logged_out_successfully'));
+    }
+
+    /**
+     * Send password reset link to user's email
+     */
+    public function forgotPassword(ForgotPasswordRequest $request)
+    {
+        return AuthService::forgotPassword($request->email);
+    }
+
+    /**
+     * Reset user password using token
+     */
+    public function resetPassword(ResetPasswordRequest $request)
+    {
+        return AuthService::resetPassword(
+            $request->email,
+            $request->token,
+            $request->password
+        );
     }
 }

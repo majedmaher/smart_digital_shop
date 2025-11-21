@@ -240,7 +240,7 @@ class AuthService extends Controller
             // Generate reset URL (frontend URL + token)
             // You should replace this with your actual frontend URL
             $frontendUrl = env('FRONTEND_URL', 'http://localhost:3000');
-            $resetUrl = $frontendUrl . '/reset-password?email=' . urlencode($email) . '&token=' . urlencode($token);
+            $resetUrl = $frontendUrl . '/auth/reset-password?email=' . urlencode($email) . '&token=' . urlencode($token);
 
             // Send password reset email
             Mail::to($user->email)->send(new PasswordResetMail($resetUrl, $user->name));

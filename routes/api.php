@@ -75,6 +75,9 @@ Route::middleware(['not_blocked_country', 'throttle.by-route:5,1', 'check_mainte
 
     Route::post('/assistant/ask', [FaqController::class, 'ask']);
 
+    // Public route - Get current site status (no authentication required)
+    Route::get('/site-status/current', [SiteStatusController::class, 'getCurrentStatus']);
+
     Route::controller(PaymentController::class)->group(function () {
         Route::post('/payment/paymob/callback/processed', 'handlePaymobWebhook')->name('handlePaymobWebhook');
         Route::get('/payment/paymob/result', 'result')->name('result');
@@ -253,9 +256,8 @@ Route::middleware(['should_auth', 'auth:sanctum'])->group(function () {
         Route::get('/read-all', [NotificationController::class, 'markAllAsRead']);
     });
 
-    // Site Status Management Routes
+    // Site Status Management Routes - Admin routes (Require authentication and permissions)
     Route::group(['prefix' => '/site-status', 'middleware' => 'custom_permission:permission:manage site status', 'controller' => SiteStatusController::class], function () {
-        Route::get('/current', 'getCurrentStatus');
         Route::post('/update', 'updateStatus');
         Route::get('/available', 'getAvailableStatuses');
         Route::get('/toggle', 'toggleStatus');

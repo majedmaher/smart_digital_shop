@@ -42,8 +42,11 @@ Route::get('/test-geoip', function () {
 });
 
 // Maintenance Mode Management Routes (outside maintenance check middleware)
+// Public route - Get maintenance status (no authentication required)
+Route::get('/maintenance/status', [MaintenanceController::class, 'getStatus']);
+
+// Admin routes - Require authentication and permissions
 Route::group(['prefix' => '/maintenance', 'middleware' => ['should_auth', 'auth:sanctum', 'custom_permission:permission:manage settings'], 'controller' => MaintenanceController::class], function () {
-    Route::get('/status', 'getStatus');
     Route::get('/toggle', 'toggle');
 });
 

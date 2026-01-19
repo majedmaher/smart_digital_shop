@@ -24,6 +24,11 @@ class TicketPolicy
      */
     public function view(User $user, Ticket $ticket): bool
     {
+        // إذا كان المستخدم لديه دور admin، يمنحه جميع الصلاحيات تلقائياً
+        if ($user->hasRole(RoleEnum::ADMIN)) {
+            return true;
+        }
+        
         return $user->id === $ticket->user_id || $user->hasPermissionTo(PermissionEnum::REPLY_TO_TICKETS);
     }
 
@@ -40,6 +45,11 @@ class TicketPolicy
      */
     public function update(User $user, Ticket $ticket): bool
     {
+        // إذا كان المستخدم لديه دور admin، يمنحه جميع الصلاحيات تلقائياً
+        if ($user->hasRole(RoleEnum::ADMIN)) {
+            return true;
+        }
+        
         return ((($user->id === $ticket->user_id) || ($user->hasPermissionTo(PermissionEnum::REPLY_TO_TICKETS)) && ($ticket->status == TicketStatusEnum::OPEN->value || $ticket->status == TicketStatusEnum::PENDING->value)));
     }
 

@@ -2,6 +2,7 @@
 
 use App\Http\Middleware\AuthMiddleware;
 use App\Http\Middleware\BlockedCountries;
+use App\Http\Middleware\CheckMaintenanceMode;
 use App\Http\Middleware\CustomDynamicPermissionMiddleware;
 use App\Http\Middleware\SessionTimeoutMiddleware;
 use App\Http\Middleware\SuspiciousTransactionMiddleware;
@@ -33,7 +34,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'throttle.by-route' => \App\Http\Middleware\RateLimitByRoute::class,
             'session_timeout' => SessionTimeoutMiddleware::class,
             'suspicious_transaction' => SuspiciousTransactionMiddleware::class,
-
+            'check_maintenance' => CheckMaintenanceMode::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

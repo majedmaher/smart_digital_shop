@@ -22,7 +22,7 @@ class OrderService extends Controller
     public static function getAdminOrders(): JsonResponse
     {
         try {
-            $orders = Order::latest()->get();
+            $orders = Order::with(['user:id,name,email,phone'])->latest()->get();
             // if (!$orders || $orders->isEmpty()) return BaseController::sendError(__('messages.item_not_found', ['item' => __('messages.order')]), [], 404);
 
             return BaseController::sendResponse($orders, __('messages.sent_data'));

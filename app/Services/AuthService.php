@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Http\Controllers\API\BaseController;
 use App\Http\Controllers\Controller;
 use App\Mail\OtpCodeMail;
+use App\Mail\PasswordResetMail;
 use App\Models\Referral;
 use App\Models\User;
 use App\RoleEnum;
@@ -13,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 use Throwable;
 
 class AuthService extends Controller
@@ -56,12 +58,34 @@ class AuthService extends Controller
             }
 
 
-            $otp = OtpService::generate();
-            $user->otp_code = $otp;
-            $user->otp_expires_at = OtpService::expiresAt();
-            $user->save();
-
-            Mail::to($user->email)->send(new OtpCodeMail($otp));
+            // OTP Verification - تعطيل مؤقتاً للتسجيل بالهاتف حتى اختيار مزود SMS مناسب
+            // TODO: تفعيل OTP عند اختيار مزود SMS مناسب
+            // if (isset($data['phone']) && !isset($data['email'])) {
+            //     // التسجيل بالهاتف - سيتم تفعيل OTP لاحقاً
+            //     $otp = OtpService::generate();
+            //     $user->otp_code = $otp;
+            //     $user->otp_expires_at = OtpService::expiresAt();
+            //     $user->save();
+            //     // إرسال OTP عبر SMS (سيتم تفعيله لاحقاً)
+            // } else {
+            //     // التسجيل بالبريد الإلكتروني
+            //     $otp = OtpService::generate();
+            //     $user->otp_code = $otp;
+            //     $user->otp_expires_at = OtpService::expiresAt();
+            //     $user->save();
+            //     Mail::to($user->email)->send(new OtpCodeMail($otp));
+            // }
+            
+            // تعطيل OTP مؤقتاً للتسجيل بالهاتف
+            if (isset($data['email']) && $data['email']) {
+                // التسجيل بالبريد الإلكتروني - OTP يعمل
+                $otp = OtpService::generate();
+                $user->otp_code = $otp;
+                $user->otp_expires_at = OtpService::expiresAt();
+                $user->save();
+                Mail::to($user->email)->send(new OtpCodeMail($otp));
+            }
+            // التسجيل بالهاتف - OTP معطل مؤقتاً
 
 
             DB::commit();
@@ -105,7 +129,8 @@ class AuthService extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'password' => 'nullable|string|min:8|confirmed',
-            'date' => 'nullable|date|before:' . now()->subYears(2)->toDateString() . '|after:' . now()->subYears(90)->toDateString(),
+            'date' => 'nullable|date_format:Y-m-d',
+            'phone' => 'nullable|string|max:20|unique:users,phone,' . $request->user()->id,
             'gender' => 'nullable|string|in:male,female',
             'photo' => 'nullable|file|mimes:png,jpg,jpeg,webp|max:2048',
         ]);
@@ -114,11 +139,23 @@ class AuthService extends Controller
             $user = $request->user();
             // return response()->json([Hash::check($request->password, $user->password)]);
             $user->name = $validated['name'];
-            $user->date = $validated['date'];
-            $user->gender = $validated['gender'];
-            if ($validated['password']) {
+
+            if (isset($validated['date'])) {
+                $user->date = $validated['date'];
+            }
+
+            if (isset($validated['phone'])) {
+                $user->phone = $validated['phone'];
+            }
+
+            if (isset($validated['gender'])) {
+                $user->gender = $validated['gender'];
+            }
+
+            if (isset($validated['password']) && $validated['password']) {
                 $user->password = $validated['password'];
             }
+
             if (isset($validated['photo']) && $request->hasFile('photo')) {
                 $photo = saveImage($validated['photo'], self::$image_folder . '/photos');
                 if ($user->photo) unlink(public_path($user->photo));
@@ -134,7 +171,18 @@ class AuthService extends Controller
     }
     static function confirmOtp($data)
     {
-        $user = User::where('email', $data['email'])->first();
+        // Find user by email or phone
+        if (isset($data['email']) && $data['email']) {
+            $user = User::where('email', $data['email'])->first();
+        } elseif (isset($data['phone']) && $data['phone']) {
+            $user = User::where('phone', $data['phone'])->first();
+        } else {
+            return BaseController::sendError(__('messages.validation_error'), ['email or phone is required'], 422);
+        }
+
+        if (!$user) {
+            return BaseController::sendError(__('messages.user_not_found'), [], 404);
+        }
 
         // if (
         //     !$user ||
@@ -157,10 +205,103 @@ class AuthService extends Controller
                 $user->only(['id', 'name', 'email']),
                 [
                     'roles' => $user->getRoleNames(),
+                    'permissions' => $user->getPermissionNames(),
                     'is_admin' => $user->hasRole(RoleEnum::ADMIN),
                 ]
             )
         ];
         return BaseController::sendResponse($response, __('messages.login_successfully'));
+    }
+
+    /**
+     * Send password reset link to user's email
+     */
+    static function forgotPassword($email)
+    {
+        try {
+            $user = User::where('email', $email)->first();
+
+            if (!$user) {
+                return BaseController::sendError(__('messages.email_not_found'), [], 404);
+            }
+
+            // Generate password reset token
+            $token = Str::random(64);
+            
+            // Store token in password_reset_tokens table
+            DB::table('password_reset_tokens')->updateOrInsert(
+                ['email' => $email],
+                [
+                    'token' => Hash::make($token),
+                    'created_at' => now()
+                ]
+            );
+
+            // Generate reset URL (frontend URL + token)
+            // You should replace this with your actual frontend URL
+            $frontendUrl = env('FRONTEND_URL', 'http://localhost:3000');
+            $resetUrl = $frontendUrl . '/auth/reset-password?email=' . urlencode($email) . '&token=' . urlencode($token);
+
+            // Send password reset email
+            Mail::to($user->email)->send(new PasswordResetMail($resetUrl, $user->name));
+
+            return BaseController::sendResponse([], __('messages.password_reset_link_sent'));
+        } catch (\Throwable $th) {
+            Log::error('Forgot password error: ' . $th->getMessage());
+            return BaseController::sendError(__('messages.password_reset_failed'), [$th->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Reset user password using token
+     */
+    static function resetPassword($email, $token, $password)
+    {
+        try {
+            DB::beginTransaction();
+
+            // Get password reset record
+            $passwordReset = DB::table('password_reset_tokens')
+                ->where('email', $email)
+                ->first();
+
+            if (!$passwordReset) {
+                return BaseController::sendError(__('messages.invalid_reset_token'), [], 404);
+            }
+
+            // Check if token is expired (60 minutes)
+            $createdAt = \Carbon\Carbon::parse($passwordReset->created_at);
+            if (now()->diffInMinutes($createdAt) > 60) {
+                // Delete expired token
+                DB::table('password_reset_tokens')->where('email', $email)->delete();
+                return BaseController::sendError(__('messages.reset_token_expired'), [], 422);
+            }
+
+            // Verify token
+            if (!Hash::check($token, $passwordReset->token)) {
+                return BaseController::sendError(__('messages.invalid_reset_token'), [], 422);
+            }
+
+            // Find user
+            $user = User::where('email', $email)->first();
+            if (!$user) {
+                return BaseController::sendError(__('messages.user_not_found'), [], 404);
+            }
+
+            // Update password
+            $user->password = Hash::make($password);
+            $user->save();
+
+            // Delete used token
+            DB::table('password_reset_tokens')->where('email', $email)->delete();
+
+            DB::commit();
+
+            return BaseController::sendResponse([], __('messages.password_reset_success'));
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            Log::error('Reset password error: ' . $th->getMessage());
+            return BaseController::sendError(__('messages.password_reset_failed'), [$th->getMessage()], 500);
+        }
     }
 }

@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CodeController;
 use App\Http\Controllers\CouponController;
+use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\FaqController;
 use App\Http\Controllers\InterestController;
 use App\Http\Controllers\MainController;
@@ -24,6 +25,7 @@ use App\Http\Controllers\SiteStatusController;
 use App\Http\Controllers\SessionTimeoutController;
 use App\Http\Controllers\AbandonedCartController;
 use App\Http\Controllers\SuspiciousTransactionController;
+use App\Http\Controllers\MaintenanceController;
 use Illuminate\Support\Facades\Route;
 // routes/web.php
 use Torann\GeoIP\Facades\GeoIP;
@@ -38,7 +40,17 @@ Route::get('/test-geoip', function () {
         'iso_code' => $location['iso_code'] ?? null,
     ]);
 });
-Route::middleware(['not_blocked_country', 'throttle.by-route:5,1'])->group(function () {
+
+// Maintenance Mode Management Routes (outside maintenance check middleware)
+// Public route - Get maintenance status (no authentication required)
+Route::get('/maintenance/status', [MaintenanceController::class, 'getStatus']);
+
+// Admin routes - Require authentication and permissions
+Route::group(['prefix' => '/maintenance', 'middleware' => ['should_auth', 'auth:sanctum', 'custom_permission:permission:manage settings'], 'controller' => MaintenanceController::class], function () {
+    Route::get('/toggle', 'toggle');
+});
+
+Route::middleware(['not_blocked_country', 'throttle.by-route:5,1', 'check_maintenance'])->group(function () {
 
     Route::controller(MainController::class)->group(function () {
         Route::get('/mobile-main-content', 'getMobileMainScreen');
@@ -66,6 +78,9 @@ Route::middleware(['not_blocked_country', 'throttle.by-route:5,1'])->group(funct
 
     Route::post('/assistant/ask', [FaqController::class, 'ask']);
 
+    // Public route - Get current site status (no authentication required)
+    Route::get('/site-status/current', [SiteStatusController::class, 'getCurrentStatus']);
+
     Route::controller(PaymentController::class)->group(function () {
         Route::post('/payment/paymob/callback/processed', 'handlePaymobWebhook')->name('handlePaymobWebhook');
         Route::get('/payment/paymob/result', 'result')->name('result');
@@ -83,6 +98,8 @@ Route::middleware(['not_blocked_country', 'throttle.by-route:5,1'])->group(funct
         Route::post('/update-user', 'updateUser')->name('updateUser')->middleware(['should_auth', 'auth:sanctum']);
         Route::post('confirm-otp', 'confirmOtp')->name('confirmOtp');
         Route::post('/logout', 'logout')->middleware(['should_auth', 'auth:sanctum'])->name('logout');
+        Route::post('/forgot-password', 'forgotPassword')->name('forgotPassword');
+        Route::post('/reset-password', 'resetPassword')->name('resetPassword');
     });
     // Social Authentication Routes
     Route::prefix('social')->group(function () {
@@ -207,6 +224,12 @@ Route::middleware(['should_auth', 'auth:sanctum'])->group(function () {
         Route::post('/update/{user}/permissions', 'updateUserPermissions');
     });
 
+    Route::group(['prefix' => '/employees', 'middleware' => 'custom_permission:permission:manage users', 'controller' => EmployeeController::class], function () {
+        Route::get('/', 'getAllEmployees');
+        Route::post('/create', 'createEmployee');
+        Route::get('/delete/{user_id}', 'deleteEmployee');
+    });
+
     Route::get('/rating', [RatingController::class, 'all'])->middleware('custom_permission:permission:manage ratings');
 
 
@@ -236,12 +259,11 @@ Route::middleware(['should_auth', 'auth:sanctum'])->group(function () {
         Route::get('/read-all', [NotificationController::class, 'markAllAsRead']);
     });
 
-    // Site Status Management Routes
+    // Site Status Management Routes - Admin routes (Require authentication and permissions)
     Route::group(['prefix' => '/site-status', 'middleware' => 'custom_permission:permission:manage site status', 'controller' => SiteStatusController::class], function () {
-        Route::get('/current', 'getCurrentStatus');
         Route::post('/update', 'updateStatus');
         Route::get('/available', 'getAvailableStatuses');
-        Route::post('/toggle', 'toggleStatus');
+        Route::get('/toggle', 'toggleStatus');
     });
 
     // Session Timeout Management Routes
@@ -255,7 +277,7 @@ Route::middleware(['should_auth', 'auth:sanctum'])->group(function () {
         });
 
         // Admin routes (for managing timeout settings)
-        Route::middleware(['should_auth', 'auth:sanctum', 'custom_permission:permission:manage site status'])->group(function () {
+        Route::middleware(['should_auth', 'auth:sanctum', 'custom_permission:permission:manage settings'])->group(function () {
             Route::get('/settings', 'getTimeoutSettings');
             Route::post('/update', 'updateTimeout');
         });

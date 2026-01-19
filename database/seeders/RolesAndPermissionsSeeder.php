@@ -42,9 +42,20 @@ class RolesAndPermissionsSeeder extends Seeder
         $support = Role::firstOrCreate(['name' => 'support']);
         $support->givePermissionTo(['reply tickets']);
 
-        // الدور: User
-        Role::create(['name' => RoleEnum::USER]); // بدون صلاحيات خاصة
-        Role::create(['name' => RoleEnum::CUSTOM]); // بدون صلاحيات خاصة
+        // الدور: User - صلاحيات أساسية للعملاء
+        $user = Role::create(['name' => RoleEnum::USER]);
+        $user->givePermissionTo([
+            'manage orders', // يمكن للعملاء إدارة طلباتهم
+            'manage ratings', // يمكن للعملاء إدارة تقييماتهم
+        ]);
+
+        // الدور: Custom - صلاحيات محدودة للموظفين
+        $custom = Role::create(['name' => RoleEnum::CUSTOM]);
+        $custom->givePermissionTo([
+            'manage orders', // إدارة الطلبات
+            'manage ratings', // إدارة التقييمات
+            'reply tickets', // الرد على التذاكر
+        ]);
 
     }
 }
